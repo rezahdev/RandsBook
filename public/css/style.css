@@ -1,6 +1,10 @@
 
-#auth_page_logo {
+#site_name {
    font-size: 40px;  
    font-family: 'Oleo Script Swash Caps', cursive;
    color: #cf3429;
+}
+
+a#site_name{
+   font-size: 25px;
 }

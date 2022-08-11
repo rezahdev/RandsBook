@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,5 +21,15 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::get('/books/add', function () {
+    return view('books.add');
+})->middleware(['auth'])->name('books.add');
+
+Route::get('/wishlist', function () {
+    return view('wishlist');
+})->middleware(['auth'])->name('wishlist');
+
+Route::resource('books', BookController::class)->middleware(['auth']);
 
 require __DIR__.'/auth.php';
