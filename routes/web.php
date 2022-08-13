@@ -14,9 +14,9 @@ use App\Http\Controllers\BookController;
 |
 */
 
-Route::resource('books', BookController::class)->middleware(['auth']);
-
-Route::get('/', [BookController::class, 'index'])->middleware('auth');
+Route::get('/', [BookController::class, 'index'])->middleware('auth')->name('books.index');
+Route::get('/create', [BookController::class, 'create'])->middleware('auth')->name('books.create');
+Route::get('/search', [BookController::class, 'search'])->middleware('auth')->name('books.search');
 
 Route::get('/wishlist', function () {
     return view('wishlist');

@@ -19,7 +19,7 @@
                 <div class="p-6 bg-white border-b border-gray-200 mb-6">
                     {{ $book->book_name }}
                 </div>
-                @endforeach
+               @endforeach
             </div>
         </div>
     </div>
