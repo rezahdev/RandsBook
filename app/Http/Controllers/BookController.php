@@ -76,6 +76,7 @@ class BookController extends Controller
     {
         $q = strip_tags($id);
         $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . $q . '&format=json&jscmd=data');
+        //return view('books.show', ['response' => $response]);
         error_log($response);
         $response = json_decode($response, true);   
         $result = null;
@@ -86,14 +87,44 @@ class BookController extends Controller
         $book = array();
                              
         $book['isbn'] = $id;
+        
+        if(array_key_exists('cover', $result))
+        {
+            $book['cover_url'] = $result['cover']['large'];
+        }
+        else
+        {
+           $book['cover_url'] = 'https://i.pinimg.com/originals/a0/69/7a/a0697af2de64d67cf6dbb2a13dbc0457.png';
+        }   
         $book['title'] = $result['title'];
-        if(array_key_exists('cover', $result)) $book['cover_url'] = $result['cover']['large'];
-        else $book['cover_url'] = 'https://i.pinimg.com/originals/a0/69/7a/a0697af2de64d67cf6dbb2a13dbc0457.png';
-        $book['authors'] = $result['authors'];
+
+        if(array_key_exists('authors', $result)) $book['authors'] = $result['authors'];
+        else $book['authors'] = [0 => array('name' => 'Unknown', 'url' => "#")]; 
+
         $book['publishers'] = $result['publishers'];
         $book['publish_date'] = $result['publish_date'];
+
         if(array_key_exists('number_of_pages', $result))$book['pages'] = $result['number_of_pages'];
         else $book['pages'] = "Unknown";
+        
+        if(array_key_exists('subjects', $result)) $book['subjects'] = $result['subjects']; 
+        else $book['subjects'] = [];  
+
+        /*if(array_key_exists('description', $result['details'])) $book['description'] = $result['details']['description']['value']; 
+        else {
+            $book['work_id'] = $result['details']['works'][0]['key'];
+
+            $response = Http::get('https://openlibrary.org' . $book['work_id']. '.json');
+        
+            error_log($response);
+            $response = json_decode($response, true);
+            if(array_key_exists('description', $response))
+            {
+                if(is_string($response['description']))$book['description'] = $response['description'];
+                else $book['description'] = $response['description']['value'];
+            }       
+            else $book['description'] = "No Description found.";
+        }*/
 
         return view('books.show', ['book' => $book]);
     }
