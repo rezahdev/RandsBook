@@ -23,7 +23,7 @@ class BookController extends Controller
 
     function search()
     {
-        $q = $_GET['q'];
+        $q = strip_tags($_GET['q']);
         $response = Http::get('http://openlibrary.org/search.json?q=' . $q);
         $search_result = json_decode($response, true);
 
@@ -32,7 +32,7 @@ class BookController extends Controller
 
         foreach($search_result['docs'] as $book)
         {
-            if(array_key_exists('isbn', $book) 
+            if($book != null && array_key_exists('isbn', $book) 
                 && array_key_exists('author_name', $book)
                 && array_key_exists('publish_date', $book)
                 && array_key_exists('publisher', $book))
@@ -59,7 +59,7 @@ class BookController extends Controller
                 }
                 else
                 {
-                    $b['cover_url'] = 'https://cdn.elearningindustry.com/wp-content/uploads/2016/05/top-10-books-every-college-student-read-1024x640.jpeg';
+                    $b['cover_url'] = 'https://i.pinimg.com/originals/a0/69/7a/a0697af2de64d67cf6dbb2a13dbc0457.png';
                 }         
 
                 array_push($book_list, $b);
@@ -70,5 +70,31 @@ class BookController extends Controller
         return view('books.create', [
             'book_list' => $book_list,
             'book_count' => $book_count]);
+    }
+
+    function show($id)
+    {
+        $q = strip_tags($id);
+        $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . $q . '&format=json&jscmd=data');
+        error_log($response);
+        $response = json_decode($response, true);   
+        $result = null;
+        if(array_key_exists('ISBN:'.$q, $response)) $result = $response['ISBN:'.$q];   
+        else return view('books.show', ['response' => 'No Book Found']); 
+
+        
+        $book = array();
+                             
+        $book['isbn'] = $id;
+        $book['title'] = $result['title'];
+        if(array_key_exists('cover', $result)) $book['cover_url'] = $result['cover']['large'];
+        else $book['cover_url'] = 'https://i.pinimg.com/originals/a0/69/7a/a0697af2de64d67cf6dbb2a13dbc0457.png';
+        $book['authors'] = $result['authors'];
+        $book['publishers'] = $result['publishers'];
+        $book['publish_date'] = $result['publish_date'];
+        if(array_key_exists('number_of_pages', $result))$book['pages'] = $result['number_of_pages'];
+        else $book['pages'] = "Unknown";
+
+        return view('books.show', ['book' => $book]);
     }
 }
