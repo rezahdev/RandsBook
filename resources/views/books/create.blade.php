@@ -33,10 +33,10 @@
                         <p id="create_author_label" class="text-blue-800 cursor-pointer mb-5" style="margin-top:-10px" onclick="createAuthorInputField('{{++$authorCount}}')">Add Another Author</p>
                         
                         <label>Number of Pages</label>
-                        <input class="w-5/6 rounded mb-5 p-2" name="total_pages" type="text" value="{{$book['total_pages'] }}">
+                        <input class="w-full md:w-5/6 rounded mb-5 p-2" name="total_pages" type="text" value="{{$book['total_pages'] }}">
                         <br>
                         <label>Number of Pages Read</label>
-                        <input class="w-5/6 rounded mb-5 p-2" name="read_pages" type="text" value="{{$book['read_pages'] }}">
+                        <input class="w-full md:w-5/6 rounded mb-5 p-2" name="read_pages" type="text" value="{{$book['read_pages'] }}">
                     </div>
                     <div class="w-full md:w-1/2">
                         <div id="publisher_list">
@@ -54,18 +54,7 @@
                         <p id="create_publisher_label" class="text-blue-800 cursor-pointer mb-5" style="margin-top:-10px" onclick="createPublisherInputField('{{++$publisherCount}}')">Add Another Publisher</p>
                     
                         <label>Publish Date</label>
-                        <input class="w-5/6 rounded mb-5 p-2" name="publish_date" type="text" value="{{$book['publish_date'] }}">
-                    </div>
-                </div>
-
-                
-
-                <div class="flex flex-row flex-wrap justify-around">
-                    <div>
-                        
-                    </div>
-                    <div>
-                        
+                        <input class="w-full md:w-5/6 rounded mb-5 p-2" name="publish_date" type="text" value="{{$book['publish_date'] }}">
                     </div>
                 </div>
 

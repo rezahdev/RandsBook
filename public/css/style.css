@@ -18,3 +18,10 @@ a#site_name{
 }
 
 .cmr-5 { margin-right: 5px; }
+
+@media(max-width: 680px)
+{
+   .authors, .publishers {
+      width: 92%;
+   }
+}
