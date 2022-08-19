@@ -33,8 +33,16 @@
                         @endif
                         <span class="inline-block bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900 mt-5">{{$subject['name']}}</span>
                     @endforeach
-                </div>
-                
+                </div>    
+                <div class="mt-10">
+                    <form action="{{ route('books.create_with_data') }}" method="post">
+                        @csrf
+                        <input name="book_data" type="hidden" value="{{json_encode($book)}}">
+                        <button type="submit" class="bg-blue-800 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mr-2">
+                            Edit and Add
+                        </button>
+                    </form>
+                </div>     
             </div>
         </div>
         @else
