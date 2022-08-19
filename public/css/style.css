@@ -8,3 +8,13 @@
 a#site_name{
    font-size: 25px;
 }
+
+.authors, .publishers{
+   width: 83.33%;
+   display: inline;
+   margin-bottom: 20px;
+   padding: 8px;
+   border: 1px solid gray;
+}
+
+.cmr-5 { margin-right: 5px; }

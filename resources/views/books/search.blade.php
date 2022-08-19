@@ -15,7 +15,7 @@
 
     </x-slot>
     <div class="flex justify-center w-full flex-wrap">
-    <div class="flex justify-around flex-wrap w-11/12">
+    <div class="flex justify-around flex-wrap w-10/12">
     @isset($book_list)
     @foreach($book_list as $book)
     <div class="w-full lg:w-2/5 h-auto m-2 lg:m-5 bg-white border rounded flex justify-start flex-wrap">
@@ -31,7 +31,11 @@
                 @endif
                 @endforeach
             </p></div>
-            <div><a href="{{ route('books.show', ['id' => $book['isbn']]) }}"><button type="button" class="py-1 px-2 font-small bg-white-700 border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg mt-2">Details</button></a></div>
+            <div>
+                <a href="{{ route('books.show', ['id' => $book['isbn']]) }}" class="text-indigo-600 font-large font-semibold hover:text-blue-600">
+                    View Details
+                </a>
+            </div>
         </div>
     </div>
     @endforeach

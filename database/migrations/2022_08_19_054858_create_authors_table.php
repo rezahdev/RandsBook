@@ -13,15 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('authors', function (Blueprint $table) {
+            //
             $table->id();
-            $table->string('book_id')->nullable();
-            $table->integer('user_id');
-            $table->string('book_name');
-            $table->text('description')->nullable();
-            $table->integer('total_pages');
-            $table->integer('read_pages')->default(0);
-            $table->text('comment')->nullable();
+            $table->integer('book_id');
+            $table->string('author_name');
+            $table->string('author_url')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });
@@ -34,6 +31,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('books');
+        Schema::table('authors', function (Blueprint $table) {
+            //
+            Schema::dropIfExists('authors');
+        });
     }
 };

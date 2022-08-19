@@ -19,7 +19,7 @@ Route::get('/create', [BookController::class, 'create'])->middleware('auth')->na
 Route::post('/create/data', [BookController::class, 'create_with_data'])->middleware('auth')->name('books.create_with_data');
 Route::get('/search', [BookController::class, 'search'])->middleware('auth')->name('books.search');
 Route::get('/show/{id}', [BookController::class, 'show'])->middleware('auth')->name('books.show');
-Route::get('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
+Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
 
 Route::get('/wishlist', function () {
     return view('wishlist');

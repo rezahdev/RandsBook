@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\Book;
+use App\Models\Author;
 
 class BookController extends Controller
 {
@@ -57,6 +58,7 @@ class BookController extends Controller
     function create_with_data()
     {
         $book = array( 'title' => "",
+                        'isbn' => "",
                             'subtitle' => "",
                             'authors' => array(),
                             'publishers' => array(),
@@ -72,6 +74,7 @@ class BookController extends Controller
         if(isset($_POST['book_data']))
         {
             $book_data = json_decode($_POST['book_data'], true);
+            if(array_key_exists('isbn', $book_data)) $book['isbn'] = $book_data['isbn']; 
             if(array_key_exists('title', $book_data)) $book['title'] = $book_data['title']; 
             if(array_key_exists('subtitle', $book_data)) $book['subtitle'] = $book_data['subtitle'];
             if(array_key_exists('authors', $book_data)) $book['authors'] = $book_data['authors'];
@@ -93,9 +96,43 @@ class BookController extends Controller
         return view('books.create', ['book' => $book]);
     }
 
-    function store()
+    function store(Request $request)
     {
+        if(!Book::select('id')->where('book_id', $request->isbn)->exists())
+        {
+            $book = new Book();
+            $book->user_id = Auth::user()->id;
+            $book->book_id = strip_tags($request->isbn);
+            $book->book_name = strip_tags($request->title);
+            $book->subtitle = strip_tags($request->subtitle);
+            $book->description = strip_tags($request->description);
+            $book->publish_date = strip_tags($request->publish_date);
+            if($request->total_pages != "Unknown" && $request->total_pages != "" && $request->total_pages != null)
+                $book->total_pages = strip_tags($request->total_pages);
+            else 
+                $book->total_pages = 0;
 
+            if($request->read_pages != "" && $request->read_pages != null)
+            {
+                $book->read_pages = strip_tags($request->read_pages);
+            }
+            
+            $book->comment = strip_tags($request->comment);
+            $book->public_comment = strip_tags($request->public_comment);
+            $book->save();
+
+            for($i=1; $i<=10; $i++){
+                $a = 'author' . $i;
+                if($request->exists($a))
+                {
+                    $author = new Author();
+                    $author->book_id = $book->id;
+                    $author->author_name = $request->$a;
+                    $author->save();
+                }
+            }
+        }
+        return $this->index();
     }
 
     function search()
