@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Author;
+use App\Models\Publisher;
 
 class BookController extends Controller
 {
@@ -110,6 +111,19 @@ class BookController extends Controller
                     $author->book_id = $book->id;
                     $author->author_name = $request->$a;
                     $author->save();
+                }
+            }
+
+            for($i=1; $i<=4; $i++)
+            {
+                $p = 'publisher' . $i;
+
+                if($request->exists($p))
+                {
+                    $publisher = new Publisher();
+                    $publisher->book_id = $book->id;
+                    $publisher->publisher_name = $request->$p;
+                    $publisher->save();
                 }
             }
         }
