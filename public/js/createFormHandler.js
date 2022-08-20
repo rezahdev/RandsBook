@@ -97,7 +97,7 @@ function deletePublisher(publisherId)
 {
     if(publisher_list.childElementCount < 2)
     {
-        alert('Sorry, can\'t delete all publisher fields. Please leave the author field empty if you do not know the author information. ');
+        alert('Sorry, can\'t delete all publisher fields. Please leave the publisher field empty if you do not know the publisher information. ');
         return;
     }
 
@@ -129,5 +129,31 @@ function inputAuthorFieldChanged(input)
     else
     {
         create_author_label.style.display = "none"; 
+    }
+}
+
+function addSubjectTag()
+{
+   
+    console.log("here");
+    let subjectNumStr = (subject_list.children[subject_list.childElementCount-1].id).replace('subject', '');
+    let subjectNum = parseInt(subjectNumStr) + 1;
+    if(subject_input_field.value.length > 0)
+    {
+        if(subject_list.childElementCount == 3)
+        {
+            alert('Sorry, you can\'t add more than three subject tags per each book. In order to add this tag, please delete an existing tag first.');
+            return;
+        }
+
+        let field = document.getElementById('subject1');
+        let clone = field.cloneNode(true);
+        subject_list.appendChild(clone);
+        clone.id = 'subject' + subjectNum;
+        clone.children[0].name='subject' + subjectNum;
+        clone.children[0].value = subject_input_field.value;
+        clone.children[1].children[0].textContent = subject_input_field.value;
+
+        subject_input_field.value = "";
     }
 }

@@ -28,7 +28,7 @@
                 {{--<p>Description: {{ __($book['description']) }} </p> --}}
                 <div class="mt-5 mb-5">
                     @foreach($book['subjects'] as $index => $subject)
-                        @if($index >= 10) 
+                        @if($index >= 3) 
                             @break
                         @endif
                         <span class="inline-block bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900 mt-5">{{$subject['name']}}</span>
