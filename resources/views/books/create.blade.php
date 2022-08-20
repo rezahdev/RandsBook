@@ -7,7 +7,7 @@
                 @csrf
                 <input type="hidden" name="isbn" value="{{ $book['isbn'] }}" >
                 <label>Title</label>
-                <input class="w-full rounded mb-5 p-2" name="title" type="text" value="{{ $book['title'] }}" onkeydown="return event.key != 'Enter';">
+                <input class="w-full rounded mb-5 p-2" name="title" type="text" value="{{ $book['title'] }}" onkeydown="return event.key != 'Enter';" required>
 
                 <label>Subtitle</label>
                 <input class="w-full rounded mb-5 p-2" name="subtitle" type="text" value="{{ $book['subtitle'] }}" onkeydown="return event.key != 'Enter';">
@@ -95,19 +95,29 @@
                         <p class="w-14 h-10 border-blue-800 bg-blue-800 rounded p-2 cursor-pointer text-center text-white hover:bg-blue-700" onclick="addSubjectTag()">Add</p>
                     </div>
                     <div id="subject_list" class="w-1/2">
+                            <div style="display:none" class="inline" id="subject0">
+                                <input type="hidden" name="subject0" value="">
+                                <span id="badge-dismiss-green" class="mb-3 inline-flex items-center py-1 px-2 mr-2 text-sm font-medium text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800">
+                                    <span></span>
+                                    <button onclick="deleteSubject('subject0')" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-green-400 bg-transparent rounded-sm hover:bg-green-200 hover:text-green-900 dark:hover:bg-green-300 dark:hover:text-green-900" data-dismiss-target="#badge-dismiss-green" aria-label="Remove">
+                                        <svg aria-hidden="true" class="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                        <span class="sr-only">Remove badge</span>
+                                    </button>
+                                </span>
+                            </div>
                         @foreach($book['subjects'] as $index => $subject)
-                        @if($index < 3)
-                        <div class="inline" id="{{'subject' . ++$subjectCount }}">
-                            <input type="hidden" name="{{'subject' . $subjectCount}}" value="{{ $subject['name'] }}">
-                            <span id="badge-dismiss-green" class="mb-3 inline-flex items-center py-1 px-2 mr-2 text-sm font-medium text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800">
-                                <span>{{ $subject['name'] }}</span>
-                                <button type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-green-400 bg-transparent rounded-sm hover:bg-green-200 hover:text-green-900 dark:hover:bg-green-300 dark:hover:text-green-900" data-dismiss-target="#badge-dismiss-green" aria-label="Remove">
-                                    <svg aria-hidden="true" class="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                                    <span class="sr-only">Remove badge</span>
-                                </button>
-                            </span>
-                        </div> 
-                        @endif   
+                            @if($index < 3)
+                            <div class="inline" id="{{'subject' . ++$subjectCount }}">
+                                <input type="hidden" name="{{'subject' . $subjectCount}}" value="{{ $subject['name'] }}">
+                                <span id="badge-dismiss-green" class="mb-3 inline-flex items-center py-1 px-2 mr-2 text-sm font-medium text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800">
+                                    <span>{{ $subject['name'] }}</span>
+                                    <button onclick="deleteSubject('subject{{$subjectCount}}')" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-green-400 bg-transparent rounded-sm hover:bg-green-200 hover:text-green-900 dark:hover:bg-green-300 dark:hover:text-green-900" data-dismiss-target="#badge-dismiss-green" aria-label="Remove">
+                                        <svg aria-hidden="true" class="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                        <span class="sr-only">Remove badge</span>
+                                    </button>
+                                </span>
+                            </div> 
+                            @endif   
                         @endforeach
                     </div>
                 </div>

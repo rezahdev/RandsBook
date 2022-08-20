@@ -17,6 +17,7 @@
     <div class="flex justify-center w-full flex-wrap">
     <div class="flex justify-around flex-wrap w-10/12">
     @isset($book_list)
+    <p>{{$book_count . ' books found.'}}
     @foreach($book_list as $book)
     <div class="w-full lg:w-2/5 h-auto m-2 lg:m-5 bg-white border rounded flex justify-start flex-wrap">
         <div class="w-1/4"><img src="{{$book['cover_url'] }}" class="w-full h-auto"/></div>

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Author;
 use App\Models\Publisher;
+use App\Models\Subject;
 
 class BookController extends Controller
 {
@@ -124,6 +125,19 @@ class BookController extends Controller
                     $publisher->book_id = $book->id;
                     $publisher->publisher_name = $request->$p;
                     $publisher->save();
+                }
+            }
+
+            for($i=1; $i<=3; $i++)
+            {
+                $s = 'subject' . $i;
+
+                if($request->exists($s) && $s != 'subject0')
+                {
+                    $subject = new Subject();
+                    $subject->book_id = $book->id;
+                    $subject->subject = $request->$s;
+                    $subject->save();
                 }
             }
         }

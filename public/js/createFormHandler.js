@@ -140,20 +140,32 @@ function addSubjectTag()
     let subjectNum = parseInt(subjectNumStr) + 1;
     if(subject_input_field.value.length > 0)
     {
-        if(subject_list.childElementCount == 3)
+        if(subject_list.childElementCount == 4)
         {
             alert('Sorry, you can\'t add more than three subject tags per each book. In order to add this tag, please delete an existing tag first.');
             return;
         }
 
-        let field = document.getElementById('subject1');
+        let field = document.getElementById('subject0');
         let clone = field.cloneNode(true);
         subject_list.appendChild(clone);
         clone.id = 'subject' + subjectNum;
+        clone.style.display = "block";
         clone.children[0].name='subject' + subjectNum;
         clone.children[0].value = subject_input_field.value;
         clone.children[1].children[0].textContent = subject_input_field.value;
+        clone.children[1].children[1].removeAttribute("onclick");
+        clone.children[1].children[1].addEventListener('click', function() { deleteSubject(`subject${subjectNum}`); });
 
         subject_input_field.value = "";
     }
 }
+
+    function deleteSubject(subjectId)
+    {
+        if(subjectId == "subject0") return;
+        let child = document.getElementById(subjectId);
+        console.log(child);
+        subject_list.removeChild(child);
+        
+    }
