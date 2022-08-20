@@ -7,6 +7,8 @@ function createAuthorInputField(authorNum)
     clone.id = 'author' + authorNum;
     clone.children[0].name = 'author' + authorNum;
     clone.children[0].value = "";
+    clone.children[0].removeAttribute('onkeypress');
+    clone.children[0].id = "blah2";
     clone.children[1].removeAttribute('onclick');
     clone.children[1].addEventListener('click', function() { deleteAuthor(`${clone.id}`); });
     console.log(clone.id);
@@ -27,15 +29,7 @@ function createAuthorInputField(authorNum)
     authorNum++;
     if(authorNum <= 10)
     {
-        clone.children[0].addEventListener('input', function() { 
-            if(clone.children[0].value.length > 0){
-                create_author_label.style.display = "block"; 
-            }
-            else
-            {
-                create_author_label.style.display = "none"; 
-            }
-        });
+        clone.children[0].addEventListener('input', function() { inputAuthorFieldChanged(clone.children[0]); });
         p.addEventListener('click', function(){ createAuthorInputField(`${(authorNum)}`); });
         p.style.display = "none";
     }
@@ -45,6 +39,8 @@ function createAuthorInputField(authorNum)
         p.style.color = "black";
         p.style.curson = "default";
     }
+
+    console.log(author_list.childElementCount);
 }
 
 function createPublisherInputField(publisherNum)
@@ -72,15 +68,7 @@ function createPublisherInputField(publisherNum)
     publisherNum++;
     if(publisherNum <= 4)
     {
-        clone.children[0].addEventListener('input', function() { 
-            if(clone.children[0].value.length > 0){
-                create_publisher_label.style.display = "block"; 
-            }
-            else
-            {
-                create_publisher_label.style.display = "none"; 
-            }
-        });
+        clone.children[0].addEventListener('input', function() { inputPublisherFieldChanged(clone.children[0]); });
         p.addEventListener('click', function(){ createPublisherInputField(`${(publisherNum)}`); });
         p.style.display = "none";
     }
@@ -94,6 +82,11 @@ function createPublisherInputField(publisherNum)
 
 function deleteAuthor(authorId)
 {
+    if(author_list.childElementCount < 2)
+    {
+        alert('Sorry, can\'t delete all author fields. Please leave the author field empty if you do not know the author information. ');
+        return;
+    }
     console.log(authorId);
     let child = document.getElementById(authorId);
     author_list.removeChild(child);
@@ -102,8 +95,39 @@ function deleteAuthor(authorId)
 
 function deletePublisher(publisherId)
 {
-    console.log(publisherId);
+    if(publisher_list.childElementCount < 2)
+    {
+        alert('Sorry, can\'t delete all publisher fields. Please leave the author field empty if you do not know the author information. ');
+        return;
+    }
+
+    console.log(publisher_list.children);
     let child = document.getElementById(publisherId);
     publisher_list.removeChild(child);
     
+}
+
+function inputPublisherFieldChanged(input)
+{
+    console.log("here" + input.id);
+    if(input.value.length > 0){
+        create_publisher_label.style.display = "block"; 
+    }
+    else
+    {
+        create_publisher_label.style.display = "none"; 
+    }
+}
+
+
+function inputAuthorFieldChanged(input)
+{
+    console.log("here" + input.id);
+    if(input.value.length > 0){
+        create_author_label.style.display = "block"; 
+    }
+    else
+    {
+        create_author_label.style.display = "none"; 
+    }
 }

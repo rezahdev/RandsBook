@@ -20,37 +20,18 @@ class BookController extends Controller
     function create()
     {
         $book = array( 'title' => "",
-                            'subtitle' => "",
-                            'authors' => array(),
-                            'publishers' => array(),
-                            'subjects' => array(),
-                            'publish_date' => "",
-                            'total_pages' => "",
-                            'read_pages' => "",
-                            'description' => "",
-                            'cove_id' => "",
-                            'comment' => "",
-                            'public_comment' => "");
-
-
-        if(isset($book_data))
-        {
-            if(array_key_exists('title', $book_data)) $book['title'] = $book_data['title']; 
-            if(array_key_exists('subtitle', $book_data)) $book['subtitle'] = $book_data['subtitle'];
-            if(array_key_exists('authors', $book_data)) $book['authors'] = $book_data['authors'];
-            if(array_key_exists('publishers', $book_data)) $book['publishers'] = $book_data['publishers'];
-            if(array_key_exists('publish_date', $book_data)) $book['publish_date'] = $book_data['publish_date'];
-            if(array_key_exists('pages', $book_data)) $book['total_pages'] = $book_data['pages'];
-            if(array_key_exists('read_pages', $book_data)) $book['read_pages'] = $book_data['read_pages'];
-            if(array_key_exists('cover_id', $book_data)) $book['cover_id'] = $book_data['cover_id'];
-            if(array_key_exists('comment', $book_data)) $book['comment'] = $book_data['comment'];
-            if(array_key_exists('public_comment', $book_data)) $book['public_comment'] = $book_data['public_comment'];
-            if(array_key_exists('description', $book_data)) $book['description'] = $book_data['description'];
-        }
-        else
-        {
-            $book['title'] = "No title";
-        }
+                        'isbn' => "",
+                        'subtitle' => "",
+                        'authors' => array(),
+                        'publishers' => array(),
+                        'subjects' => array(),
+                        'publish_date' => "",
+                        'total_pages' => "",
+                        'read_pages' => "",
+                        'description' => "",
+                        'cove_id' => "",
+                        'comment' => "",
+                        'public_comment' => "");
         
         return view('books.create', ['book' => $book]);
     }

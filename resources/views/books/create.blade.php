@@ -20,6 +20,7 @@
                     <div class="w-full md:w-1/2">
                         <label>Authors</label><br>               
                         <div id="author_list" class="w-full">
+                            @if(count($book['authors']) > 0)
                             @foreach($book['authors'] as $author)
                             <div id="{{ 'author' . ++$authorCount }}">
                                 <input class="authors rounded" name="{{ 'author' . $authorCount }}" type="text" value="{{ $author['name'] }}">
@@ -29,9 +30,21 @@
                                 </button>
                             </div>
                             @endforeach
+                            @else
+                            <div id="{{ 'author' . ++$authorCount }}">
+                                <input onkeypress="inputAuthorFieldChanged(this)" class="authors rounded" name="{{ 'author' . $authorCount }}" type="text" value="">
+                                <button onclick="deleteAuthor('author{{ $authorCount }}')" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-blue-400 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-300 dark:hover:text-blue-900" data-dismiss-target="#badge-dismiss-default" aria-label="Remove">
+                                    <svg aria-hidden="true" class="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    <span class="sr-only">Remove badge</span>
+                                </button>
+                            </div>
+                            @endif
                         </div>
+                        @if(count($book['authors']))
                         <p id="create_author_label" class="text-blue-800 cursor-pointer mb-5" style="margin-top:-10px" onclick="createAuthorInputField('{{++$authorCount}}')">Add Another Author</p>
-                        
+                        @else 
+                        <p id="create_author_label" class="text-blue-800 cursor-pointer mb-5" style="margin-top:-10px; display: none" onclick="createAuthorInputField('{{++$authorCount}}')">Add Another Author</p>
+                        @endif
                         <label>Number of Pages</label>
                         <input class="w-full md:w-5/6 rounded mb-5 p-2" name="total_pages" type="text" value="{{$book['total_pages'] }}">
                         <br>
@@ -39,20 +52,33 @@
                         <input class="w-full md:w-5/6 rounded mb-5 p-2" name="read_pages" type="text" value="{{$book['read_pages'] }}">
                     </div>
                     <div class="w-full md:w-1/2">
+                        <label>Publishers</label><br>
                         <div id="publisher_list">
-                            <label>Publishers</label><br>
+                            @if(count($book['publishers']) > 0)
                             @foreach($book['publishers'] as $publisher)
                             <div id="{{'publisher' . ++$publisherCount }}">
                                 <input class="publishers rounded" name="{{ 'publisher' . $publisherCount }}" type="text" value="{{$publisher['name'] }}">
-                                <button onclick="deletePublisher('publisher{{$publisherCount+1}}')" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-blue-400 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-300 dark:hover:text-blue-900" data-dismiss-target="#badge-dismiss-default" aria-label="Remove">
+                                <button onclick="deletePublisher('publisher{{$publisherCount}}')" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-blue-400 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-300 dark:hover:text-blue-900" data-dismiss-target="#badge-dismiss-default" aria-label="Remove">
                                     <svg aria-hidden="true" class="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                                     <span class="sr-only">Remove badge</span>
                                 </button>
                             </div>
                             @endforeach
+                            @else 
+                            <div id="{{'publisher' . ++$publisherCount }}">
+                                <input onkeypress="inputPublisherFieldChanged(this)" class="publishers rounded" name="{{ 'publisher' . $publisherCount }}" type="text" value="">
+                                <button onclick="deletePublisher('publisher{{$publisherCount}}')" type="button" class="inline-flex items-center p-0.5 ml-2 text-sm text-blue-400 bg-transparent rounded-sm hover:bg-blue-200 hover:text-blue-900 dark:hover:bg-blue-300 dark:hover:text-blue-900" data-dismiss-target="#badge-dismiss-default" aria-label="Remove">
+                                    <svg aria-hidden="true" class="w-3.5 h-3.5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                                    <span class="sr-only">Remove badge</span>
+                                </button>
+                            </div>
+                            @endif
                         </div>
+                        @if(count($book['publishers']) > 0)
                         <p id="create_publisher_label" class="text-blue-800 cursor-pointer mb-5" style="margin-top:-10px" onclick="createPublisherInputField('{{++$publisherCount}}')">Add Another Publisher</p>
-                    
+                        @else 
+                        <p id="create_publisher_label" class="text-blue-800 cursor-pointer mb-5" style="margin-top:-10px; display:none" onclick="createPublisherInputField('{{++$publisherCount}}')">Add Another Publisher</p>
+                        @endif
                         <label>Publish Date</label>
                         <input class="w-full md:w-5/6 rounded mb-5 p-2" name="publish_date" type="text" value="{{$book['publish_date'] }}">
                     </div>
