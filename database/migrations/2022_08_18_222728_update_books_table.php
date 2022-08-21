@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('publishers')->nullable();
             $table->string('publish_date')->nullable();
             $table->string('subjects')->nullable();
-            $table->string('cover_id')->nullable();
+            $table->string('cover_url')->nullable();
             $table->string('public_comment')->nullable();
         });
     }

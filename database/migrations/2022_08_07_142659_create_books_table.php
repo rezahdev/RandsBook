@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('book_id')->nullable();
             $table->integer('user_id');
-            $table->string('book_name');
+            $table->string('title');
             $table->text('description')->nullable();
             $table->integer('total_pages');
             $table->integer('read_pages')->default(0);

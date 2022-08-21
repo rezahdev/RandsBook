@@ -24,7 +24,7 @@
                     @endforeach
                 </p>
                 <p>Publish date: {{ $book['publish_date'] }} </p>
-                <p>Number of Pages: {{ $book['pages'] }} </p>
+                <p>Number of Pages: {{ $book['total_pages'] }} </p>
                 {{--<p>Description: {{ __($book['description']) }} </p> --}}
                 <div class="mt-5 mb-5">
                     @foreach($book['subjects'] as $index => $subject)

@@ -16,7 +16,21 @@ class BookController extends Controller
     function index()
     {
         $books = Book::where('user_id', Auth::user()->id)->get();
-        return view('books.index', ['books' => $books]);
+        $book_list = array();
+
+        $books = json_decode($books, true);
+        foreach($books as $book)
+        {
+            $author = Author::where('book_id', $book['id'])->get();
+            $publisher = Publisher::where('book_id', $book['id'])->get();
+            $subject = Subject::where('book_id', $book['id'])->get();
+
+            $book['authors'] = $author;
+            $book['publishers'] = $publisher;
+            $book['subjects'] = $subject;
+            array_push($book_list, $book);
+        }
+        return view('books.index', ['book_list' => $book_list]);
     }
 
     function create()
@@ -33,7 +47,8 @@ class BookController extends Controller
                         'description' => "",
                         'cove_id' => "",
                         'comment' => "",
-                        'public_comment' => "");
+                        'public_comment' => "",
+                        'cover_url' => "");
         
         return view('books.create', ['book' => $book]);
     }
@@ -52,7 +67,8 @@ class BookController extends Controller
                             'description' => "",
                             'cove_id' => "",
                             'comment' => "",
-                            'public_comment' => "");
+                            'public_comment' => "",
+                            'cover_url' => "");
 
         if(isset($_POST['book_data']))
         {
@@ -70,10 +86,11 @@ class BookController extends Controller
             if(array_key_exists('comment', $book_data)) $book['comment'] = $book_data['comment'];
             if(array_key_exists('public_comment', $book_data)) $book['public_comment'] = $book_data['public_comment'];
             if(array_key_exists('description', $book_data)) $book['description'] = $book_data['description'];
+            if(array_key_exists('cover_url', $book_data)) $book['cover_url'] = $book_data['cover_url'];
         }
         else
         {
-            $book['title'] = $book_data['title'];
+            $book['title'] = "";
         }
         
         return view('books.create', ['book' => $book]);
@@ -81,65 +98,126 @@ class BookController extends Controller
 
     function store(Request $request)
     {
-        if(!Book::select('id')->where('book_id', $request->isbn)->exists())
+        $valid = $this->validateRequest($request);
+        if(!$valid['response'])
         {
-            $book = new Book();
-            $book->user_id = Auth::user()->id;
-            $book->book_id = strip_tags($request->isbn);
-            $book->book_name = strip_tags($request->title);
-            $book->subtitle = strip_tags($request->subtitle);
-            $book->description = strip_tags($request->description);
-            $book->publish_date = strip_tags($request->publish_date);
-            if($request->total_pages != "Unknown" && $request->total_pages != "" && $request->total_pages != null)
-                $book->total_pages = strip_tags($request->total_pages);
-            else 
-                $book->total_pages = 0;
-
-            if($request->read_pages != "" && $request->read_pages != null)
-            {
-                $book->read_pages = strip_tags($request->read_pages);
-            }
-            
-            $book->comment = strip_tags($request->comment);
-            $book->public_comment = strip_tags($request->public_comment);
-            $book->save();
+            $book = array();
+            $book['isbn'] = $request->isbn;
+            $book['cover_url'] = $request->cover_url;
+            $book['title'] = $request->title;
+            $book['subtitle'] = $request->subtitle;
+            $book['description'] = $request->description;
+            $book['total_pages'] = $request->total_pages;
+            $book['read_pages'] = $request->read_pages;
+            $book['comment'] = $request->comment;
+            $book['public_comment'] = $request->public_comment;
+            $book['publish_date'] = $request->publish_date;
+            $authors = array();
 
             for($i=1; $i<=10; $i++){
                 $a = 'author' . $i;
                 if($request->exists($a))
                 {
-                    $author = new Author();
-                    $author->book_id = $book->id;
-                    $author->author_name = $request->$a;
-                    $author->save();
+                    array_push($authors, ['name' => $request->$a]);
                 }
             }
+            $book['authors'] = $authors;
 
+            $publishers = array();
             for($i=1; $i<=4; $i++)
-            {
-                $p = 'publisher' . $i;
-
-                if($request->exists($p))
                 {
-                    $publisher = new Publisher();
-                    $publisher->book_id = $book->id;
-                    $publisher->publisher_name = $request->$p;
-                    $publisher->save();
+                    $p = 'publisher' . $i;
+
+                    if($request->exists($p))
+                    {
+                        array_push($publishers, ['name' => $request->$p]);
+                    }
                 }
-            }
 
-            for($i=1; $i<=3; $i++)
-            {
-                $s = 'subject' . $i;
+            $book['publishers'] = $publishers;
 
-                if($request->exists($s) && $s != 'subject0')
+                $subjects = array();
+                for($i=1; $i<=3; $i++)
                 {
-                    $subject = new Subject();
-                    $subject->book_id = $book->id;
-                    $subject->subject = $request->$s;
-                    $subject->save();
+                    $s = 'subject' . $i;
+
+                    if($request->exists($s) && $s != 'subject0')
+                    {
+                        array_push($subjects, ['name' => $request->$s]);
+                    }
                 }
-            }
+            $book['subjects'] = $subjects;
+
+            return view('books.create', ['book' => $book, 'error' => $valid['message']]);
+        }
+        if(!Book::select('id')->where('book_id', $request->isbn)->exists())
+        {       
+                $book = new Book();
+                $book->user_id = Auth::user()->id;
+                $book->book_id = strip_tags($request->isbn);
+                $book->title = strip_tags($request->title);
+                $book->subtitle = strip_tags($request->subtitle);
+                $book->description = strip_tags($request->description);
+                $book->publish_date = strip_tags($request->publish_date);
+
+                if($request->cover_url != "")
+                    $book->cover_url = $request->cover_url;
+                else
+                    $book->cover_url = "https://i.pinimg.com/originals/a0/69/7a/a0697af2de64d67cf6dbb2a13dbc0457.png";
+
+                if($request->total_pages != "" && $request->total_pages != null)
+                    $book->total_pages = strip_tags($request->total_pages);
+                else 
+                    $book->total_pages = 0;
+
+                if($request->read_pages != "" && $request->read_pages != null)
+                {
+                    $book->read_pages = strip_tags($request->read_pages);
+                }
+                else 
+                    $book->read_pages = "0";
+                
+                $book->comment = strip_tags($request->comment);
+                $book->public_comment = strip_tags($request->public_comment);
+                $book->save();
+
+                for($i=1; $i<=10; $i++){
+                    $a = 'author' . $i;
+                    if($request->exists($a) && strlen($request->$a) > 0)
+                    {
+                        $author = new Author();
+                        $author->book_id = $book->id;
+                        $author->name = $request->$a;
+                        $author->save();
+                    }
+                }
+
+                for($i=1; $i<=4; $i++)
+                {
+                    $p = 'publisher' . $i;
+
+                    if($request->exists($p) && strlen($request->$p) > 0)
+                    {
+                        $publisher = new Publisher();
+                        $publisher->book_id = $book->id;
+                        $publisher->name = $request->$p;
+                        $publisher->save();
+                    }
+                }
+
+                for($i=1; $i<=3; $i++)
+                {
+                    $s = 'subject' . $i;
+
+                    if($request->exists($s) && strlen($request->$s) > 0 && $s != 'subject0')
+                    {
+                        $subject = new Subject();
+                        $subject->book_id = $book->id;
+                        $subject->name = $request->$s;
+                        $subject->save();
+                    }
+                }
+  
         }
         return $this->index();
     }
@@ -199,7 +277,7 @@ class BookController extends Controller
             'book_count' => $book_count]);
     }
 
-    function show($id)
+    function show_from_search_result($id)
     {
         $q = strip_tags($id);
         $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . $q . '&format=json&jscmd=data');
@@ -231,8 +309,8 @@ class BookController extends Controller
         $book['publishers'] = $result['publishers'];
         $book['publish_date'] = $result['publish_date'];
 
-        if(array_key_exists('number_of_pages', $result))$book['pages'] = $result['number_of_pages'];
-        else $book['pages'] = "Unknown";
+        if(array_key_exists('number_of_pages', $result))$book['total_pages'] = $result['number_of_pages'];
+        else $book['total_pages'] = "0";
         
         if(array_key_exists('subjects', $result)) $book['subjects'] = $result['subjects']; 
         else $book['subjects'] = [];  
@@ -254,5 +332,71 @@ class BookController extends Controller
         }*/
 
         return view('books.show', ['book' => $book]);
+    }
+
+    function show_from_model($id)
+    {
+        $book_l = Book::where('id', $id)->get(); 
+
+        $book_list = json_decode($book_l, true)[0];
+
+        if(count($book_list) > 0)
+        {
+            $book = array();
+
+            $book['id'] = $id;
+            $book['title'] = $book_list['title'];
+            $book['subtitle'] = $book_list['subtitle'];
+            $book['description'] = $book_list['description'];
+            $book['total_pages'] = $book_list['total_pages'];
+            $book['read_pages'] = $book_list['read_pages'];
+            $book['publish_date'] = $book_list['publish_date'];
+            $book['cover_url'] = $book_list['cover_url'];
+            $book['comment'] = $book_list['comment'];
+            $book['public_comment'] = $book_list['public_comment'];
+
+            $authors = Author::where('book_id', $id)->get();
+            $book['authors'] = $authors;
+
+            $publishers = Publisher::where('book_id', $id)->get();
+            $book['publishers'] = $publishers;
+
+            $subjects = Subject::where('book_id', $id)->get();
+            $book['subjects'] = $subjects;
+
+            return view('books.show', ['book' => $book]);
+        }
+        else
+        {
+            return view('books.show', ['response'=> json_encode($book_list)]);
+        }
+    }
+
+    function validateRequest($request)
+    {
+        if($request->title == null || strlen($request->title) < 1)
+        {
+            return array('response' => false, 'message' => 'Title cannot be empty.');
+        }
+        else if(strlen($request->total_pages) > 0)
+        {
+            if(!is_numeric($request->total_pages) || $request->total_pages < 0 || $request->total_pages > 10000)
+            {
+                return array('response' => false, 'message' => 'Number of pages must be between 0 and 10000.');
+            }
+        }
+        else if(strlen($request->read_pages) > 0)
+        {
+            if(!is_numeric($request->read_pages) || $request->read_pages < 0 || $request->read_pages > 10000)
+            {
+                return array('response' => false, 'message' => 'Number of pages read must be between 0 and 10000.');
+            }
+        }
+        else if($request->read_pages > $request->total_pages)
+        {
+            return array('response' => false, 'message' => 'Number of pages cannot exceed total number of pages.');
+        }
+
+        return array('response' => true, 'message' => 'Validation success.');
     }
 }
