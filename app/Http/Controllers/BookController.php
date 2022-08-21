@@ -277,9 +277,9 @@ class BookController extends Controller
             'book_count' => $book_count]);
     }
 
-    function show_from_search_result($id)
+    function show_from_search_result($isbn)
     {
-        $q = strip_tags($id);
+        $q = strip_tags($isbn);
         $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . $q . '&format=json&jscmd=data');
         //return view('books.show', ['response' => $response]);
         error_log($response);
@@ -291,7 +291,7 @@ class BookController extends Controller
         
         $book = array();
                              
-        $book['isbn'] = $id;
+        $book['isbn'] = $isbn;
         
         if(array_key_exists('cover', $result))
         {

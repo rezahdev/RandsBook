@@ -8,8 +8,8 @@
                 <div class="w-1/4"><img src="{{$book['cover_url'] }}" class="w-full h-auto" /></div>
                 <div class="p-3 w-3/4 flex flex-wrap flex-col justify-between">
                     <div>
-                        <h3 class="font-semibold text-sm md:text-normal">{{ $book['title'] }}</h3>
-                        <p class="text-sm md:text-normal">
+                        <h3 class="font-semibold md:font-bold text-sm md:text-base">{{ $book['title'] }}</h3>
+                        <p class="text-sm md:text-base">
                             @foreach($book['authors'] as $key => $author)
                             @if($key > 0)
                             {{ ', ' . $author['name'] }}
