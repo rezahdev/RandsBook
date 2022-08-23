@@ -60,6 +60,7 @@
         </div>
         @endisset
     </div>
+    @isset($book['id'])
     <div id="delete_popup_box" class="fixed w-11/12 md:1/2 bg-white p-5 rounded-xl display-none" >
         <p class="text-center">Are you sure you want to delete this book?</p>
         <div class="flex flex-row justify-center mt-5">
@@ -73,6 +74,7 @@
             <button onclick="closeDeletePopupBox()" class="bg-white border border-blue-800 text-blue-800 hover:bg-blue-800 hover:text-white font-bold py-1 px-3 rounded mr-2"> Cancel</button>
         </div>
     </div>
+    @endisset
     
 </x-app-layout>
 

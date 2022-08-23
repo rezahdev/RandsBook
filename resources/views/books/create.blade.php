@@ -165,7 +165,8 @@
                             </span>
                         </div>
                         @foreach($book['subjects'] as $index => $subject)
-                        @if($index < 3) <div class="inline" id="{{'subject' . ++$subjectCount }}">
+                        @if($index < 3) 
+                        <div class="inline" id="{{'subject' . ++$subjectCount }}">
                             <input type="hidden" name="{{'subject' . $subjectCount}}" value="{{ $subject['name'] }}">
                             <span id="badge-dismiss-green"
                                 class="mb-3 inline-flex items-center py-1 px-2 mr-2 text-sm font-medium text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800">
@@ -182,9 +183,9 @@
                                     <span class="sr-only">Remove badge</span>
                                 </button>
                             </span>
-                    </div>
-                    @endif
-                    @endforeach
+                        </div>
+                        @endif
+                        @endforeach
                 </div>
         </div>
 
