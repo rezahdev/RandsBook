@@ -21,6 +21,8 @@ Route::get('/search', [BookController::class, 'search'])->middleware('auth')->na
 Route::get('/show/isbn/{isbn}', [BookController::class, 'show_from_search_result'])->middleware('auth')->name('books.show_from_search_result');
 Route::get('/show/id/{id}', [BookController::class, 'show_from_model'])->middleware('auth')->name('books.show_from_model');
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
+Route::get('/edit/{id}', [BookController::class, 'edit'])->middleware('auth')->name('books.edit');
+Route::put('/update', [BookController::class, 'update'])->middleware('auth')->name('books.update');
 
 Route::get('/wishlist', function () {
     return view('wishlist');

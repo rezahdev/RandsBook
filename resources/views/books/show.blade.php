@@ -35,13 +35,19 @@
                     @endforeach
                 </div>    
                 <div class="mt-10">
+                    @if($mode == "ADD")
                     <form action="{{ route('books.create_with_data') }}" method="post">
                         @csrf
                         <input name="book_data" type="hidden" value="{{json_encode($book)}}">
                         <button type="submit" class="bg-blue-800 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mr-2">
-                            Edit and Add
+                            Add Book to My Library
                         </button>
                     </form>
+                    @else 
+                        <a href="{{ route('books.edit', ['id' => $book['id']]) }}"><button type="submit" class="bg-blue-800 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded mr-2">
+                            Edit
+                        </button></a>
+                    @endif
                 </div>     
             </div>
         </div>

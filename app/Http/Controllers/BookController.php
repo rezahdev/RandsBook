@@ -331,20 +331,26 @@ class BookController extends Controller
             else $book['description'] = "No Description found.";
         }*/
 
-        return view('books.show', ['book' => $book]);
+        return view('books.show', ['book' => $book, 'mode' => "ADD"]);
     }
 
     function show_from_model($id)
     {
         $book_l = Book::where('id', $id)->get(); 
+        $book_l = json_decode($book_l, true);
+        if(count($book_l) == 0)
+        {
+            return view('books.show', ['response'=> "No Book Found!"]);
+        }
 
-        $book_list = json_decode($book_l, true)[0];
+        $book_list = $book_l[0];
 
         if(count($book_list) > 0)
         {
             $book = array();
 
             $book['id'] = $id;
+            $book['isbn'] = $book_list['book_id'];
             $book['title'] = $book_list['title'];
             $book['subtitle'] = $book_list['subtitle'];
             $book['description'] = $book_list['description'];
@@ -364,12 +370,196 @@ class BookController extends Controller
             $subjects = Subject::where('book_id', $id)->get();
             $book['subjects'] = $subjects;
 
-            return view('books.show', ['book' => $book]);
+            return view('books.show', ['book' => $book, 'mode' => "EDIT"]);
         }
         else
         {
             return view('books.show', ['response'=> json_encode($book_list)]);
         }
+    }
+
+    function edit($id)
+    {
+        $book_l = Book::where('id', $id)->get(); 
+
+        $book_list = json_decode($book_l, true)[0];
+
+        if(count($book_list) > 0)
+        {
+            $book = array();
+
+            $book['id'] = $id;
+            $book['isbn'] = $book_list['book_id'];
+            $book['title'] = $book_list['title'];
+            $book['subtitle'] = $book_list['subtitle'];
+            $book['description'] = $book_list['description'];
+            $book['total_pages'] = $book_list['total_pages'];
+            $book['read_pages'] = $book_list['read_pages'];
+            $book['publish_date'] = $book_list['publish_date'];
+            $book['cover_url'] = $book_list['cover_url'];
+            $book['comment'] = $book_list['comment'];
+            $book['public_comment'] = $book_list['public_comment'];
+
+            $authors = Author::where('book_id', $id)->get();
+            $book['authors'] = $authors;
+
+            $publishers = Publisher::where('book_id', $id)->get();
+            $book['publishers'] = $publishers;
+
+            $subjects = Subject::where('book_id', $id)->get();
+            $book['subjects'] = $subjects;
+
+            return view('books.edit', ['book' => $book]);
+        }
+        else
+        {
+            return view('books.show', ['response'=> json_encode($book_list)]);
+        }
+    }
+
+    function update(Request $request)
+    {
+        $valid = $this->validateRequest($request);
+        if(!$valid['response'])
+        {
+            $book = array();
+            $book['id'] = $request->id;
+            $book['isbn'] = $request->isbn;
+            $book['cover_url'] = $request->cover_url;
+            $book['title'] = $request->title;
+            $book['subtitle'] = $request->subtitle;
+            $book['description'] = $request->description;
+            $book['total_pages'] = $request->total_pages;
+            $book['read_pages'] = $request->read_pages;
+            $book['comment'] = $request->comment;
+            $book['public_comment'] = $request->public_comment;
+            $book['publish_date'] = $request->publish_date;
+            $authors = array();
+
+            for($i=1; $i<=10; $i++){
+                $a = 'author' . $i;
+                if($request->exists($a))
+                {
+                    array_push($authors, ['name' => $request->$a]);
+                }
+            }
+            $book['authors'] = $authors;
+
+            $publishers = array();
+            for($i=1; $i<=4; $i++)
+                {
+                    $p = 'publisher' . $i;
+
+                    if($request->exists($p))
+                    {
+                        array_push($publishers, ['name' => $request->$p]);
+                    }
+                }
+
+            $book['publishers'] = $publishers;
+
+                $subjects = array();
+                for($i=1; $i<=3; $i++)
+                {
+                    $s = 'subject' . $i;
+
+                    if($request->exists($s) && $s != 'subject0')
+                    {
+                        array_push($subjects, ['name' => $request->$s]);
+                    }
+                }
+            $book['subjects'] = $subjects;
+
+            return view('books.edit', ['book' => $book, 'error' => $valid['message']]);
+        }
+        if(Book::select('id')->where('id', $request->id)->exists())
+        {       
+                $book = Book::find($request->id);
+                $book->book_id = strip_tags($request->isbn);
+                $book->title = strip_tags($request->title);
+                $book->subtitle = strip_tags($request->subtitle);
+                $book->description = strip_tags($request->description);
+                $book->publish_date = strip_tags($request->publish_date);
+
+                if($request->total_pages != "" && $request->total_pages != null)
+                    $book->total_pages = strip_tags($request->total_pages);
+                else 
+                    $book->total_pages = 0;
+
+                if($request->read_pages != "" && $request->read_pages != null)
+                {
+                    $book->read_pages = strip_tags($request->read_pages);
+                }
+                else 
+                    $book->read_pages = "0";
+                
+                $book->comment = strip_tags($request->comment);
+                $book->public_comment = strip_tags($request->public_comment);
+                $book->save();
+
+                $authors = Author::where('book_id', $book->id)->get();
+                //$authors = json_decode($authors, true);
+                foreach($authors as $author)
+                {
+                    $a = Author::find($author->id);
+                    $a->delete();
+
+                }
+                for($i=1; $i<=10; $i++){
+                    $a = 'author' . $i;
+                    if($request->exists($a) && strlen($request->$a) > 0)
+                    {
+                        $author = new Author();
+                        $author->book_id = $book->id;
+                        $author->name = $request->$a;
+                        $author->save();
+                    }
+                }
+
+                $publishers = Publisher::where('book_id', $book->id)->get();
+                //$publishers = json_decode($publishers, true);
+                foreach($publishers as $publisher)
+                {
+                    $p = Publisher::find($publisher->id);
+                    $p->delete();
+                }
+
+                for($i=1; $i<=4; $i++)
+                {
+                    $p = 'publisher' . $i;
+        
+                    if($request->exists($p) && strlen($request->$p) > 0)
+                    {
+                        $publisher = new Publisher();
+                        $publisher->book_id = $book->id;
+                        $publisher->name = $request->$p;
+                        $publisher->save();
+                    }
+                }
+
+                $subjects = Subject::where('book_id', $book->id)->get();
+                //$subjects = json_decode($subjects, true);
+                foreach($subjects as $subject)
+                {
+                    $s = Subject::find($subject->id);
+                    $s->delete();
+                }
+
+                for($i=1; $i<=3; $i++)
+                {
+                    $s = 'subject' . $i;
+
+                    if($request->exists($s) && strlen($request->$s) > 0 && $s != 'subject0')
+                    {
+                        $subject = new Subject();
+                        $subject->book_id = $book->id;
+                        $subject->name = $request->$s;
+                        $subject->save();
+                    }
+                }
+  
+        }
+        return $this->index();
     }
 
     function validateRequest($request)
