@@ -138,8 +138,8 @@
                     value=" {{$book['description'] }}"></textarea>
 
                 <label>Subject Tags</label><br>
-                <div class="flex flex-row justify-start mb-5">
-                    <div class="flex flex-row justify-start w-1/2 mr-5">
+                <div class="flex flex-row justify-start flex-wrap mb-5">
+                    <div class="flex flex-row justify-start w-full md:w-5/12 md:mr-5">
                         <input id="subject_input_field" class="w-10/12 h-10 rounded mb-5 mr-5 p-2" name="subject"
                             type="text" onkeydown="return event.key != 'Enter';">
                         <p class="w-14 h-10 border-blue-800 bg-blue-800 rounded p-2 cursor-pointer text-center text-white hover:bg-blue-700"
