@@ -562,6 +562,37 @@ class BookController extends Controller
         return $this->index();
     }
 
+    function delete($id)
+    {
+        $book = Book::find($id);
+        
+        $authors = Author::where('book_id', $book->id)->get();           
+        foreach($authors as $author)
+        {
+            $a = Author::find($author->id);
+            $a->delete();
+
+        }
+
+        $publishers = Publisher::where('book_id', $book->id)->get();
+        foreach($publishers as $publisher)
+        {
+            $p = Publisher::find($publisher->id);
+            $p->delete();
+        }
+
+        $subjects = Subject::where('book_id', $book->id)->get();
+        foreach($subjects as $subject)
+        {
+            $s = Subject::find($subject->id);
+            $s->delete();
+        }
+
+        $book->delete();
+
+        return $this->index();
+    }
+
     function validateRequest($request)
     {
         if($request->title == null || strlen($request->title) < 1)

@@ -19,6 +19,22 @@ a#site_name{
 
 .cmr-5 { margin-right: 5px; }
 
+#delete_popup_box
+{
+	visibility: hidden;
+	width: 300px;
+	position: fixed;
+	top: 200px;
+	left: calc(50% - 150px);
+	padding: 20px;
+   background-color: white;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.blurry {
+   filter: blur(5px);
+}
+
 @media(max-width: 680px)
 {
    .authors, .publishers {

@@ -23,6 +23,7 @@ Route::get('/show/id/{id}', [BookController::class, 'show_from_model'])->middlew
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
 Route::get('/edit/{id}', [BookController::class, 'edit'])->middleware('auth')->name('books.edit');
 Route::put('/update', [BookController::class, 'update'])->middleware('auth')->name('books.update');
+Route::patch('/delete/{id}', [BookController::class, 'delete'])->middleware('auth')->name('books.delete');
 
 Route::get('/wishlist', function () {
     return view('wishlist');
