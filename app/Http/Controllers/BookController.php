@@ -15,27 +15,75 @@ class BookController extends Controller
 {
     function index()
     {
-        $books = Book::where('user_id', Auth::user()->id)->get();
-        $book_list = array();
+        $book_list = Book::where('user_id', Auth::user()->id)->get();
 
-        $books = json_decode($books, true);
-        foreach($books as $book)
+        foreach($book_list as $book)
         {
-            $author = Author::where('book_id', $book['id'])->get();
-            $publisher = Publisher::where('book_id', $book['id'])->get();
-            $subject = Subject::where('book_id', $book['id'])->get();
+            $author = Author::where('book_id', $book->id)->get();
+            $publisher = Publisher::where('book_id', $book->id)->get();
+            $subject = Subject::where('book_id', $book->id)->get();
 
-            $book['authors'] = $author;
-            $book['publishers'] = $publisher;
-            $book['subjects'] = $subject;
-            array_push($book_list, $book);
+            $book->authors = $author;
+            $book->publishers = $publisher;
+            $book->subjects = $subject;
         }
         return view('books.index', ['book_list' => $book_list]);
     }
 
+    function show_from_model($id)
+    {
+        $book = Book::find($id); 
+
+        if(is_null($book))
+        {
+            return view('books.show', ['response'=> "No Book Found!"]);
+        }
+
+        $authors = Author::where('book_id', $id)->get();
+        $book->authors = $authors;
+
+        $publishers = Publisher::where('book_id', $id)->get();
+        $book->publishers = $publishers;
+
+        $subjects = Subject::where('book_id', $id)->get();
+        $book->subjects = $subjects;
+
+        return view('books.show', ['book' => $book, 'type' => 'MODEL_DATA']);
+    }
+
+    function show_from_search_result($isbn)
+    {
+        $isbn = strip_tags($isbn);
+        $search_result = $this->search_by_isbn($isbn);
+
+        if($search_result['response'] == "OK")
+        {
+            return view('books.show', ['book' => $search_result['book'], 'type' => 'SEARCH_DATA']);
+        }
+        else
+        {
+            return view('books.show', ['response' => $search_result['response'], 'type' => 'NOT_FOUND']);
+        }
+    }
+
+    function create_with_data($isbn)
+    {
+        $isbn = strip_tags($isbn);
+        $search_result = $this->search_by_isbn($isbn);
+
+        if($search_result['response'] == "OK")
+        {
+            return view('books.create', ['book' => $search_result['book']]);
+        }
+        else
+        {
+            return view('books.create', ['response' => $search_result['response']]);
+        }
+    }
+
     function create()
     {
-        $book = array( 'title' => "",
+        $book = array(  'title' => "",
                         'isbn' => "",
                         'subtitle' => "",
                         'authors' => array(),
@@ -48,50 +96,8 @@ class BookController extends Controller
                         'cove_id' => "",
                         'comment' => "",
                         'public_comment' => "",
-                        'cover_url' => "");
-        
-        return view('books.create', ['book' => $book]);
-    }
-
-    function create_with_data()
-    {
-        $book = array( 'title' => "",
-                        'isbn' => "",
-                            'subtitle' => "",
-                            'authors' => array(),
-                            'publishers' => array(),
-                            'subjects' => array(),
-                            'publish_date' => "",
-                            'total_pages' => "",
-                            'read_pages' => "",
-                            'description' => "",
-                            'cove_id' => "",
-                            'comment' => "",
-                            'public_comment' => "",
-                            'cover_url' => "");
-
-        if(isset($_POST['book_data']))
-        {
-            $book_data = json_decode($_POST['book_data'], true);
-            if(array_key_exists('isbn', $book_data)) $book['isbn'] = $book_data['isbn']; 
-            if(array_key_exists('title', $book_data)) $book['title'] = $book_data['title']; 
-            if(array_key_exists('subtitle', $book_data)) $book['subtitle'] = $book_data['subtitle'];
-            if(array_key_exists('authors', $book_data)) $book['authors'] = $book_data['authors'];
-            if(array_key_exists('publishers', $book_data)) $book['publishers'] = $book_data['publishers'];
-            if(array_key_exists('subjects', $book_data)) $book['subjects'] = $book_data['subjects'];
-            if(array_key_exists('publish_date', $book_data)) $book['publish_date'] = $book_data['publish_date'];
-            if(array_key_exists('pages', $book_data)) $book['total_pages'] = $book_data['pages'];
-            if(array_key_exists('read_pages', $book_data)) $book['read_pages'] = $book_data['read_pages'];
-            if(array_key_exists('cover_id', $book_data)) $book['cover_id'] = $book_data['cover_id'];
-            if(array_key_exists('comment', $book_data)) $book['comment'] = $book_data['comment'];
-            if(array_key_exists('public_comment', $book_data)) $book['public_comment'] = $book_data['public_comment'];
-            if(array_key_exists('description', $book_data)) $book['description'] = $book_data['description'];
-            if(array_key_exists('cover_url', $book_data)) $book['cover_url'] = $book_data['cover_url'];
-        }
-        else
-        {
-            $book['title'] = "";
-        }
+                        'cover_url' => ""
+                    );
         
         return view('books.create', ['book' => $book]);
     }
@@ -277,106 +283,7 @@ class BookController extends Controller
             'book_count' => $book_count]);
     }
 
-    function show_from_search_result($isbn)
-    {
-        $q = strip_tags($isbn);
-        $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . $q . '&format=json&jscmd=data');
-        //return view('books.show', ['response' => $response]);
-        error_log($response);
-        $response = json_decode($response, true);   
-        $result = null;
-        if(array_key_exists('ISBN:'.$q, $response)) $result = $response['ISBN:'.$q];   
-        else return view('books.show', ['response' => 'No Book Found']); 
-
-        
-        $book = array();
-                             
-        $book['isbn'] = $isbn;
-        
-        if(array_key_exists('cover', $result))
-        {
-            $book['cover_url'] = $result['cover']['large'];
-        }
-        else
-        {
-           $book['cover_url'] = 'https://i.pinimg.com/originals/a0/69/7a/a0697af2de64d67cf6dbb2a13dbc0457.png';
-        }   
-        $book['title'] = $result['title'];
-
-        if(array_key_exists('authors', $result)) $book['authors'] = $result['authors'];
-        else $book['authors'] = [0 => array('name' => 'Unknown', 'url' => "#")]; 
-
-        $book['publishers'] = $result['publishers'];
-        $book['publish_date'] = $result['publish_date'];
-
-        if(array_key_exists('number_of_pages', $result))$book['total_pages'] = $result['number_of_pages'];
-        else $book['total_pages'] = "0";
-        
-        if(array_key_exists('subjects', $result)) $book['subjects'] = $result['subjects']; 
-        else $book['subjects'] = [];  
-
-        /*if(array_key_exists('description', $result['details'])) $book['description'] = $result['details']['description']['value']; 
-        else {
-            $book['work_id'] = $result['details']['works'][0]['key'];
-
-            $response = Http::get('https://openlibrary.org' . $book['work_id']. '.json');
-        
-            error_log($response);
-            $response = json_decode($response, true);
-            if(array_key_exists('description', $response))
-            {
-                if(is_string($response['description']))$book['description'] = $response['description'];
-                else $book['description'] = $response['description']['value'];
-            }       
-            else $book['description'] = "No Description found.";
-        }*/
-
-        return view('books.show', ['book' => $book, 'mode' => "ADD"]);
-    }
-
-    function show_from_model($id)
-    {
-        $book_l = Book::where('id', $id)->get(); 
-        $book_l = json_decode($book_l, true);
-        if(count($book_l) == 0)
-        {
-            return view('books.show', ['response'=> "No Book Found!"]);
-        }
-
-        $book_list = $book_l[0];
-
-        if(count($book_list) > 0)
-        {
-            $book = array();
-
-            $book['id'] = $id;
-            $book['isbn'] = $book_list['book_id'];
-            $book['title'] = $book_list['title'];
-            $book['subtitle'] = $book_list['subtitle'];
-            $book['description'] = $book_list['description'];
-            $book['total_pages'] = $book_list['total_pages'];
-            $book['read_pages'] = $book_list['read_pages'];
-            $book['publish_date'] = $book_list['publish_date'];
-            $book['cover_url'] = $book_list['cover_url'];
-            $book['comment'] = $book_list['comment'];
-            $book['public_comment'] = $book_list['public_comment'];
-
-            $authors = Author::where('book_id', $id)->get();
-            $book['authors'] = $authors;
-
-            $publishers = Publisher::where('book_id', $id)->get();
-            $book['publishers'] = $publishers;
-
-            $subjects = Subject::where('book_id', $id)->get();
-            $book['subjects'] = $subjects;
-
-            return view('books.show', ['book' => $book, 'mode' => "EDIT"]);
-        }
-        else
-        {
-            return view('books.show', ['response'=> json_encode($book_list)]);
-        }
-    }
+    
 
     function edit($id)
     {
@@ -591,6 +498,47 @@ class BookController extends Controller
         $book->delete();
 
         return $this->index();
+    }
+
+    function search_by_isbn($isbn)
+    {
+        $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . $isbn . '&format=json&jscmd=data');  
+        $response = json_decode($response, false); 
+        
+        $isbn_key = 'ISBN:' . $isbn;
+        if(!property_exists($response, $isbn_key))
+        {
+            return ['response' => 'NO_DATA'];      
+        }   
+        
+        $response = $response->$isbn_key;
+        $book = new \stdClass();
+                             
+        $book->isbn = $isbn;
+        $book->title = $response->title;
+
+        $book->subtitle = property_exists($response, 'subtitle') ? $response->subtitle : "";
+        $book->total_pages = property_exists($response, 'number_of_pages') ? $response->number_of_pages : "";
+        $book->publish_date = property_exists($response, 'publish_date') ? $response->publish_date : "";
+        $book->authors = property_exists($response, 'authors') ? $response->authors : [];
+        $book->publishers = property_exists($response, 'publishers') ? $response->publishers : [];
+        $book->subjects = property_exists($response, 'subjects') ? $response->subjects : [];
+
+        if(property_exists($response, 'cover'))
+        {
+            $book->cover_url = $response->cover->large;
+        }
+        else
+        {
+           $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
+        }  
+
+        $book->read_pages = "";
+        $book->description = "";
+        $book->comment = "";
+        $book->public_comment = "";
+
+        return ['response' => 'OK', 'book' => $book];
     }
 
     function validateRequest($request)

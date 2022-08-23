@@ -15,11 +15,14 @@ use App\Http\Controllers\BookController;
 */
 
 Route::get('/', [BookController::class, 'index'])->middleware('auth')->name('books.index');
+Route::get('/book/{id}', [BookController::class, 'show_from_model'])->middleware('auth')->name('books.show_from_model');
+Route::get('/search/{isbn}', [BookController::class, 'show_from_search_result'])->middleware('auth')->name('books.show_from_search_result');
+Route::any('/add/{isbn}', [BookController::class, 'create_with_data'])->middleware('auth')->name('books.create_with_data');
+
 Route::get('/create', [BookController::class, 'create'])->middleware('auth')->name('books.create');
-Route::any('/create/data', [BookController::class, 'create_with_data'])->middleware('auth')->name('books.create_with_data');
+
 Route::get('/search', [BookController::class, 'search'])->middleware('auth')->name('books.search');
-Route::get('/show/isbn/{isbn}', [BookController::class, 'show_from_search_result'])->middleware('auth')->name('books.show_from_search_result');
-Route::get('/show/id/{id}', [BookController::class, 'show_from_model'])->middleware('auth')->name('books.show_from_model');
+
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
 Route::get('/edit/{id}', [BookController::class, 'edit'])->middleware('auth')->name('books.edit');
 Route::put('/update', [BookController::class, 'update'])->middleware('auth')->name('books.update');
