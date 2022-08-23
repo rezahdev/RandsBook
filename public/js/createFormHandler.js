@@ -14,7 +14,7 @@ function createAuthorInputField(authorNum)
     authorFieldClone.children[0].removeAttribute('onkeypress');
 
     //close button
-    authorFieldClone.children[1].removeAttribute('onclick');
+    authorFieldClone.children[1].removeAttribute('onclick'); 
     authorFieldClone.children[1].addEventListener('click', function() { deleteAuthorField(`${authorFieldClone.id}`); });
     
     author_list.appendChild(authorFieldClone);
@@ -34,7 +34,7 @@ function createAuthorInputField(authorNum)
     {
         authorFieldClone.children[0].addEventListener('input', function() { inputAuthorFieldChanged(authorFieldClone.children[0]) });
         createAuthorLabelClone.addEventListener('click', function(){ createAuthorInputField(`${(++authorNum)}`); });
-        createAuthorLabelClone.setAttribute('hasListener', true);
+        createAuthorLabelClone.setAttribute('hasListener', 'true');
         createAuthorLabelClone.style.display = "none";
     }
     else
@@ -42,7 +42,7 @@ function createAuthorInputField(authorNum)
         createAuthorLabelClone.textContent = "Cannot add anymore author.";
         createAuthorLabelClone.style.color = "black";
         createAuthorLabelClone.style.curson = "default";
-        createAuthorLabelClone.setAttribute('hasListener', false);
+        createAuthorLabelClone.setAttribute('hasListener', 'false');
     }
 }
 
@@ -83,12 +83,14 @@ function createPublisherInputField(publisherNum)
         });
         createPublisherLabelClone.addEventListener('click', function(){ createPublisherInputField(`${(++publisherNum)}`); });
         createPublisherLabelClone.style.display = "none";
+        createPublisherLabelClone.setAttribute('hasListener', 'true');
     }
     else
     {
         createPublisherLabelClone.textContent = "Cannot add anymore publisher.";
         createPublisherLabelClone.style.color = "black";
         createPublisherLabelClone.style.curson = "default";
+        createPublisherLabelClone.setAttribute('hasListener', 'false');
     }
 }
 
@@ -132,8 +134,7 @@ function createPublisherInputField(publisherNum)
          {
              addSubjectTagLabelClone.removeAttribute('onclick');
          }
-         SubjectNum++;
-         addSubjectTagLabelClone.addEventListener('click', function() { addSubjectTag(`${subjectNum}`) });
+         addSubjectTagLabelClone.addEventListener('click', function() { addSubjectTag(`${++subjectNum}`) });
      }
  }
 
@@ -152,7 +153,7 @@ function deleteAuthorField(authorId)
     const authorField = document.getElementById(authorId);
     author_list.removeChild(authorField);
 
-    if(author_list.childElementCount <= 10 && create_author_label.getAttribute('hasListener') !== true)
+    if(author_list.childElementCount <= 10 && create_author_label.getAttribute('hasListener') !== 'true')
     {
         let authorNumStr = (author_list.children[author_list.childElementCount-1].id).replace('author', '');
         let authorNum = parseInt(authorNumStr) + 1;
@@ -161,6 +162,12 @@ function deleteAuthorField(authorId)
         create_author_label.style.display = "block";
         create_author_label.style.color = "blue";
         create_author_label.textContent = "Add another author";
+        create_author_label.setAttribute('hasListener', 'true');
+    }
+
+    if(author_list.childElementCount == 1 && create_author_label.style.display == "none")
+    {
+        create_author_label.style.display = "block";
     }
 }
 
@@ -178,6 +185,23 @@ function deletePublisherField(publisherId)
 
     const publisherField = document.getElementById(publisherId);
     publisher_list.removeChild(publisherField);   
+
+    if(publisher_list.childElementCount <= 10 && create_publisher_label.getAttribute('hasListener') !== 'true')
+    {
+        let publisherNumStr = (publisher_list.children[publisher_list.childElementCount-1].id).replace('publisher', '');
+        let publisherNum = parseInt(publisherNumStr) + 1;
+
+        create_publisher_label.addEventListener('click', function(){ createPublisherInputField(`${(publisherNum)}`); });
+        create_publisher_label.style.display = "block";
+        create_publisher_label.style.color = "blue";
+        create_publisher_label.textContent = "Add another publisher";
+        create_publisher_label.setAttribute('hasListener', 'true');
+    }
+
+    if(publisher_list.childElementCount == 1 && create_publisher_label.style.display == "none")
+    {
+        create_publisher_label.style.display = "block";
+    }
 }
 
 /**

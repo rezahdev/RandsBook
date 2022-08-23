@@ -114,14 +114,16 @@
                             <p id="create_author_label" 
                                class="text-blue-800 cursor-pointer mb-5" 
                                style="margin-top:-10px"
-                               onclick="createAuthorInputField('{{++$authorCount}}')">
+                               onclick="createAuthorInputField('{{++$authorCount}}')"
+                               hasListener="true">
                                Add Another Author
                             </p>
                         @else
                             <p id="create_author_label" 
                                class="text-blue-800 cursor-pointer mb-5"
                                style="margin-top:-10px; display: none"
-                               onclick="createAuthorInputField('{{++$authorCount}}')">
+                               onclick="createAuthorInputField('{{++$authorCount}}')"
+                               hasListener="true">
                                Add Another Author
                             </p>
                         @endif
@@ -211,14 +213,16 @@
                             <p  id="create_publisher_label" 
                                 class="text-blue-800 cursor-pointer mb-5"
                                 style="margin-top:-10px" 
-                                onclick="createPublisherInputField('{{++$publisherCount}}')">
+                                onclick="createPublisherInputField('{{++$publisherCount}}')"
+                                hasListener="true">
                                     Add Another Publisher
                             </p>
                         @else
                             <p id="create_publisher_label" 
                                class="text-blue-800 cursor-pointer mb-5"
                                style="margin-top:-10px; display:none"
-                               onclick="createPublisherInputField('{{++$publisherCount}}')">
+                               onclick="createPublisherInputField('{{++$publisherCount}}')"
+                               hasListener="true">
                                Add Another Publisher
                             </p>
                         @endif
