@@ -3,9 +3,12 @@
         <div class="flex justify-around flex-wrap w-full md:w-10/12">
 
             @isset($book_list)
-                <p class="w-full text-center mt-3 p-1 rounded-xl">{{count($book_list) . ' books found.'}}</p>
+                <p class="w-full text-center mt-3 p-1 rounded-xl">{{count($book_list) . ' books found in your library.'}}</p>
 
                 @foreach($book_list as $book)
+                    @php 
+                        $progress = round(($book->read_pages / $book->total_pages) * 100);
+                    @endphp
                     <div class="w-full lg:w-2/5 h-auto m-2 lg:m-5 bg-white border rounded flex justify-start flex-wrap">
                         {{--Book image--}}
                         <div class="w-1/4">
@@ -16,7 +19,6 @@
                             {{--Book information--}}
                             <div>
                                 <h3 class="font-semibold md:font-bold text-sm md:text-base">{{ $book->title }}</h3>
-
                                 {{--Authors--}}
                                 <p class="text-sm md:text-base">
                                     @foreach($book->authors as $key => $author)
@@ -27,6 +29,13 @@
                                         @endif
                                     @endforeach
                                 </p>
+                            </div>
+                            
+                            <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700">
+                                <div class="bg-green-600 text-xs font-medium text-green-100 text-center p-0.5 leading-none rounded-full" 
+                                     style="width: {{ $progress . '%' }}"> 
+                                     {{ $progress . '%' }} 
+                                </div>
                             </div>
 
                             {{--Link to see show book details--}}
