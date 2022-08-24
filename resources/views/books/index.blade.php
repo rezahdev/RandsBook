@@ -50,4 +50,27 @@
             @endisset
         </div>
     </div>
+    <button id="scroll_to_top" onclick="scrollToTop()"
+            class="hidden fixed z-90 bottom-8 right-8 border-0 w-12 h-12 md:w-16 md:h-16 
+            rounded-full drop-shadow-md bg-indigo-500 text-white text-3xl font-bold">
+            &uarr;
+    </button>
 </x-app-layout>
+
+<script>
+window.onscroll = function () 
+{
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) 
+    {
+        scroll_to_top.classList.remove("hidden");
+    } 
+    else 
+    {
+        scroll_to_top.classList.add("hidden");
+    }
+}
+function scrollToTop() 
+{
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>

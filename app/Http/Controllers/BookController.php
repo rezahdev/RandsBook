@@ -66,21 +66,6 @@ class BookController extends Controller
         }
     }
 
-    function create_with_data($isbn)
-    {
-        $isbn = strip_tags($isbn);
-        $search_result = $this->search_by_isbn($isbn);
-
-        if($search_result['response'] == "OK")
-        {
-            return view('books.create', ['book' => $search_result['book']]);
-        }
-        else
-        {
-            return view('books.create', ['response' => $search_result['response']]);
-        }
-    }
-
     function create()
     {
         $book = array(  'title' => "",
@@ -102,6 +87,21 @@ class BookController extends Controller
         return view('books.create', ['book' => (object)$book]);
     }
 
+    function create_with_data($isbn)
+    {
+        $isbn = strip_tags($isbn);
+        $search_result = $this->search_by_isbn($isbn);
+
+        if($search_result['response'] == "OK")
+        {
+            return view('books.create', ['book' => $search_result['book']]);
+        }
+        else
+        {
+            return view('books.create', ['response' => $search_result['response']]);
+        }
+    }
+
     function store(Request $request)
     {
         $validator = $this->validateRequest($request);
@@ -109,67 +109,12 @@ class BookController extends Controller
         //If validator fails, returns the data back to create form with error messages
         if($validator->status == "FAILED")
         {          
-            return view('books.create', ['book' => $this->requestToObject($request), 'errors' => $validator->errors]);
+            return view('books.create', ['book' => $this->requestToBookObject($request), 'errors' => $validator->errors]);
         }
         $this->saveBook($request);
 
         return redirect()->route('books.index');
-    }
-
-    function search()
-    {
-        if(!isset($_GET['q']))
-        {
-            return view('books.search');
-        }
-        $q = strip_tags($_GET['q']);
-        $response = Http::get('http://openlibrary.org/search.json?q=' . $q);
-        $search_result = json_decode($response, true);
-
-        $book_count = 0;
-        $book_list = array();
-
-        foreach($search_result['docs'] as $book)
-        {
-            if($book != null && array_key_exists('isbn', $book) 
-                && array_key_exists('author_name', $book)
-                && array_key_exists('publish_date', $book)
-                && array_key_exists('publisher', $book))
-            {
-                $b = array();
-                $b['title'] = $book['title'];
-                $b['authors'] = $book['author_name'];
-                $b['publish_date'] = $book['publish_date'];
-                $b['publisher'] = $book['publisher'];
-                $b['isbn'] = $book['isbn'][0];
-
-                if(array_key_exists('number_of_pages_median', $book))
-                {
-                    $b['pages'] = $book['number_of_pages_median'];
-                }
-                else
-                {
-                    $b['pages'] = '0';
-                }
-                
-                if(array_key_exists('cover_i', $book))
-                {
-                    $b['cover_url'] = 'https://covers.openlibrary.org/b/id/'. $book['cover_i'] .'-M.jpg';
-                }
-                else
-                {
-                    $b['cover_url'] = 'https://i.pinimg.com/originals/a0/69/7a/a0697af2de64d67cf6dbb2a13dbc0457.png';
-                }         
-
-                array_push($book_list, $b);
-                $book_count++;
-            }
-        }
-
-        return view('books.search', [
-            'book_list' => $book_list,
-            'book_count' => $book_count]);
-    }    
+    }   
 
     function edit($id)
     {
@@ -199,7 +144,7 @@ class BookController extends Controller
         //If validator fails, returns the data back to create form with error messages
         if($validator->status == "FAILED")
         {      
-            $book = $this->requestToObject($request);
+            $book = $this->requestToBookObject($request);
             $book->id = $request->id;
             return view('books.edit', ['book' => $book, 'errors' => $validator->errors]);
         }
@@ -241,6 +186,48 @@ class BookController extends Controller
 
         return redirect()->route('books.index');
     }
+
+    function search()
+    {
+        if(!isset($_GET['q']))
+        {
+            return view('books.search');
+        }
+
+        $q = strip_tags($_GET['q']);
+        $response = Http::get('http://openlibrary.org/search.json?q=' . $q);
+        $response = json_decode($response, false);
+
+        $book_count = 0;
+        $book_list = array();
+
+        foreach($response->docs as $book)
+        {
+            if($book != null && property_exists($book, 'isbn') 
+                && property_exists($book, 'title')
+                && property_exists($book, 'author_name')
+                && property_exists($book, 'publisher')
+                && property_exists($book, 'number_of_pages_median'))
+            {
+                $book->isbn = $book->isbn[0];
+                $book->total_pages = $book->number_of_pages_median;
+                
+                if(property_exists($book, 'cover_i'))
+                {
+                    $book->cover_url = 'https://covers.openlibrary.org/b/id/'. $book->cover_i .'-M.jpg';
+                }
+                else
+                {
+                    $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
+                }         
+
+                array_push($book_list, $book);
+                $book_count++;
+            }
+        }
+
+        return view('books.search', ['book_list' => $book_list, 'book_count' => $book_count]);
+    } 
 
     function search_by_isbn($isbn)
     {
@@ -425,7 +412,7 @@ class BookController extends Controller
         }
     }
 
-    function requestToObject($request)
+    function requestToBookObject($request)
     {
         $book = new \stdClass();
 
