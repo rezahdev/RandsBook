@@ -11,31 +11,37 @@
                 <div class="w-full md:w-3/4 p-3 bg-white md:rounded mb-10 pt-5 flex flex-col felx-wrap justify-between">
                     <div>
                         <p class="font-bold text-xl">{{ $book->title }}</p>
-                        <p>{{ $type }}</p>
 
-                        {{--Author info--}}
-                        <p>Written by 
-                            @foreach($book->authors as $index => $author)
-                                @if($index > 0)
-                                    {{ ', ' . $author->name }}
-                                @else
-                                    {{ $author->name }}
-                                @endif
-                            @endforeach
-                        </p>
+                        @if(count($book->authors) > 0)
+                            {{--Author info--}}
+                            <p>Written by:  
+                                @foreach($book->authors as $index => $author)
+                                    @if($index > 0)
+                                        {{ '/ ' . $author->name }}
+                                    @else
+                                        {{ $author->name }}
+                                    @endif
+                                @endforeach
+                            </p>
+                        @endif
 
-                        {{--Publisher info--}}
-                        <p>Published by: 
-                            @foreach($book->publishers as $index => $publisher)
-                                @if($index > 0)
-                                    {{ ', ' . $publisher->name }}
-                                @else
-                                    {{ $publisher->name }}
-                                @endif
-                            @endforeach
-                        </p>
+                        @if(count($book->publishers) > 0)
+                            {{--Publisher info--}}
+                            <p>Published by: 
+                                @foreach($book->publishers as $index => $publisher)
+                                    @if($index > 0)
+                                        {{ '/ ' . $publisher->name }}
+                                    @else
+                                        {{ $publisher->name }}
+                                    @endif
+                                @endforeach
+                            </p>
+                        @endif
 
-                        <p>Publish date: {{ $book->publish_date }} </p>
+                        @if(strlen($book->publish_date) > 0)
+                            <p>Publish date: {{ $book->publish_date }} </p>
+                        @endif
+                        
                         <p>Number of Pages: {{ $book->total_pages }} </p>
 
                         @if(strlen($book->description) > 0)
@@ -50,17 +56,19 @@
                             <p>Your public review: {{ $book->public_comment }} </p>
                         @endif
 
-                        {{--Book subjects--}}
-                        <div class="mt-5 mb-5">
-                            @foreach($book->subjects as $index => $subject)
-                                @if($index >= 3) 
-                                    @break
-                                @endif
-                                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900 mt-5">
-                                    {{$subject->name}}
-                                </span>
-                            @endforeach
-                        </div>  
+                        @if(count($book->subjects) > 0)
+                            {{--Book subjects--}}
+                            <div class="mt-5 mb-5">
+                                @foreach($book->subjects as $index => $subject)
+                                    @if($index >= 3) 
+                                        @break
+                                    @endif
+                                    <span class="inline-block bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900 mt-5">
+                                        {{$subject->name}}
+                                    </span>
+                                @endforeach
+                            </div>  
+                        @endif
                     </div>
 
                     {{--Action buttons--}}

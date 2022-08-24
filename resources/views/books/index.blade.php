@@ -21,7 +21,7 @@
                                 <p class="text-sm md:text-base">
                                     @foreach($book->authors as $key => $author)
                                         @if($key > 0)
-                                            {{ ', ' . $author->name }}
+                                            {{ '/ ' . $author->name }}
                                         @else
                                             {{ $author->name }}
                                         @endif

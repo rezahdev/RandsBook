@@ -5,10 +5,14 @@
                 @csrf
 
                 {{--If server returns form validation error--}}
-                @isset($error)
-                    <p class="block w-full text-center my-2 text-red-500" id="error_msg">{{ $error }}</p>
+                @if($errors)
+                    <ul class="block w-full my-2 text-red-500" id="error_msg">
+                        @foreach($errors as $error)
+                        <li> {{ $error->message }} </li>
+                        @endforeach
+                    </ul>
                 @endisset
-
+                    
                 <input type="hidden" name="isbn" value="{{ $book->isbn }}">
                 <input type="hidden" name="cover_url" value="{{ $book->cover_url }}" >
 
@@ -237,7 +241,7 @@
                 </div>
 
                 <label>Description</label>
-                <textarea class="w-full rounded mb-5 p-2" name="description" value=" {{ $book->description }}"></textarea>
+                <textarea class="w-full rounded mb-5 p-2" name="description">{{ $book->description }}</textarea>
 
                 <label>Subject Tags</label><br>
                 <div class="flex flex-row justify-start flex-wrap mb-5">
@@ -322,10 +326,10 @@
                 </div>
 
                 <label>Comment (Only you can see this comment)</label>
-                <textarea class="w-full rounded mb-5 p-2" name="comment" value="{{$book->comment }}"></textarea>
+                <textarea class="w-full rounded mb-5 p-2" name="comment">{{ $book->comment }}</textarea>
 
                 <label>Review (Other users can see this review)</label>
-                <textarea class="w-full rounded mb-5 p-2" name="public_comment" value="{{ $book->public_comment }}"></textarea>
+                <textarea class="w-full rounded mb-5 p-2" name="public_comment">{{ $book->public_comment }}</textarea>
 
                 <button type="submit" class="block bg-blue-800 hover:bg-blue-500 rounded text-white py-3 px-5 my-3">
                     Save book
