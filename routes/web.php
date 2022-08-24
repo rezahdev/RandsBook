@@ -20,7 +20,7 @@ Route::get('/search', [BookController::class, 'search'])->middleware('auth')->na
 Route::get('/search/{isbn}', [BookController::class, 'show_from_search_result'])->middleware('auth')->name('books.show_from_search_result');
 Route::get('/add', [BookController::class, 'create'])->middleware('auth')->name('books.create');
 Route::get('/add/{isbn}', [BookController::class, 'create_with_data'])->middleware('auth')->name('books.create_with_data');
-Route::get('/{id}/edit', [BookController::class, 'edit'])->middleware('auth')->name('books.edit');
+Route::get('/book/{id}/edit', [BookController::class, 'edit'])->middleware('auth')->name('books.edit');
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
 
 Route::put('/update', [BookController::class, 'update'])->middleware('auth')->name('books.update');

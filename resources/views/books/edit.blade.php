@@ -1,9 +1,10 @@
 <x-app-layout>
     <div class="flex justify-center w-full flex-wrap">
         <div class="flex justify-around flex-wrap w-11/12">
-            <form class="w-full md:w-3/4 my-5 bg-white rounded-xl p-3" method="post" action="{{route('books.store') }}">
+            <form class="w-full md:w-3/4 my-5 bg-white rounded-xl p-3" method="post" action="{{route('books.update') }}">
                 @csrf
-
+                @method('PUT')
+                
                 {{--If server returns form validation error--}}
                 @if($errors)
                     <ul class="block w-full my-2 text-red-500" id="error_msg">
@@ -11,8 +12,9 @@
                         <li> {{ $error->message }} </li>
                         @endforeach
                     </ul>
-                @endisset        
-
+                @endisset
+                
+                <input type="hidden" name="id" value="{{ $book->id }}">
                 <input type="hidden" name="isbn" value="{{ $book->isbn }}">
                 <input type="hidden" name="cover_url" value="{{ $book->cover_url }}" >
 
