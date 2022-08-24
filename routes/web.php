@@ -26,6 +26,8 @@ Route::post('/store', [BookController::class, 'store'])->middleware('auth')->nam
 Route::put('/update', [BookController::class, 'update'])->middleware('auth')->name('books.update');
 Route::patch('/delete/{id}', [BookController::class, 'delete'])->middleware('auth')->name('books.delete');
 
+Route::put('/updateReadPages', [BookController::class, 'update_read_pages'])->middleware('auth')->name('books.update_read_pages');
+
 Route::get('/wishlist', function () {
     return view('wishlist');
 })->middleware(['auth'])->name('wishlist');

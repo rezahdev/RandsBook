@@ -58,7 +58,7 @@
 
                         @if(count($book->subjects) > 0)
                             {{--Book subjects--}}
-                            <div class="mt-5 mb-5">
+                            <div>
                                 @foreach($book->subjects as $index => $subject)
                                     @if($index >= 3) 
                                         @break
@@ -68,6 +68,26 @@
                                     </span>
                                 @endforeach
                             </div>  
+                        @endif
+
+                        @if($type == "MODEL_DATA")
+                            <form id="read_pages_update_form" action="{{ route('books.update_read_pages') }}" method="post">
+                                @csrf
+                                @method('PUT')
+                                <label class="mr-2">Pages read: </label>
+                                <input type="hidden" name="book_id" value="{{ $book->id }}">
+                                <input id="read_pages" name="read_pages" type="text" 
+                                       value="{{$book->read_pages}}" 
+                                       oldValue = ""
+                                       onfocus="this.oldValue = this.value"
+                                       class="w-24 p-1 mt-5 rounded" 
+                                       onkeydown="return event.key != 'Enter';"
+                                       onchange="updateReadPagesRangerValue()">
+                                <input id="read_pages_ranger" type="range" value="{{ $book->read_pages }}" 
+                                       class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 my-5"
+                                       min="0" max="{{$book->total_pages}}"
+                                       onchange="updateReadPagesInputValue()">
+                            </form>
                         @endif
                     </div>
 
@@ -81,9 +101,14 @@
                                 </button>
                             </form>
                         @elseif($type == 'MODEL_DATA') 
-                            <a href="{{ route('books.edit', ['id' => $book->id]) }}"><button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mr-2">
-                                Edit
-                            </button></a>
+                            <button onclick="submitUpdateReadPagesForm(event)" id="update_read_pages_btn"
+                                    class="bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled>
+                                Update Read Pages
+                            </button>
+                            <a href="{{ route('books.edit', ['id' => $book->id]) }}"
+                               class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mr-2">
+                                Edit Book
+                            </a>
                             <button onclick="openDeletePopupBox()" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded mr-2">
                                 Delete
                             </button >
@@ -116,6 +141,15 @@
             </div>
         </div>
     @endif
+
+    @if($errors->any())
+        <script>
+            window.addEventListener('DOMContentLoaded', function() {
+                alert('{{ implode(' ', $errors->all()) }}')
+            });
+           
+        </script>
+    @endif
     
 </x-app-layout>
 
@@ -139,4 +173,44 @@
             main_content.classList.remove("blurry");
         }
     }
+
+    function updateReadPagesInputValue()
+    {
+        read_pages.value = read_pages_ranger.value;
+        update_read_pages_btn.removeAttribute('disabled');
+        update_read_pages_btn.classList.remove('bg-gray-700');
+        update_read_pages_btn.classList.add('bg-blue-700');
+        update_read_pages_btn.classList.add('hover:bg-blue-800');    
+    }
+
+    function updateReadPagesRangerValue()
+    {
+        if(!Number.isInteger(+read_pages.value))
+        {
+            alert('Pages read must be an integer');
+            read_pages.value = read_pages.oldValue;
+            return;
+        }
+        
+        if(parseInt(read_pages.value) > parseInt(read_pages_ranger.max))
+        {
+            alert('Pages read cannot be greater than total pages.');
+            read_pages.value = read_pages.oldValue;
+            return;
+        }
+
+        read_pages_ranger.value = read_pages.value;
+        update_read_pages_btn.removeAttribute('disabled');
+        update_read_pages_btn.classList.remove('bg-gray-700');
+        update_read_pages_btn.classList.add('bg-blue-700');
+        update_read_pages_btn.classList.add('hover:bg-blue-800');
+    }
+
+    function submitUpdateReadPagesForm(event)
+    {
+        event.preventDefault();
+        read_pages_update_form.submit();
+    }
+
+
 </script>

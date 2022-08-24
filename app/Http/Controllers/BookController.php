@@ -32,11 +32,11 @@ class BookController extends Controller
 
     function show_from_model($id)
     {
-        $book = Book::find($id); 
+        $book = Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first(); 
 
         if(is_null($book))
         {
-            return view('books.show', ['response'=> "No Book Found!"]);
+            return view('books.show', ['response'=> 'No Book Found!', 'type' => 'NOT_FOUND']);
         }
 
         $authors = Author::where('book_id', $id)->get();
@@ -53,8 +53,7 @@ class BookController extends Controller
 
     function show_from_search_result($isbn)
     {
-        $isbn = strip_tags($isbn);
-        $search_result = $this->search_by_isbn($isbn);
+        $search_result = $this->search_by_isbn(strip_tags($isbn));
 
         if($search_result['response'] == "OK")
         {
@@ -89,8 +88,7 @@ class BookController extends Controller
 
     function create_with_data($isbn)
     {
-        $isbn = strip_tags($isbn);
-        $search_result = $this->search_by_isbn($isbn);
+        $search_result = $this->search_by_isbn(strip_tags($isbn));
 
         if($search_result['response'] == "OK")
         {
@@ -118,7 +116,7 @@ class BookController extends Controller
 
     function edit($id)
     {
-        $book = Book::find($id); 
+        $book = Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first(); 
 
         if(is_null($book))
         {
@@ -149,7 +147,7 @@ class BookController extends Controller
             return view('books.edit', ['book' => $book, 'errors' => $validator->errors]);
         }
 
-        if(Book::select('id')->where('id', $request->id)->exists())
+        if(Book::select('id')->where([['id', strip_tags($request->id)], ['user_id', Auth::user()->id]])->exists())
         {   
             $this->saveBook($request, $request->id); 
         }
@@ -158,7 +156,12 @@ class BookController extends Controller
 
     function delete($id)
     {
-        $book = Book::find($id);
+        $book = Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first();
+
+        if(is_null($book))
+        {
+            return redirect()->route('books.index');
+        }
         
         $authors = Author::where('book_id', $book->id)->get();           
         foreach($authors as $author)
@@ -231,7 +234,7 @@ class BookController extends Controller
 
     function search_by_isbn($isbn)
     {
-        $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . $isbn . '&format=json&jscmd=data');  
+        $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . strip_tags($isbn) . '&format=json&jscmd=data');  
         $response = json_decode($response, false); 
         
         $isbn_key = 'ISBN:' . $isbn;
@@ -270,13 +273,28 @@ class BookController extends Controller
         return ['response' => 'OK', 'book' => $book];
     }
 
+    function update_read_pages(Request $request)
+    {
+        $request->validate(['book_id' => 'integer|required', 'read_pages' => 'required|integer']);
+        $book = Book::where([['id', strip_tags($request->book_id)], ['user_id', Auth::user()->id]])->first(); ;
+
+        if($book == null)
+        {
+            return redirect()->route('books.show_from_model', ['id' => $id]);
+        }
+
+        $book->read_pages = strip_tags($request->read_pages);
+        $book->save();
+        return redirect()->route('books.show_from_model', ['id' => $request->book_id]);
+    }
+
     /**
      * If $id == null, the function is called to store info of a new book
      * else if $id value is passed, the function is called to update an existing book 
      */
     function saveBook($request, $id = null)
     {
-        $book = ($id === null) ? new Book() : Book::find($request->id);
+        $book = ($id === null) ? new Book() : Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first();
 
         //save book info
         $book->user_id = Auth::user()->id;
