@@ -63,7 +63,7 @@
                         <div class="w-1/4"><img src="{{$book->cover_url }}" class="w-full h-auto" /></div>
                         <div class="p-3 w-3/4 flex flex-wrap flex-col justify-between">
                             <div class="book_info">
-                                <h3 class="font-semibold md:font-bold text-sm md:text-base">{{ $book->title }}</h3>
+                                <h3 class="font-semibold md:font-bold">{{ $book->title }}</h3>
                                 <div>
                                     @if(count($book->author_name) > 0)
                                         <p class="text-sm md:text-base">Author:
@@ -77,14 +77,13 @@
                                         </p>
                                     @endif
                                 </div>
-                                
-                                <p class="mt-3">Total pages: {{ $book->total_pages }} </p>
                             </div>
-                            <div>
+                            <div class="flex flex-wrap flex-row justify-between">
                                 <a href="{{ route('books.show_from_search_result', ['isbn' => $book->isbn]) }}"
-                                    class="text-indigo-600 font-large font-semibold hover:text-blue-600">
+                                    class="text-indigo-600 text-l font-bold hover:text-blue-600">
                                     View Details
                                 </a>
+                                <img src="/resources/heart_blank.png" height="24" width="24" />
                             </div>
                         </div>
                     </div>

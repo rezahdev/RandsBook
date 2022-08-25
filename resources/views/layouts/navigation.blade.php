@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('books.search')" :active="request()->routeIs('books.search')">
+                    <x-nav-link :href="route('books.search')" :active="request()->routeIs('books.search')|request()->routeIs('books.create')">
                         {{ __('Add Book') }}
                     </x-nav-link>
                 </div>

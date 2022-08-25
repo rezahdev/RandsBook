@@ -278,14 +278,15 @@ class BookController extends Controller
         $request->validate(['book_id' => 'integer|required', 'read_pages' => 'required|integer']);
         $book = Book::where([['id', strip_tags($request->book_id)], ['user_id', Auth::user()->id]])->first(); ;
 
-        if($book == null)
+        if(is_null($book))
         {
-            return redirect()->route('books.show_from_model', ['id' => $id]);
+            return "FAILED";
         }
 
         $book->read_pages = strip_tags($request->read_pages);
         $book->save();
-        return redirect()->route('books.show_from_model', ['id' => $request->book_id]);
+        
+        return "OK";
     }
 
     /**

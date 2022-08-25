@@ -71,10 +71,9 @@
                         @endif
 
                         @if($type == "MODEL_DATA")
-                            <form id="read_pages_update_form" action="{{ route('books.update_read_pages') }}" method="post">
-                                @csrf
-                                @method('PUT')
+                            <form id="read_pages_update_form">
                                 <label class="mr-2">Pages read: </label>
+                                <input name="csrf_token" value="{{csrf_token()}}" type="hidden"/>
                                 <input type="hidden" name="book_id" value="{{ $book->id }}">
                                 <input id="read_pages" name="read_pages" type="text" 
                                        value="{{$book->read_pages}}" 
@@ -87,6 +86,7 @@
                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 my-5"
                                        min="0" max="{{$book->total_pages}}"
                                        onchange="updateReadPagesInputValue()">
+                                <button id="submit_read_pages_btn" type="submit" class="hidden"></button>
                             </form>
                         @endif
                     </div>
@@ -101,7 +101,7 @@
                                 </button>
                             </form>
                         @elseif($type == 'MODEL_DATA') 
-                            <button onclick="submitUpdateReadPagesForm(event)" id="update_read_pages_btn"
+                            <button onclick="submitUpdateReadPagesForm()" id="update_read_pages_btn"
                                     class="bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled>
                                 Update Read Pages
                             </button>
@@ -137,10 +137,25 @@
                             Yes, Delete
                         </button>
                 </form>
-                <button onclick="closeDeletePopupBox()" class="bg-white border border-blue-800 text-blue-800 hover:bg-blue-800 hover:text-white font-bold py-1 px-3 rounded mr-2"> Cancel</button>
+                <button onclick="closePopupBox('delete_popup_box')" 
+                        class="bg-white border border-blue-800 text-blue-800 hover:bg-blue-800 hover:text-white font-bold py-1 px-3 rounded mr-2"> 
+                    Cancel
+                </button>
             </div>
         </div>
     @endif
+
+    <div id="update_read_pages_success_box" class="fixed w-11/12 md:1/2 bg-white p-5 rounded-xl display-none" >
+        <p class="text-center">Pages read has been successfully updated.</p>
+        <div class="flex flex-row justify-center mt-5">
+            <button onclick="closePopupBox('update_read_pages_success_box')" 
+                    class="bg-white border border-blue-800 text-blue-800 hover:bg-blue-800 hover:text-white font-bold py-1 px-3 rounded mr-2"> 
+                Ok
+            </button>
+        </div>
+    </div>
+
+
 
     @if($errors->any())
         <script>
@@ -153,64 +168,28 @@
     
 </x-app-layout>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
 <script>
-    function openDeletePopupBox()
-    {
-        delete_popup_box.style.visibility = "visible";
+    $("#submit_read_pages_btn").click(function(e) {
+        e.preventDefault();
+        let read_pages = $("input[name=read_pages]").val();
+        let book_id = $("input[name=book_id]").val();
+        let csrf_token = $("input[name=csrf_token]").val();
 
-        if(!main_content.classList.contains("blurry"))
-        {
-            main_content.classList.add("blurry");
-        }    
-    }
-
-    function closeDeletePopupBox()
-    {
-        delete_popup_box.style.visibility = "hidden";
-
-        if(main_content.classList.contains("blurry"))
-        {
-            main_content.classList.remove("blurry");
-        }
-    }
-
-    function updateReadPagesInputValue()
-    {
-        read_pages.value = read_pages_ranger.value;
-        update_read_pages_btn.removeAttribute('disabled');
-        update_read_pages_btn.classList.remove('bg-gray-700');
-        update_read_pages_btn.classList.add('bg-blue-700');
-        update_read_pages_btn.classList.add('hover:bg-blue-800');    
-    }
-
-    function updateReadPagesRangerValue()
-    {
-        if(!Number.isInteger(+read_pages.value))
-        {
-            alert('Pages read must be an integer');
-            read_pages.value = read_pages.oldValue;
-            return;
-        }
-        
-        if(parseInt(read_pages.value) > parseInt(read_pages_ranger.max))
-        {
-            alert('Pages read cannot be greater than total pages.');
-            read_pages.value = read_pages.oldValue;
-            return;
-        }
-
-        read_pages_ranger.value = read_pages.value;
-        update_read_pages_btn.removeAttribute('disabled');
-        update_read_pages_btn.classList.remove('bg-gray-700');
-        update_read_pages_btn.classList.add('bg-blue-700');
-        update_read_pages_btn.classList.add('hover:bg-blue-800');
-    }
-
-    function submitUpdateReadPagesForm(event)
-    {
-        event.preventDefault();
-        read_pages_update_form.submit();
-    }
-
-
+        $.ajax({
+            type: 'PUT',
+            url: "{{ route('books.update_read_pages') }}",
+            data: {
+                "_token": csrf_token,
+                read_pages:read_pages, 
+                book_id:book_id 
+            },
+            success:function(data) {
+                showUpdateReadPageSuccessMsg();
+            }
+        });
+    });
 </script>
+
+<script src="/js/showViewHandler.js"></script>

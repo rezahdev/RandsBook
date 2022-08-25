@@ -1,15 +1,26 @@
 <x-app-layout>
     <div class="flex justify-center w-full flex-wrap">
-        <div class="flex justify-around flex-wrap w-full md:w-10/12">
+        <div class="flex justify-between flex-wrap w-11/12 md:w-4/5">
 
             @isset($book_list)
-                <p class="w-full text-center mt-3 p-1 rounded-xl">{{count($book_list) . ' books found in your library.'}}</p>
-
+                <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
+                    <p class="md:text-lg">{{count($book_list) . ' books in library.'}}</p>
+                    <div class="flex flex-row justify-end">
+                        <span class="mr-5 inline cursor-pointer text-blue-800 hover:font-semibold text-base md:text-lg">
+                            <img class="inline ml-1 pb-0.5" src="/resources/filter.png" width="20" height="20">
+                            Filter
+                        </span>
+                        <span class="inline cursor-pointer text-blue-800 hover:font-semibold text-base md:text-lg">
+                            <img class="inline ml-1 pb-0.5" src="/resources/sort.png" width="24" height="24">
+                            Sort
+                        </span>
+                    </div>
+                </div>
                 @foreach($book_list as $book)
                     @php 
                         $progress = round(($book->read_pages / $book->total_pages) * 100);
                     @endphp
-                    <div class="w-full lg:w-2/5 h-auto m-2 lg:m-5 bg-white border rounded flex justify-start flex-wrap">
+                    <div class="w-full lg:w-[calc(50%-2rem)] h-auto my-2 lg:my-5 bg-white border rounded flex justify-start flex-wrap">
                         {{--Book image--}}
                         <div class="w-1/4">
                             <img src="{{$book->cover_url }}" class="w-full h-auto" />
