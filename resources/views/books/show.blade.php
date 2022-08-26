@@ -33,7 +33,7 @@
                                         //Publishers from model has a name property, 
                                         //whereas publisher from API response does not have name property,
                                         //So check to avoid errors
-                                        if(property_exists($publisher, 'name'))
+                                        if($publisher instanceof App\Models\Publisher)
                                         {
                                             $publisher = $publisher->name;
                                         }
@@ -74,7 +74,7 @@
                                         //Subjects from model has a name property, 
                                         //whereas subjects from API response does not have name property,
                                         //So check to avoid errors.
-                                        if(property_exists($subject, 'name'))
+                                        if($subject instanceof App\Models\Subject)
                                         {
                                             $subject = $subject->name;
                                         }

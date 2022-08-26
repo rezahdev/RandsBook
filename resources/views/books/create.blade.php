@@ -156,7 +156,7 @@
                                         //Publishers from model has a name property, 
                                         //whereas publisher from API response does not have name property,
                                         //So check to avoid errors
-                                        if(property_exists($publisher, 'name'))
+                                        if($publisher instanceof App\Models\Publisher)
                                         {
                                             $publisher = $publisher->name;
                                         }
@@ -299,16 +299,16 @@
                             </span>
                         </div>
                         @foreach($book->subjects as $index => $subject)
-                            @php 
-                                //Subjects from model has a name property, 
-                                //whereas subjects from API response does not have name property,
-                                //So check to avoid errors.
-                                if(property_exists($subject, 'name'))
-                                {
-                                    $subject = $subject->name;
-                                }
-                                @endphp
                             @if($index < 3) 
+                                @php 
+                                    //Subjects from model has a name property, 
+                                    //whereas subjects from API response does not have name property,
+                                    //So check to avoid errors.
+                                    if($subject instanceof App\Models\Subject)
+                                    {
+                                        $subject = $subject->name;
+                                    }
+                                @endphp
                                 <div class="inline" id="{{'subject' . ++$subjectCount }}">
                                     <input type="hidden" name="{{'subject' . $subjectCount}}" value="{{ $subject }}">
                                     <span id="badge-dismiss-green"
@@ -338,6 +338,8 @@
                                         </button>
                                     </span>
                                 </div>
+                            @else 
+                                @break
                             @endif
                         @endforeach
                     </div>

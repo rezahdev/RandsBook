@@ -322,6 +322,8 @@
                                         </button>
                                     </span>
                                 </div>
+                            @else 
+                                @break
                             @endif
                         @endforeach
                     </div>
