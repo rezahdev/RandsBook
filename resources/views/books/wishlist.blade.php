@@ -63,10 +63,10 @@
         @else
             {{--Shown when no book is found in the DB--}}
             <div class="w-11/12 md:w-2/5 bg-white p-5 text-center my-10">
-                <p class="mb-5">You do not have any book in your library yet.</p>
+                <p class="mb-5">You do not have any book in your wishlist yet.</p>
                 <a href="{{ route('books.search') }}"
                    class="text-blue-800 font-semibold text-lg border border-blue-800 rounded py-2 px-3 hover:bg-blue-800 hover:text-white">
-                    Click here to add new book 
+                    Click here to search for books. 
                 </a>
             </div>
         @endif

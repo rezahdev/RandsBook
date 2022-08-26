@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->integer('total_pages');
+            $table->integer('total_pages')->default(0);
             $table->integer('read_pages')->default(0);
             $table->text('comment')->nullable();
             $table->timestamp('created_at')->useCurrent();

@@ -90,7 +90,7 @@
                 @endforeach 
             @else
             <div class="bg-white p-5 text-center my-10 w-11/12">
-                <p class="mb-5">Use the search box to find a book by name or author. You can also add the book
+                <p class="mb-5">Use the search box to find a book by title or author name. You can also add the book
                     information manually if you cannot find the book. 
                 </p>
                 <a href="{{ route('books.create') }}"

@@ -15,7 +15,9 @@ class BookController extends Controller
 {
     function index()
     {
-        $book_list = Book::where('user_id', Auth::user()->id)->get();
+        $book_list = Book::where('user_id', Auth::user()->id)
+                        ->where('isWishlistItem', '0')
+                        ->get();
 
         foreach($book_list as $book)
         {
@@ -27,7 +29,17 @@ class BookController extends Controller
             $book->publishers = $publisher;
             $book->subjects = $subject;
         }
-        return view('books.index', ['book_list' => $book_list]);
+
+        $num_book_found = 'No book found';
+        if(count($book_list) == 1)
+        {
+            $num_book_found = '1 book found';
+        }
+        else if(count($book_list) > 1)
+        {
+            $num_book_found = count($book_list) . ' books found';
+        }
+        return view('books.index', ['book_list' => $book_list, 'num_book_found' => $num_book_found]);
     }
 
     function show_from_model($id)
@@ -188,6 +200,35 @@ class BookController extends Controller
         $book->delete();
 
         return redirect()->route('books.index');
+    }
+
+    function wishlist()
+    {
+        $book_list = Book::where('user_id', Auth::user()->id)
+                        ->where('isWishlistItem', '1')
+                        ->get();
+
+        foreach($book_list as $book)
+        {
+            $author = Author::where('book_id', $book->id)->get();
+            $publisher = Publisher::where('book_id', $book->id)->get();
+            $subject = Subject::where('book_id', $book->id)->get();
+
+            $book->authors = $author;
+            $book->publishers = $publisher;
+            $book->subjects = $subject;
+        }
+
+        $num_book_found = 'No book found';
+        if(count($book_list) == 1)
+        {
+            $num_book_found = '1 book found';
+        }
+        else if(count($book_list) > 1)
+        {
+            $num_book_found = count($book_list) . ' books found';
+        }
+        return view('books.wishlist', ['book_list' => $book_list, 'num_book_found' => $num_book_found]);
     }
 
     function search()

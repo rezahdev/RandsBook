@@ -28,8 +28,6 @@ Route::patch('/delete/{id}', [BookController::class, 'delete'])->middleware('aut
 
 Route::put('/updateReadPages', [BookController::class, 'update_read_pages'])->middleware('auth')->name('books.update_read_pages');
 
-Route::get('/wishlist', function () {
-    return view('wishlist');
-})->middleware(['auth'])->name('wishlist');
+Route::get('/wishlist', [BookController::class, 'wishlist'])->middleware('auth')->name('books.wishlist');
 
 require __DIR__.'/auth.php';

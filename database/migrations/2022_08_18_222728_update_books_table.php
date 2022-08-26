@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('subjects')->nullable();
             $table->string('cover_url')->nullable();
             $table->string('public_comment')->nullable();
+            $table->integer('isWishlistItem')->default(0);
         });
     }
 
