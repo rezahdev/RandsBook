@@ -30,5 +30,5 @@ Route::put('/updateReadPages', [BookController::class, 'update_read_pages'])->mi
 
 Route::get('/wishlist', [BookController::class, 'wishlist'])->middleware('auth')->name('books.wishlist');
 Route::post('/wishlist/add', [BookController::class, 'add_to_wishlist'])->middleware('auth')->name('books.add_to_wishlist');
-
+Route::post('/wishlist/remove', [BookController::class, 'remove_from_wishlist'])->middleware('auth')->name('books.remove_from_wishlist');
 require __DIR__.'/auth.php';

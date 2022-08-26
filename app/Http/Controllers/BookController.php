@@ -261,8 +261,25 @@ class BookController extends Controller
         catch(\Exception $e)
         {
             return (object)['response' => 'FAILED', 'message' => $e->getMessage() /*'Unknonw error occurred. Please try again.'*/];
-        }
+        }  
+    }
+
+    function remove_from_wishlist(Request $request)
+    {
+        $book = Book::where('user_id', Auth::user()->id)
+                    ->where('id', $request->book_id)
+                    ->where('isWishlistItem', '1')
+                    ->first();
         
+        if(is_null($book))
+        {
+            return json_encode(['response' => 'FAILED', 'message' => 'Invalid book id.']);
+        }
+
+        $title = $book->title;
+        $book->delete();
+        
+        return json_encode(['response' => 'OK', 'message' => $title . ' has been removed from your wishlist.']);
     }
 
     function update_read_pages(Request $request)

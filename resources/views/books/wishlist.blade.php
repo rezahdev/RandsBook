@@ -16,11 +16,12 @@
                         </span>
                     </div>
                 </div>
-                @foreach($book_list as $book)
+                @foreach($book_list as $book_num => $book)
                     @php 
                         $progress = round(($book->read_pages / $book->total_pages) * 100);
                     @endphp
-                    <div class="w-full lg:w-[calc(50%-2rem)] h-auto my-2 lg:my-5 bg-white border rounded flex justify-start flex-wrap">
+                    <div class="w-full lg:w-[calc(50%-2rem)] h-auto my-2 lg:my-5 bg-white border rounded flex justify-start flex-wrap"
+                         id="wishlist_book_{{$book_num}}">
                         {{--Book image--}}
                         <div class="w-1/4">
                             <img src="{{$book->cover_url }}" class="w-full h-auto" />
@@ -50,11 +51,14 @@
                             </div>
 
                             {{--Link to see show book details--}}
-                            <div>
+                            <div class="flex flex-wrap flex-row justify-between">
                                 <a href="{{ route('books.show_from_model', ['id' => $book->id]) }}"
                                    class="text-indigo-600 font-large font-semibold hover:text-blue-600">
                                     View Details
                                 </a>
+                                <img src="/resources/heart_filled.png" height="24" width="24" 
+                                     class="cursor-pointer hover:scale-110"
+                                     onclick="removeFromWishlist('wishlist_book_{{$book_num}}', '{{$book->id}}', '{{csrf_token()}}')" />
                             </div>
                         </div>
                     </div>
@@ -93,5 +97,35 @@ window.onscroll = function ()
 function scrollToTop() 
 {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function removeFromWishlist(wishlist_book_id, book_id, csrf_token)
+{
+    let http = new XMLHttpRequest();
+    let url = "{{route('books.remove_from_wishlist')}}";
+    let formData = new FormData();
+
+    formData.append('book_id', book_id);
+    formData.append('_token', csrf_token);
+
+    http.open('POST', url, true);
+
+    http.onreadystatechange = function() 
+    {
+        if(http.readyState == 4 && http.status == 200) 
+        {
+            let responseObj = JSON.parse(http.responseText);
+            if(responseObj.response == 'OK')
+            {
+                let book = document.getElementById(wishlist_book_id);
+                book.parentNode.removeChild(book);
+            }
+            else
+            {
+                alert(responseObj.message);
+            }
+        }
+    }
+    http.send(formData);
 }
 </script>
