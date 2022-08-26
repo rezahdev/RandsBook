@@ -121,9 +121,19 @@ class BookController extends Controller
         {          
             return view('books.create', ['book' => $this->requestToBookObject($request), 'errors' => $validator->errors]);
         }
-        $this->saveBook($request);
 
-        return redirect()->route('books.index');
+        if(!Book::select('id')->where('user_id', Auth::user()->id)->where('book_id', $request->edition_key)->exists())
+        {
+            $this->saveBook($request);
+            return redirect()->route('books.index');
+        }
+        else
+        {
+            return view('books.create', [
+                'book' => $this->requestToBookObject($request), 
+                'errors' => [(object)['message' => 'This book already exists in your library.']]
+            ]);
+        }
     }   
 
     function edit($id)
@@ -251,7 +261,11 @@ class BookController extends Controller
                 $book->cover_url = $data->cover_url;
                 $book->isWishlistItem = '1';
                 $book->save();  
-                return json_encode(['response' => $search_result->response, 'message' => $book->title . ' has been added to your wishlist.']);
+                return json_encode([
+                    'response' => $search_result->response, 
+                    'message' => $book->title . ' has been added to your wishlist.',
+                    'book_id' => $book->id
+                ]);
             }
             else
             {
@@ -277,9 +291,14 @@ class BookController extends Controller
         }
 
         $title = $book->title;
+        $edition_key = $book->book_id;
         $book->delete();
         
-        return json_encode(['response' => 'OK', 'message' => $title . ' has been removed from your wishlist.']);
+        return json_encode([
+            'response' => 'OK', 
+            'message' => $title . ' has been removed from your wishlist.',
+            'edition_key' => $edition_key
+         ]);
     }
 
     function update_read_pages(Request $request)
@@ -313,7 +332,6 @@ class BookController extends Controller
             $msg = 'Open Library API is currently not working. Please ty again or add book information manually.';
             return view('books.search', ['api_connect_error' => (object)['message' => $msg]]);
         }
-
         $response = json_decode($response, false);
 
         $book_count = 0;
@@ -346,7 +364,24 @@ class BookController extends Controller
                     else
                     {
                         $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
-                    }    
+                    }   
+
+                    //To check if a book in the search result is in user's wishlist
+                    $wishlistedBook = Book::where('user_id', Auth::user()->id)
+                                            ->where('book_id', $book->edition_key)
+                                            ->where('isWishlistItem', '1')
+                                            ->first();
+                    
+                    if(!is_null($wishlistedBook))
+                    {
+                        $book->wishlistBookId = $wishlistedBook->id;
+                        $book->isWishlisted = true;
+                    }
+                    else
+                    {
+                        $book->isWishlisted = false;
+                    }
+
                     array_push($book_list, $book);
                     $book_count++;
                 }     

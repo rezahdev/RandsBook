@@ -78,7 +78,8 @@ function createPublisherInputField(publisherNum)
 
     if(publisher_list.childElementCount <= 4)
     {
-        publisherFieldClone.children[0].addEventListener('input', function() { 
+        publisherFieldClone.children[0].addEventListener('input', function() 
+        { 
             inputPublisherFieldChanged(publisherFieldClone.children[0]); 
         });
         createPublisherLabelClone.addEventListener('click', function(){ createPublisherInputField(`${(++publisherNum)}`); });

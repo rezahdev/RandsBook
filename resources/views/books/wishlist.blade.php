@@ -99,14 +99,14 @@ function scrollToTop()
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function removeFromWishlist(wishlist_book_id, book_id, csrf_token)
+function removeFromWishlist(wishlistBookId, bookId, csrfToken)
 {
     let http = new XMLHttpRequest();
     let url = "{{route('books.remove_from_wishlist')}}";
     let formData = new FormData();
 
-    formData.append('book_id', book_id);
-    formData.append('_token', csrf_token);
+    formData.append('book_id', bookId);
+    formData.append('_token', csrfToken);
 
     http.open('POST', url, true);
 
@@ -117,7 +117,7 @@ function removeFromWishlist(wishlist_book_id, book_id, csrf_token)
             let responseObj = JSON.parse(http.responseText);
             if(responseObj.response == 'OK')
             {
-                let book = document.getElementById(wishlist_book_id);
+                let book = document.getElementById(wishlistBookId);
                 book.parentNode.removeChild(book);
             }
             else

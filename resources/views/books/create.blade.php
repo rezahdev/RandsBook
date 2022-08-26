@@ -5,7 +5,7 @@
                 @csrf
 
                 {{--If server returns form validation error--}}
-                @if($errors)
+                @isset($errors)
                     <ul class="block w-full my-2 text-red-500" id="error_msg">
                         @foreach($errors as $error)
                         <li> {{ $error->message }} </li>
@@ -44,7 +44,7 @@
                             @if(count($book->authors) > 0)
                                 @foreach($book->authors as $author)
                                     <div id="{{ 'author' . ++$authorCount }}">
-                                        <input class="authors rounded" 
+                                        <input class="authors rounded w-4/5" 
                                                name="{{ 'author' . $authorCount }}" 
                                                type="text"
                                                value="{{ $author->name }}" 
@@ -74,7 +74,6 @@
                                                       clip-rule="evenodd">
                                                 </path>
                                             </svg>
-
                                             <span class="sr-only">Remove badge</span>
                                         </button>
                                     </div>
@@ -82,7 +81,7 @@
                             @else
                                 <div id="{{ 'author' . ++$authorCount }}">
                                     <input onkeypress="inputAuthorFieldChanged(this)" 
-                                        class="authors rounded"
+                                        class="authors rounded w-4/5"
                                         name="{{ 'author' . $authorCount }}" 
                                         type="text" value=""
                                         onkeydown="return event.key != 'Enter';">
@@ -164,7 +163,7 @@
                                     @endphp
 
                                     <div id="{{'publisher' . ++$publisherCount }}">
-                                        <input class="publishers rounded" 
+                                        <input class="publishers rounded w-4/5" 
                                                name="{{ 'publisher' . $publisherCount }}" 
                                                type="text"
                                                value="{{ $publisher }}" 
@@ -194,7 +193,7 @@
                             @else
                                 <div id="{{'publisher' . ++$publisherCount }}">
                                     <input onkeypress="inputPublisherFieldChanged(this)" 
-                                           class="publishers rounded"
+                                           class="publishers rounded w-4/5"
                                            name="{{ 'publisher' . $publisherCount }}" 
                                            type="text" value=""
                                            onkeydown="return event.key != 'Enter';">

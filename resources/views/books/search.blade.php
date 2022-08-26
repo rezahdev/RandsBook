@@ -24,7 +24,7 @@
                           rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 
                           dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black 
                           dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search by title, author, or subject..." 
+                    placeholder="Search by title, author name..." 
                     required="">
                 <button type="submit"
                         class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 
@@ -57,7 +57,7 @@
                     </div>  
                 @endif
 
-                @foreach($book_list as $book_num => $book)
+                @foreach($book_list as $book)
                     <div class="w-full lg:w-2/5 h-auto m-2 lg:m-5 bg-white border rounded flex justify-start flex-wrap">
                         <div class="w-1/4"><img src="{{$book->cover_url }}" class="w-full h-auto" /></div>
                         <div class="p-3 w-3/4 flex flex-wrap flex-col justify-between">
@@ -82,10 +82,15 @@
                                     class="text-indigo-600 text-l font-bold hover:text-blue-600">
                                     View Details
                                 </a>
-                                <img src="/resources/heart_blank.png" height="24" width="24" 
-                                     class="cursor-pointer hover:scale-110"
-                                     id="wishlist_img_{{$book_num}}"
-                                     onclick="addToWishlist('wishlist_img_{{$book_num}}', '{{$book->edition_key}}', '{{csrf_token()}}')" />
+                                @if($book->isWishlisted)
+                                    <img src="/resources/heart_filled.png" height="24" width="24" 
+                                         class="cursor-pointer hover:scale-110"
+                                         onclick="removeFromWishlist(this, '{{$book->wishlistBookId}}', '{{csrf_token()}}')" />
+                                @else
+                                    <img src="/resources/heart_blank.png" height="24" width="24" 
+                                         class="cursor-pointer hover:scale-110"
+                                         onclick="addToWishlist(this, '{{$book->edition_key}}', '{{csrf_token()}}')" />
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -135,14 +140,14 @@ function scrollToTop()
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function addToWishlist(wishlist_img_id, edition_key, csrf_token)
+function addToWishlist(wishlistBtnImg, editionKey, csrfToken)
 {
     let http = new XMLHttpRequest();
     let url = "{{route('books.add_to_wishlist')}}";
     let formData = new FormData();
 
-    formData.append('edition_key', edition_key);
-    formData.append('_token', csrf_token);
+    formData.append('edition_key', editionKey);
+    formData.append('_token', csrfToken);
 
     http.open('POST', url, true);
 
@@ -153,7 +158,44 @@ function addToWishlist(wishlist_img_id, edition_key, csrf_token)
             let responseObj = JSON.parse(http.responseText);
             if(responseObj.response == 'OK')
             {
-                document.getElementById(wishlist_img_id).src = '/resources/heart_filled.png';
+                const img = wishlistBtnImg.cloneNode(true);
+                img.removeAttribute('onclick');
+                img.src = '/resources/heart_filled.png';
+                img.addEventListener('click', function() { removeFromWishlist(img, responseObj.book_id, csrfToken) });
+                wishlistBtnImg.parentNode.replaceChild(img, wishlistBtnImg);
+            }
+            else
+            {
+                alert(responseObj.message);
+            }
+        }
+    }
+    http.send(formData);
+}
+
+function removeFromWishlist(wishlistBtnImg, bookId, csrfToken)
+{
+    let http = new XMLHttpRequest();
+    let url = "{{route('books.remove_from_wishlist')}}";
+    let formData = new FormData();
+
+    formData.append('book_id', bookId);
+    formData.append('_token', csrfToken);
+
+    http.open('POST', url, true);
+
+    http.onreadystatechange = function() 
+    {
+        if(http.readyState == 4 && http.status == 200) 
+        {
+            let responseObj = JSON.parse(http.responseText);
+            if(responseObj.response == 'OK')
+            {
+                const img = wishlistBtnImg.cloneNode(true);
+                img.removeAttribute('onclick');
+                img.src = '/resources/heart_blank.png';
+                img.addEventListener('click', function() { addToWishlist(img, responseObj.edition_key, csrfToken) });
+                wishlistBtnImg.parentNode.replaceChild(img, wishlistBtnImg);
             }
             else
             {
