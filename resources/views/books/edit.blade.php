@@ -15,7 +15,7 @@
                 @endisset
                 
                 <input type="hidden" name="id" value="{{ $book->id }}">
-                <input type="hidden" name="isbn" value="{{ $book->isbn }}">
+                <input type="hidden" name="edition_key" value="{{ $book->book_id }}">
                 <input type="hidden" name="cover_url" value="{{ $book->cover_url }}" >
 
                 <label>Title</label>

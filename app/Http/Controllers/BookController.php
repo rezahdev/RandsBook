@@ -63,24 +63,24 @@ class BookController extends Controller
         return view('books.show', ['book' => $book, 'type' => 'MODEL_DATA']);
     }
 
-    function show_from_search_result($isbn)
+    function show_from_search_result($edition_key)
     {
-        $search_result = $this->search_by_isbn(strip_tags($isbn));
+        $search_result = $this->search_by_edition_key(strip_tags($edition_key));
 
-        if($search_result['response'] == "OK")
+        if($search_result->response == "OK")
         {
-            return view('books.show', ['book' => $search_result['book'], 'type' => 'SEARCH_DATA']);
+            return view('books.show', ['book' => $search_result->book, 'type' => 'SEARCH_DATA']);
         }
         else
         {
-            return view('books.show', ['response' => $search_result['response'], 'type' => 'NOT_FOUND']);
+            return view('books.show', ['response' => $search_result->response, 'type' => 'NOT_FOUND']);
         }
     }
 
     function create()
     {
         $book = array(  'title' => "",
-                        'isbn' => "",
+                        'edition_key' => "",
                         'subtitle' => "",
                         'authors' => array(),
                         'publishers' => array(),
@@ -98,17 +98,17 @@ class BookController extends Controller
         return view('books.create', ['book' => (object)$book]);
     }
 
-    function create_with_data($isbn)
+    function create_with_data($edition_key)
     {
-        $search_result = $this->search_by_isbn(strip_tags($isbn));
+        $search_result = $this->search_by_edition_key(strip_tags($edition_key));
 
-        if($search_result['response'] == "OK")
+        if($search_result->response == "OK")
         {
-            return view('books.create', ['book' => $search_result['book']]);
+            return view('books.create', ['book' => $search_result->book]);
         }
         else
         {
-            return view('books.create', ['response' => $search_result['response']]);
+            return view('books.create', ['response' => $search_result->response]);
         }
     }
 
@@ -231,6 +231,56 @@ class BookController extends Controller
         return view('books.wishlist', ['book_list' => $book_list, 'num_book_found' => $num_book_found]);
     }
 
+    function add_to_wishlist(Request $request)
+    {
+        try
+        {
+            $search_result = $this->search_by_edition_key(strip_tags($request->edition_key));
+            
+            if($search_result->response == 'OK')
+            {            
+                $data = $search_result->book; 
+
+                $book = new Book();
+                $book->book_id = $request->edition_key;
+                $book->user_id = Auth::user()->id; 
+                $book->title = $data->title;
+                $book->subtitle = $data->subtitle;
+                $book->total_pages = $data->total_pages;
+                $book->description = $data->description;
+                $book->cover_url = $data->cover_url;
+                $book->isWishlistItem = '1';
+                $book->save();  
+                return json_encode(['response' => $search_result->response, 'message' => $book->title . ' has been added to your wishlist.']);
+            }
+            else
+            {
+                return json_encode(['response' => $search_result->response, 'message' => $search_result->message]);
+            }
+        }
+        catch(\Exception $e)
+        {
+            return (object)['response' => 'FAILED', 'message' => $e->getMessage() /*'Unknonw error occurred. Please try again.'*/];
+        }
+        
+    }
+
+    function update_read_pages(Request $request)
+    {
+        $request->validate(['book_id' => 'integer|required', 'read_pages' => 'required|integer']);
+        $book = Book::where([['id', strip_tags($request->book_id)], ['user_id', Auth::user()->id]])->first(); ;
+
+        if(is_null($book))
+        {
+            return "FAILED";
+        }
+
+        $book->read_pages = strip_tags($request->read_pages);
+        $book->save();
+        
+        return "OK";
+    }
+
     function search()
     {
         if(!isset($_GET['q']) || strlen($_GET['q']) < 1)
@@ -254,87 +304,102 @@ class BookController extends Controller
 
         foreach($response->docs as $book)
         {
-            if($book != null && property_exists($book, 'isbn') 
+            if($book != null && property_exists($book, 'cover_edition_key') 
                 && property_exists($book, 'title')
                 && property_exists($book, 'author_name')
                 && property_exists($book, 'publisher')
                 && property_exists($book, 'number_of_pages_median'))
             {
-                $book->isbn = $book->isbn[0];
-                $book->total_pages = $book->number_of_pages_median;
-                
-                if(property_exists($book, 'cover_i'))
-                {
-                    $book->cover_url = 'https://covers.openlibrary.org/b/id/'. $book->cover_i .'-M.jpg';
-                }
-                else
-                {
-                    $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
-                }         
+                $book->edition_key = $book->cover_edition_key;
 
-                array_push($book_list, $book);
-                $book_count++;
+                $edition_data = Http::get('https://openlibrary.org/books/' . $book->edition_key . '.json');  
+                $edition_data = json_decode($edition_data, false);
+
+                //Edition key is later used to show a specific book from search result,
+                //but some edition data does not contain the author field
+                //So, filter search result to show only the results that have consistent edition info. 
+                if(property_exists($edition_data, 'authors'))
+                {
+                    $book->total_pages = $book->number_of_pages_median;
+
+                    if(property_exists($book, 'cover_i'))
+                    {
+                        $book->cover_url = 'https://covers.openlibrary.org/b/id/'. $book->cover_i .'-M.jpg';
+                    }
+                    else
+                    {
+                        $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
+                    }    
+                    array_push($book_list, $book);
+                    $book_count++;
+                }     
             }
         }
 
         return view('books.search', ['book_list' => $book_list, 'book_count' => $book_count]);
     } 
 
-    function search_by_isbn($isbn)
+    function search_by_edition_key($edition_key)
     {
-        $response = Http::get('https://openlibrary.org/api/books?bibkeys=ISBN:' . strip_tags($isbn) . '&format=json&jscmd=data');  
-        $response = json_decode($response, false); 
-        
-        $isbn_key = 'ISBN:' . $isbn;
-        if(!property_exists($response, $isbn_key))
-        {
-            return ['response' => 'NO_DATA'];      
-        }   
-        
-        $response = $response->$isbn_key;
-        $book = new \stdClass();
-                             
-        $book->isbn = $isbn;
-        $book->title = $response->title;
+        $response = Http::get('https://openlibrary.org/books/' . $edition_key . '.json');  
 
-        $book->subtitle = property_exists($response, 'subtitle') ? $response->subtitle : "";
-        $book->total_pages = property_exists($response, 'number_of_pages') ? $response->number_of_pages : "";
-        $book->publish_date = property_exists($response, 'publish_date') ? $response->publish_date : "";
-        $book->authors = property_exists($response, 'authors') ? $response->authors : [];
+        if($response->failed())
+        {
+            return (object)['response' => 'FAILED', 'message' => 'Open Library API is currently inactive.'];
+        }
+        else
+        {
+            $response = json_decode($response, false);
+            if(property_exists($response, 'error') && $response->error == 'notfound')
+            {
+                return (object)['response' => 'FAILED', 'message' => 'No book found.'];
+            }
+        } 
+
+        $book = new \stdClass();
+           
+        $book->edition_key = $edition_key;
+        $book->title = $response->title;
+        $book->subtitle = property_exists($response, 'subtitle') ? $response->subtitle : '';
+        $book->total_pages = property_exists($response, 'number_of_pages') ? $response->number_of_pages : '0';
+        $book->description = property_exists($response, 'description') ? $response->description : '';
+        $book->publish_date = property_exists($response, 'publish_date') ? $response->publish_date : '';
         $book->publishers = property_exists($response, 'publishers') ? $response->publishers : [];
         $book->subjects = property_exists($response, 'subjects') ? $response->subjects : [];
 
-        if(property_exists($response, 'cover'))
+        if(property_exists($response, 'covers'))
         {
-            $book->cover_url = $response->cover->large;
+            $book->cover_url = 'https://covers.openlibrary.org/b/id/'. $response->covers[0] .'-L.jpg';
         }
         else
         {
            $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
         }  
 
+        $author_info = Http::get('https://openlibrary.org' . $response->authors[0]->key . '.json'); 
+        $book->authors = [json_decode($author_info, false)]; 
+
+        if(property_exists($response, 'description'))
+        {
+            if(is_object($response->description))
+            {
+                $book->description = $response->description->value;
+            }
+            else
+            {
+                $book->description = $response->description;
+            }
+        }
+        else
+        {
+            $book->description = '';
+        }
+        
         $book->read_pages = "";
-        $book->description = "";
         $book->comment = "";
         $book->public_comment = "";
 
-        return ['response' => 'OK', 'book' => $book];
-    }
-
-    function update_read_pages(Request $request)
-    {
-        $request->validate(['book_id' => 'integer|required', 'read_pages' => 'required|integer']);
-        $book = Book::where([['id', strip_tags($request->book_id)], ['user_id', Auth::user()->id]])->first(); ;
-
-        if(is_null($book))
-        {
-            return "FAILED";
-        }
-
-        $book->read_pages = strip_tags($request->read_pages);
-        $book->save();
-        
-        return "OK";
+        return (object)['response' => 'OK', 'book' => $book];
     }
 
     /**
@@ -347,7 +412,7 @@ class BookController extends Controller
 
         //save book info
         $book->user_id = Auth::user()->id;
-        $book->book_id = strip_tags($request->isbn);
+        $book->book_id = strip_tags($request->edition_key);
         $book->title = strip_tags($request->title);
         $book->subtitle = strip_tags($request->subtitle);
         $book->description = strip_tags($request->description);
@@ -483,7 +548,7 @@ class BookController extends Controller
     {
         $book = new \stdClass();
 
-        $book->isbn = $request->isbn;
+        $book->edition_key = $request->edition_key;
         $book->cover_url = $request->cover_url;
         $book->title = $request->title;
         $book->subtitle = $request->subtitle;

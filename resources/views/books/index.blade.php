@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="flex justify-center w-full flex-wrap">
         @if(count($book_list) > 0)
-            <div class="flex justify-between flex-wrap w-11/12 md:w-4/5">
+            <div class="flex justify-between flex-wrap w-11/12 md:w-4/5 mb-10">
                 <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
                 <p class="md:text-lg">{{$num_book_found . ' in library.'}}</p>
 

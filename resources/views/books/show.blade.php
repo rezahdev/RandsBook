@@ -29,10 +29,20 @@
                             {{--Publisher info--}}
                             <p>Published by: 
                                 @foreach($book->publishers as $index => $publisher)
+                                    @php 
+                                        //Publishers from model has a name property, 
+                                        //whereas publisher from API response does not have name property,
+                                        //So check to avoid errors
+                                        if(property_exists($publisher, 'name'))
+                                        {
+                                            $publisher = $publisher->name;
+                                        }
+                                    @endphp
+
                                     @if($index > 0)
-                                        {{ '/ ' . $publisher->name }}
+                                        {{ '/ ' . $publisher }}
                                     @else
-                                        {{ $publisher->name }}
+                                        {{ $publisher }}
                                     @endif
                                 @endforeach
                             </p>
@@ -60,11 +70,21 @@
                             {{--Book subjects--}}
                             <div>
                                 @foreach($book->subjects as $index => $subject)
+                                    @php 
+                                        //Subjects from model has a name property, 
+                                        //whereas subjects from API response does not have name property,
+                                        //So check to avoid errors.
+                                        if(property_exists($subject, 'name'))
+                                        {
+                                            $subject = $subject->name;
+                                        }
+                                    @endphp
+                                    
                                     @if($index >= 3) 
                                         @break
                                     @endif
                                     <span class="inline-block bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900 mt-5">
-                                        {{$subject->name}}
+                                        {{$subject}}
                                     </span>
                                 @endforeach
                             </div>  
@@ -94,7 +114,7 @@
                     {{--Action buttons--}}
                     <div class="mt-10">
                         @if($type == 'SEARCH_DATA')
-                            <form action="{{ route('books.create_with_data', ['isbn' => $book->isbn]) }}">
+                            <form action="{{ route('books.create_with_data', ['edition_key' => $book->edition_key]) }}">
                                 @csrf
                                 <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mr-2">
                                     Add Book to My Library
@@ -171,25 +191,25 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
 <script>
-    $("#submit_read_pages_btn").click(function(e) {
-        e.preventDefault();
-        let read_pages = $("input[name=read_pages]").val();
-        let book_id = $("input[name=book_id]").val();
-        let csrf_token = $("input[name=csrf_token]").val();
+$("#submit_read_pages_btn").click(function(e) {
+    e.preventDefault();
+    let read_pages = $("input[name=read_pages]").val();
+    let book_id = $("input[name=book_id]").val();
+    let csrf_token = $("input[name=csrf_token]").val();
 
-        $.ajax({
-            type: 'PUT',
-            url: "{{ route('books.update_read_pages') }}",
-            data: {
-                "_token": csrf_token,
-                read_pages:read_pages, 
-                book_id:book_id 
-            },
-            success:function(data) {
-                showUpdateReadPageSuccessMsg();
-            }
-        });
+    $.ajax({
+        type: 'PUT',
+        url: "{{ route('books.update_read_pages') }}",
+        data: {
+            "_token": csrf_token,
+            read_pages:read_pages, 
+            book_id:book_id 
+        },
+        success:function(data) {
+            showUpdateReadPageSuccessMsg();
+        }
     });
+});
 </script>
 
 <script src="/js/showViewHandler.js"></script>

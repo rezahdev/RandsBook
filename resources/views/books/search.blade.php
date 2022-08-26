@@ -57,7 +57,7 @@
                     </div>  
                 @endif
 
-                @foreach($book_list as $book)
+                @foreach($book_list as $book_num => $book)
                     <div class="w-full lg:w-2/5 h-auto m-2 lg:m-5 bg-white border rounded flex justify-start flex-wrap">
                         <div class="w-1/4"><img src="{{$book->cover_url }}" class="w-full h-auto" /></div>
                         <div class="p-3 w-3/4 flex flex-wrap flex-col justify-between">
@@ -78,11 +78,14 @@
                                 </div>
                             </div>
                             <div class="flex flex-wrap flex-row justify-between">
-                                <a href="{{ route('books.show_from_search_result', ['isbn' => $book->isbn]) }}"
+                                <a href="{{ route('books.show_from_search_result', ['edition_key' => $book->edition_key]) }}"
                                     class="text-indigo-600 text-l font-bold hover:text-blue-600">
                                     View Details
                                 </a>
-                                <img src="/resources/heart_blank.png" height="24" width="24" />
+                                <img src="/resources/heart_blank.png" height="24" width="24" 
+                                     class="cursor-pointer hover:scale-110"
+                                     id="wishlist_img_{{$book_num}}"
+                                     onclick="addToWishlist('wishlist_img_{{$book_num}}', '{{$book->edition_key}}', '{{csrf_token()}}')" />
                             </div>
                         </div>
                     </div>
@@ -130,5 +133,34 @@ window.onscroll = function ()
 function scrollToTop() 
 {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function addToWishlist(wishlist_img_id, edition_key, csrf_token)
+{
+    let http = new XMLHttpRequest();
+    let url = "{{route('books.add_to_wishlist')}}";
+    let formData = new FormData();
+
+    formData.append('edition_key', edition_key);
+    formData.append('_token', csrf_token);
+
+    http.open('POST', url, true);
+
+    http.onreadystatechange = function() 
+    {
+        if(http.readyState == 4 && http.status == 200) 
+        {
+            let responseObj = JSON.parse(http.responseText);
+            if(responseObj.response == 'OK')
+            {
+                document.getElementById(wishlist_img_id).src = '/resources/heart_filled.png';
+            }
+            else
+            {
+                alert(responseObj.message);
+            }
+        }
+    }
+    http.send(formData);
 }
 </script>

@@ -13,7 +13,7 @@
                     </ul>
                 @endisset
                     
-                <input type="hidden" name="isbn" value="{{ $book->isbn }}">
+                <input type="hidden" name="edition_key" value="{{ $book->edition_key }}">
                 <input type="hidden" name="cover_url" value="{{ $book->cover_url }}" >
 
                 <label>Title</label>
@@ -153,11 +153,21 @@
                         <div id="publisher_list">
                             @if(count($book->publishers) > 0)
                                 @foreach($book->publishers as $publisher)
+                                    @php 
+                                        //Publishers from model has a name property, 
+                                        //whereas publisher from API response does not have name property,
+                                        //So check to avoid errors
+                                        if(property_exists($publisher, 'name'))
+                                        {
+                                            $publisher = $publisher->name;
+                                        }
+                                    @endphp
+
                                     <div id="{{'publisher' . ++$publisherCount }}">
                                         <input class="publishers rounded" 
                                                name="{{ 'publisher' . $publisherCount }}" 
                                                type="text"
-                                               value="{{ $publisher->name }}" 
+                                               value="{{ $publisher }}" 
                                                onkeydown="return event.key != 'Enter';">
                                         <button onclick="deletePublisherField('publisher{{$publisherCount}}')" 
                                                 type="button"
@@ -290,13 +300,22 @@
                             </span>
                         </div>
                         @foreach($book->subjects as $index => $subject)
+                            @php 
+                                //Subjects from model has a name property, 
+                                //whereas subjects from API response does not have name property,
+                                //So check to avoid errors.
+                                if(property_exists($subject, 'name'))
+                                {
+                                    $subject = $subject->name;
+                                }
+                                @endphp
                             @if($index < 3) 
                                 <div class="inline" id="{{'subject' . ++$subjectCount }}">
-                                    <input type="hidden" name="{{'subject' . $subjectCount}}" value="{{ $subject->name }}">
+                                    <input type="hidden" name="{{'subject' . $subjectCount}}" value="{{ $subject }}">
                                     <span id="badge-dismiss-green"
                                         class="mb-3 inline-flex items-center py-1 px-2 mr-2 text-sm font-medium 
                                               text-green-800 bg-green-100 rounded dark:bg-green-200 dark:text-green-800">
-                                        <span>{{ $subject->name }}</span>
+                                        <span>{{ $subject }}</span>
                                         <button onclick="deleteSubjectTag('subject{{$subjectCount}}')"
                                                 type="button"
                                                 class="inline-flex items-center p-0.5 ml-2 text-sm text-green-400 
