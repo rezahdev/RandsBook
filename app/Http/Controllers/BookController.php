@@ -233,13 +233,20 @@ class BookController extends Controller
 
     function search()
     {
-        if(!isset($_GET['q']))
+        if(!isset($_GET['q']) || strlen($_GET['q']) < 1)
         {
             return view('books.search');
         }
 
         $q = strip_tags($_GET['q']);
         $response = Http::get('http://openlibrary.org/search.json?q=' . $q);
+
+        if($response->failed())
+        {
+            $msg = 'Open Library API is currently not working. Please ty again or add book information manually.';
+            return view('books.search', ['api_connect_error' => (object)['message' => $msg]]);
+        }
+
         $response = json_decode($response, false);
 
         $book_count = 0;

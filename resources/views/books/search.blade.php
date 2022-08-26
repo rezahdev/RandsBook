@@ -38,14 +38,13 @@
 
     <div class="flex justify-center w-full flex-wrap">
         <div class="flex justify-around flex-wrap w-full lg:w-10/12">
-            @isset($book_list)
+            @if(isset($book_list) && isset($book_count))
                 @if($book_count > 0)
-                    <div class="w-full lg:w-11/12 mt-3 p-1 flex flex-row justify-between felx-wrap">
-                        <p class="ml-2 pt-1 text-center">{{$book_count . ' books found.'}}</p>         
+                    <div class="w-full lg:w-11/12 mt-3 flex flex-row justify-between flex-wrap">
+                        <p class="ml-2 text-center">{{$book_count . ' books found.'}}</p>         
                         <a href="{{ route('books.create') }}" 
-                            class="bg-blue-600 text-white border border-blue-600 rounded-lg px-2 py-1 
-                                  hover:bg-blue-700 hover:border-blue-700 mr-2"> 
-                            Click here to add book manually 
+                            class="text-blue-800 hover:font-semibold hover:text-blue-700 mr-2"> 
+                            Click here to add manually 
                         </a>
                     </div>
                 @else
@@ -90,15 +89,22 @@
                 @endforeach 
             @else
             <div class="bg-white p-5 text-center my-10 w-11/12">
-                <p class="mb-5">Use the search box to find a book by title or author name. You can also add the book
-                    information manually if you cannot find the book. 
-                </p>
+                @isset($api_connect_error)
+                    <p class="mb-5"> 
+                        {{ $api_connect_error->message }}
+                    </p>
+                @else
+                    <p class="mb-5">
+                        Use the search box to find a book by title or author name. You can also add the book
+                        information manually if you cannot find the book. 
+                    </p>
+                @endisset
                 <a href="{{ route('books.create') }}"
                     class="text-blue-600 font-semibold text-lg border border-blue-600 rounded py-2 px-3 hover:bg-blue-700 hover:text-white">
                     Click here to add manually 
                 </a>
             </div>     
-            @endisset
+            @endif
         </div>
     </div>
     <button id="scroll_to_top" onclick="scrollToTop()"

@@ -3,7 +3,7 @@
         @if(count($book_list) > 0)
             <div class="flex justify-between flex-wrap w-11/12 md:w-4/5">
                 <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
-                <p class="md:text-lg">{{$num_book_found . ' in wishlist.'}}</p>
+                <p class="md:text-lg">{{$num_book_found . ' in library.'}}</p>
 
                     <div class="flex flex-row justify-end">
                         <span class="mr-5 inline cursor-pointer text-blue-800 hover:font-semibold text-base md:text-lg">
