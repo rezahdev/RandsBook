@@ -146,7 +146,7 @@
 
     {{--If this book is shown from model--}}
     @if($type=='MODEL_DATA')
-        <div id="delete_popup_box" class="fixed w-11/12 md:1/2 bg-white p-5 rounded-xl display-none" >
+        <div id="delete_popup_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
             <p class="text-center">Are you sure you want to delete this book?</p>
 
             <div class="flex flex-row justify-center mt-5">
@@ -165,7 +165,7 @@
         </div>
     @endif
 
-    <div id="update_read_pages_success_box" class="fixed w-11/12 md:1/2 bg-white p-5 rounded-xl display-none" >
+    <div id="update_read_pages_success_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
         <p class="text-center">Pages read has been successfully updated.</p>
         <div class="flex flex-row justify-center mt-5">
             <button onclick="closePopupBox('update_read_pages_success_box')" 

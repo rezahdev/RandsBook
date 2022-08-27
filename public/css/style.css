@@ -19,7 +19,8 @@ a#site_name{
 
 .cmr-5 { margin-right: 5px; }
 
-#delete_popup_box, #update_read_pages_success_box
+#delete_popup_box, 
+#update_read_pages_success_box
 {
 	visibility: hidden;
 	width: 300px;
@@ -31,13 +32,27 @@ a#site_name{
    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+#filter_options_box,
+#sort_options_box
+{
+	visibility: hidden;
+	width: 300px;
+	position: fixed;
+	top: 120px;
+	padding: 20px;
+   background-color: white;
+   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
 .blurry {
    filter: blur(5px);
 }
 
 @media(max-width: 680px)
 {
-   .authors, .publishers {
+   .authors, .publishers, 
+   #filter_options_box, #sort_options_box
+   {
       width: 92%;
    }
 }

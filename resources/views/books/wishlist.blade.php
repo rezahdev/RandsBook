@@ -3,18 +3,7 @@
         @if(count($book_list) > 0)
             <div class="flex justify-between flex-wrap w-11/12 md:w-4/5">
                 <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
-                <p class="md:text-lg">{{$num_book_found . ' in wishlist.'}}</p>
-
-                    <div class="flex flex-row justify-end">
-                        <span class="mr-5 inline cursor-pointer text-blue-800 hover:font-semibold text-base md:text-lg">
-                            <img class="inline ml-1 pb-0.5" src="/resources/filter.png" width="20" height="20">
-                            Filter
-                        </span>
-                        <span class="inline cursor-pointer text-blue-800 hover:font-semibold text-base md:text-lg">
-                            <img class="inline ml-1 pb-0.5" src="/resources/sort.png" width="24" height="24">
-                            Sort
-                        </span>
-                    </div>
+                    <p class="md:text-lg">{{$num_book_found . ' in wishlist.'}}</p>
                 </div>
                 @foreach($book_list as $book_num => $book)
                     @php 
@@ -27,7 +16,7 @@
                             <img src="{{$book->cover_url }}" class="w-full h-auto" />
                         </div>
 
-                        <div class="p-3 w-3/4 flex flex-wrap flex-col justify-between">
+                        <div class="p-2 pt-1 md:p-3 md:pt-3 w-3/4 flex flex-wrap flex-col justify-between">
                             {{--Book information--}}
                             <div>
                                 <h3 class="font-semibold md:font-bold text-sm md:text-base">{{ $book->title }}</h3>
@@ -42,18 +31,11 @@
                                     @endforeach
                                 </p>
                             </div>
-                            
-                            <div class="w-full bg-gray-200 rounded-full dark:bg-gray-700">
-                                <div class="bg-green-600 text-xs font-medium text-green-100 text-center p-0.5 leading-none rounded-full" 
-                                     style="width: {{ $progress . '%' }}"> 
-                                     {{ $progress . '%' }} 
-                                </div>
-                            </div>
 
                             {{--Link to see show book details--}}
                             <div class="flex flex-wrap flex-row justify-between">
                                 <a href="{{ route('books.show_from_model', ['id' => $book->id]) }}"
-                                   class="text-indigo-600 font-large font-semibold hover:text-blue-600">
+                                   class="text-indigo-600 text-sm md:text-base md:font-semibold hover:text-blue-600">
                                     View Details
                                 </a>
                                 <img src="/resources/heart_filled.png" height="24" width="24" 

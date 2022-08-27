@@ -15,6 +15,11 @@ class BookController extends Controller
 {
     function index()
     {
+        // $order = '';
+        // if(isset($_GET['order']))
+        // {
+        //     $order
+        // }
         $book_list = Book::where('user_id', Auth::user()->id)
                         ->where('isWishlistItem', '0')
                         ->get();
@@ -30,14 +35,14 @@ class BookController extends Controller
             $book->subjects = $subject;
         }
 
-        $num_book_found = 'No book found';
+        $num_book_found = 'No book';
         if(count($book_list) == 1)
         {
-            $num_book_found = '1 book found';
+            $num_book_found = '1 book';
         }
         else if(count($book_list) > 1)
         {
-            $num_book_found = count($book_list) . ' books found';
+            $num_book_found = count($book_list) . ' books';
         }
         return view('books.index', ['book_list' => $book_list, 'num_book_found' => $num_book_found]);
     }
@@ -229,14 +234,14 @@ class BookController extends Controller
             $book->subjects = $subject;
         }
 
-        $num_book_found = 'No book found';
+        $num_book_found = 'No book';
         if(count($book_list) == 1)
         {
-            $num_book_found = '1 book found';
+            $num_book_found = '1 book';
         }
         else if(count($book_list) > 1)
         {
-            $num_book_found = count($book_list) . ' books found';
+            $num_book_found = count($book_list) . ' books';
         }
         return view('books.wishlist', ['book_list' => $book_list, 'num_book_found' => $num_book_found]);
     }
