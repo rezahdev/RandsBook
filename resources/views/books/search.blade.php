@@ -144,10 +144,11 @@ function addToWishlist(wishlistBtnImg, editionKey)
 {
     let http = new XMLHttpRequest();
     let url = "{{route('books.add_to_wishlist')}}";
+    let csrfToken = '{{csrf_token()}}';
     let formData = new FormData();
 
     formData.append('edition_key', editionKey);
-    formData.append('_token', '{{csrf_token()}}');
+    formData.append('_token', csrfToken);
 
     http.open('POST', url, true);
 
@@ -178,10 +179,11 @@ function removeFromWishlist(wishlistBtnImg, bookId)
 {
     let http = new XMLHttpRequest();
     let url = "{{route('books.remove_from_wishlist')}}";
+    let csrfToken = '{{csrf_token()}}';
     let formData = new FormData();
 
     formData.append('book_id', bookId);
-    formData.append('_token', '{{csrf_token()}}');
+    formData.append('_token', csrfToken);
     formData.append('_method', 'DELETE');
 
     http.open('POST', url, true);

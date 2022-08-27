@@ -127,7 +127,7 @@
                                class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2">
                                 Edit Book
                             </a>
-                            <button onclick="openDeletePopupBox()" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2">
+                            <button onclick="openDeletePopupBox()" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2 mt-2">
                                 Delete
                             </button >
                         @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '1') 
@@ -136,7 +136,7 @@
                                     Add to Library
                             </button>
                             <button onclick="removeFromWishlist('{{$book->id}}', '{{csrf_token()}}')" 
-                                    class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2">
+                                    class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2 mt-2">
                                 Remove from wishlist
                             </button >
                         @endif
