@@ -15,14 +15,23 @@ class BookController extends Controller
 {
     function index()
     {
-        // $order = '';
-        // if(isset($_GET['order']))
-        // {
-        //     $order
-        // }
-        $book_list = Book::where('user_id', Auth::user()->id)
-                        ->where('isWishlistItem', '0')
-                        ->get();
+        $query = "SELECT * FROM books where user_id = '" . Auth::user()->id . "' AND isWishlistItem = '0'";
+        $filter = '';
+        if(isset($_GET['filter']))
+        {
+            $filter = strip_tags($_GET['filter']);
+            $query ="SELECT * FROM books b1 INNER JOIN books b2 on b1.id = b2.id WHERE b1.user_id='" . Auth::user()->id . "' ";
+            if($filter == 'completed')
+            {            
+                $query .= "AND b1.isWishlistItem = '0' AND b1.total_pages = b2.read_pages";
+            }
+            else if($filter == 'progress')
+            {
+                $query .= "AND b1.isWishlistItem = '0' AND b1.total_pages <> b2.read_pages";
+            }
+        }
+
+        $book_list = DB::select($query);
 
         foreach($book_list as $book)
         {
@@ -44,7 +53,11 @@ class BookController extends Controller
         {
             $num_book_found = count($book_list) . ' books';
         }
-        return view('books.index', ['book_list' => $book_list, 'num_book_found' => $num_book_found]);
+        return view('books.index', [
+            'book_list' => $book_list, 
+            'num_book_found' => $num_book_found,
+            'filtered_by' => $filter
+        ]);
     }
 
     function show_from_model($id)

@@ -1,19 +1,18 @@
 <x-app-layout>
     <div class="flex justify-center w-full flex-wrap">
-        @if(count($book_list) > 0)
-            <div class="flex justify-between flex-wrap w-11/12 md:w-4/5 mb-10" id="container">
-                <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
+        <div class="flex justify-between flex-wrap w-11/12 md:w-4/5 mb-10" id="container">
+            <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
                 <p class="md:text-lg">{{$num_book_found . ' in library.'}}</p>
-
-                    <div class="flex flex-row justify-end">
-                        <img id="filter_img" class="pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
+                <div class="flex flex-row justify-end">
+                    <img id="filter_img" class="pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
                              src="/resources/filter.png" width="32" height="32"
                              onclick="invokeFilterOptionsBox()">
-                        <img id="sort_img" class="ml-3 md:ml-5 pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
+                    <img id="sort_img" class="ml-3 md:ml-5 pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
                              src="/resources/sort.png" width="32" height="32"
                              onclick="invokeSortOptionsBox()">
-                    </div>
                 </div>
+            </div>
+            @if(count($book_list) > 0)
                 @foreach($book_list as $book)
                     @php 
                         $progress = round(($book->read_pages / $book->total_pages) * 100);
@@ -58,8 +57,12 @@
                     </div>
                 @endforeach
             </div>
+        @elseif($filtered_by == "completed")
+            {{--Shown when no book is found in the DB for the given filter--}}
+            <div class="w-11/12 md:w-2/5 bg-white p-5 text-center my-10">
+                <p class="mb-5">You do not have any completed book in your library yet.</p>
+            </div>
         @else
-            {{--Shown when no book is found in the DB--}}
             <div class="w-11/12 md:w-2/5 bg-white p-5 text-center my-10">
                 <p class="mb-5">You do not have any book in your library yet.</p>
                 <a href="{{ route('books.search') }}"
@@ -72,8 +75,8 @@
 
     <div id="filter_options_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
         <ul class="text-center text-gray-600">Filter by
-            <li class="mt-3 text-indigo-700 cursor-pointer hover:font-semibold">Completed books only</li>
-            <li class="text-indigo-700 cursor-pointer hover:font-semibold">In-progress books only</li>
+            <a href="\?filter=completed"><li class="mt-3 text-indigo-700 cursor-pointer hover:font-semibold">Completed books only</li></a>
+            <a href="\?filter=progress"><li class="text-indigo-700 cursor-pointer hover:font-semibold">In-progress books only</li></a>
             <li class="text-indigo-700 text-center mt-3 cursor-pointer hover:font-semibold" 
                 onclick="invokeFilterOptionsBox()">
                 Cancel
