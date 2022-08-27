@@ -40,7 +40,7 @@
                                 </a>
                                 <img src="/resources/heart_filled.png" height="24" width="24" 
                                      class="cursor-pointer hover:scale-110"
-                                     onclick="removeFromWishlist('wishlist_book_{{$book_num}}', '{{$book->id}}', '{{csrf_token()}}')" />
+                                     onclick="removeFromWishlist('wishlist_book_{{$book_num}}', '{{$book->id}}')" />
                             </div>
                         </div>
                     </div>
@@ -81,14 +81,15 @@ function scrollToTop()
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function removeFromWishlist(wishlistBookId, bookId, csrfToken)
+function removeFromWishlist(wishlistBookId, bookId)
 {
     let http = new XMLHttpRequest();
     let url = "{{route('books.remove_from_wishlist')}}";
     let formData = new FormData();
 
     formData.append('book_id', bookId);
-    formData.append('_token', csrfToken);
+    formData.append('_token', '{{csrf_token()}}');
+    formData.append('_method', 'DELETE');
 
     http.open('POST', url, true);
 

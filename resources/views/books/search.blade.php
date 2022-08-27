@@ -85,11 +85,11 @@
                                 @if($book->isWishlisted)
                                     <img src="/resources/heart_filled.png" height="24" width="24" 
                                          class="cursor-pointer hover:scale-110"
-                                         onclick="removeFromWishlist(this, '{{$book->wishlistBookId}}', '{{csrf_token()}}')" />
+                                         onclick="removeFromWishlist(this, '{{$book->wishlistBookId}}')" />
                                 @else
                                     <img src="/resources/heart_blank.png" height="24" width="24" 
                                          class="cursor-pointer hover:scale-110"
-                                         onclick="addToWishlist(this, '{{$book->edition_key}}', '{{csrf_token()}}')" />
+                                         onclick="addToWishlist(this, '{{$book->edition_key}}')" />
                                 @endif
                             </div>
                         </div>
@@ -140,14 +140,14 @@ function scrollToTop()
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function addToWishlist(wishlistBtnImg, editionKey, csrfToken)
+function addToWishlist(wishlistBtnImg, editionKey)
 {
     let http = new XMLHttpRequest();
     let url = "{{route('books.add_to_wishlist')}}";
     let formData = new FormData();
 
     formData.append('edition_key', editionKey);
-    formData.append('_token', csrfToken);
+    formData.append('_token', '{{csrf_token()}}');
 
     http.open('POST', url, true);
 
@@ -174,14 +174,15 @@ function addToWishlist(wishlistBtnImg, editionKey, csrfToken)
     http.send(formData);
 }
 
-function removeFromWishlist(wishlistBtnImg, bookId, csrfToken)
+function removeFromWishlist(wishlistBtnImg, bookId)
 {
     let http = new XMLHttpRequest();
     let url = "{{route('books.remove_from_wishlist')}}";
     let formData = new FormData();
 
     formData.append('book_id', bookId);
-    formData.append('_token', csrfToken);
+    formData.append('_token', '{{csrf_token()}}');
+    formData.append('_method', 'DELETE');
 
     http.open('POST', url, true);
 

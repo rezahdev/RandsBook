@@ -422,6 +422,23 @@ class BookController extends Controller
          ]);
     }
 
+    function wishlist_to_library(Request $request)
+    {
+        try
+        {     
+            $book_id = strip_tags($request->book_id);
+            $book = Book::where([['id', $book_id], ['user_id', Auth::user()->id]])->first();        
+            $book->isWishlistItem = 0;
+            $book->save();
+
+            return json_encode(['response' => 'OK', 'message' => $book->title . ' has been added to your library.']);
+        }
+        catch(\Exception $e)
+        {
+            return json_encode(['response' => 'FAILED', 'message' => $e->getMessage()]);
+        }
+    }
+
     function update_read_pages(Request $request)
     {
         $request->validate(['book_id' => 'integer|required', 'read_pages' => 'required|integer']);
@@ -435,7 +452,7 @@ class BookController extends Controller
         $book->read_pages = strip_tags($request->read_pages);
         $book->save();
         
-        return "OK";
+        return json_encode(['response' => 'OK', 'message' => 'Pages read has been added to your library.']);
     }
 
     function search()

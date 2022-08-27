@@ -90,24 +90,26 @@
                             </div>  
                         @endif
 
-                        @if($type == "MODEL_DATA")
-                            <form id="read_pages_update_form">
-                                <label class="mr-2">Pages read: </label>
-                                <input name="csrf_token" value="{{csrf_token()}}" type="hidden"/>
-                                <input type="hidden" name="book_id" value="{{ $book->id }}">
-                                <input id="read_pages" name="read_pages" type="text" 
+                        @if($type == "MODEL_DATA" && $book->isWishlistItem == '0')
+                            
+                            <label class="mr-2">Pages read: </label>
+                            <input id="read_pages" name="read_pages" type="text" 
                                        value="{{$book->read_pages}}" 
-                                       oldValue = ""
+                                       oldValue=""
                                        onfocus="this.oldValue = this.value"
                                        class="w-24 p-1 mt-5 rounded" 
                                        onkeydown="return event.key != 'Enter';"
                                        onchange="updateReadPagesRangerValue()">
-                                <input id="read_pages_ranger" type="range" value="{{ $book->read_pages }}" 
+                            <button id="update_read_pages_btn"
+                                    class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2 hidden"
+                                    onclick="updateReadPages('{{$book->id}}', '{{csrf_token()}}')">
+                                Update
+                            </button>
+                            <input id="read_pages_ranger" type="range" value="{{ $book->read_pages }}" 
                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 my-5"
                                        min="0" max="{{$book->total_pages}}"
                                        onchange="updateReadPagesInputValue()">
-                                <button id="submit_read_pages_btn" type="submit" class="hidden"></button>
-                            </form>
+                            
                         @endif
                     </div>
 
@@ -116,21 +118,26 @@
                         @if($type == 'SEARCH_DATA')
                             <form action="{{ route('books.create_with_data', ['edition_key' => $book->edition_key]) }}">
                                 @csrf
-                                <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mr-2">
+                                <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2">
                                     Add Book to My Library
                                 </button>
                             </form>
-                        @elseif($type == 'MODEL_DATA') 
-                            <button onclick="submitUpdateReadPagesForm()" id="update_read_pages_btn"
-                                    class="bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" disabled>
-                                Update Read Pages
-                            </button>
+                        @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '0') 
                             <a href="{{ route('books.edit', ['id' => $book->id]) }}"
-                               class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded mr-2">
+                               class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2">
                                 Edit Book
                             </a>
-                            <button onclick="openDeletePopupBox()" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded mr-2">
+                            <button onclick="openDeletePopupBox()" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2">
                                 Delete
+                            </button >
+                        @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '1') 
+                            <button onclick="addToLibrary('{{$book->id}}', '{{csrf_token()}}')"
+                                    class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2" >
+                                    Add to Library
+                            </button>
+                            <button onclick="removeFromWishlist('{{$book->id}}', '{{csrf_token()}}')" 
+                                    class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2">
+                                Remove from wishlist
                             </button >
                         @endif
                     </div>     
@@ -175,8 +182,6 @@
         </div>
     </div>
 
-
-
     @if($errors->any())
         <script>
             window.addEventListener('DOMContentLoaded', function() {
@@ -187,29 +192,4 @@
     @endif
     
 </x-app-layout>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-
-<script>
-$("#submit_read_pages_btn").click(function(e) {
-    e.preventDefault();
-    let read_pages = $("input[name=read_pages]").val();
-    let book_id = $("input[name=book_id]").val();
-    let csrf_token = $("input[name=csrf_token]").val();
-
-    $.ajax({
-        type: 'PUT',
-        url: "{{ route('books.update_read_pages') }}",
-        data: {
-            "_token": csrf_token,
-            read_pages:read_pages, 
-            book_id:book_id 
-        },
-        success:function(data) {
-            showUpdateReadPageSuccessMsg();
-        }
-    });
-});
-</script>
-
 <script src="/js/showViewHandler.js"></script>
