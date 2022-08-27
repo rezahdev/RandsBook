@@ -74,9 +74,16 @@
     </div>
 
     <div id="filter_options_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
+        @php 
+            $sortParam= '';
+            if(request()->get('sort') && request()->get('order'))
+            {
+                $sortParam = '&sort=' . request()->sort . '&order=' . request()->order;
+            }
+        @endphp
         <ul class="text-center text-gray-600">Filter by
-            <a href="\?filter=completed"><li class="mt-3 text-indigo-700 cursor-pointer hover:font-semibold">Completed books only</li></a>
-            <a href="\?filter=progress"><li class="text-indigo-700 cursor-pointer hover:font-semibold">In-progress books only</li></a>
+            <a href="\?filter=completed{{$sortParam}}"><li class="mt-3 text-indigo-700 cursor-pointer hover:font-semibold">Completed books only</li></a>
+            <a href="\?filter=progress{{$sortParam}}"><li class="text-indigo-700 cursor-pointer hover:font-semibold">In-progress books only</li></a>
             <li class="text-indigo-700 text-center mt-3 cursor-pointer hover:font-semibold" 
                 onclick="invokeFilterOptionsBox()">
                 Cancel
@@ -85,11 +92,18 @@
     </div>
 
     <div id="sort_options_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
+        @php 
+            $url = '\?';
+            if(request()->get('filter'))
+            {
+                $url .= 'filter=' . request()->filter . '&';
+            }
+        @endphp
         <ul class="text-center text-gray-600">Sort by
-            <li class="mt-3 text-indigo-700 cursor-pointer hover:font-semibold">Date added</li>
-            <li class="text-indigo-700 cursor-pointer hover:font-semibold">Last read</li>
-            <li class="text-indigo-700 cursor-pointer hover:font-semibold">Progress - low to high</li>
-            <li class="text-indigo-700 cursor-pointer hover:font-semibold">Progress - high to low</li>
+            <a href="{{$url}}sort=date_added&order=desc"><li class="mt-3 text-indigo-700 cursor-pointer hover:font-semibold">Date added - recent to old</li></a>
+            <a href="{{$url}}sort=date_added&order=asc"><li class="text-indigo-700 cursor-pointer hover:font-semibold">Date added - old to recent</li></a>
+            <a href="{{$url}}sort=progress&order=desc"><li class="text-indigo-700 cursor-pointer hover:font-semibold">Progress - low to high</li></a>
+            <a href="{{$url}}sort=progress&order=asc"><li class="text-indigo-700 cursor-pointer hover:font-semibold">Progress - high to low</li></a>
             <li class="text-indigo-700 cursor-pointer text-center mt-3 hover:font-semibold" 
                 onclick="invokeSortOptionsBox()">
                 Cancel

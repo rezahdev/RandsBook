@@ -17,6 +17,7 @@ class BookController extends Controller
     {
         $query = "SELECT * FROM books where user_id = '" . Auth::user()->id . "' AND isWishlistItem = '0'";
         $filter = '';
+        $sort = '';
         if(isset($_GET['filter']))
         {
             $filter = strip_tags($_GET['filter']);
@@ -28,6 +29,53 @@ class BookController extends Controller
             else if($filter == 'progress')
             {
                 $query .= "AND b1.isWishlistItem = '0' AND b1.total_pages <> b2.read_pages";
+            }
+        }
+
+        if(isset($_GET['sort']) && isset($_GET['order']))
+        {
+            $sort = strip_tags($_GET['sort']);
+            $order = strip_tags($_GET['order']);
+
+            if(($filter == 'completed' || $filter == 'progress'))
+            {
+                if($sort == 'date_added' && $order == 'asc')
+                {            
+                    $query .= " ORDER BY b1.created_at";
+                }
+                else if($sort == 'date_added' && $order == 'desc')
+                {            
+                    $query .= " ORDER BY b1.created_at DESC";
+                }
+                else if($sort == 'progress' && $order == 'asc')
+                {            
+                    $query .= " ORDER BY (b1.total_pages - b2.read_pages)";
+                }
+                else if($sort == 'progress' && $order == 'desc')
+                {            
+                    $query .= " ORDER BY (b1.total_pages - b2.read_pages) DESC";
+                }
+            }
+            else
+            {
+                if($sort == 'date_added' && $order == 'asc')
+                {            
+                    $query .= " ORDER BY created_at";
+                }
+                else if($sort == 'date_added' && $order == 'desc')
+                {            
+                    $query .= " ORDER BY created_at DESC";
+                }          
+                else if($sort == 'progress' && $order == 'asc')
+                {   
+                    $query ="SELECT * FROM books b1 INNER JOIN books b2 on b1.id = b2.id WHERE b1.user_id='" . Auth::user()->id . "' ";        
+                    $query .= "AND b1.isWishlistItem = '0' ORDER BY (b1.total_pages - b2.read_pages)";
+                }
+                else if($sort == 'progress' && $order == 'desc')
+                {   
+                    $query ="SELECT * FROM books b1 INNER JOIN books b2 on b1.id = b2.id WHERE b1.user_id='" . Auth::user()->id . "' ";        
+                    $query .= "AND b1.isWishlistItem = '0' ORDER BY (b1.total_pages - b2.read_pages) DESC";
+                }
             }
         }
 
