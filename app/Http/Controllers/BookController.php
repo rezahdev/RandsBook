@@ -326,7 +326,40 @@ class BookController extends Controller
                 $book->description = $data->description;
                 $book->cover_url = $data->cover_url;
                 $book->isWishlistItem = '1';
-                $book->save();  
+                $book->save();
+
+                //save author info
+                foreach($data->authors as $a)
+                {
+                    $author = new Author();
+                    $author->name = $a->name;
+                    $author->book_id = $book->id;
+                    $author->save();
+                }
+
+                //save publisher info
+                foreach($data->publishers as $p)
+                {
+                    $publisher = new Publisher();
+                    $publisher->name = $p;
+                    $publisher->book_id = $book->id;
+                    $publisher->save();
+                }
+
+                //save subjects info
+                foreach($data->subjects as $index => $s)
+                {
+                    $subject = new Subject();
+                    $subject->name = $s;
+                    $subject->book_id = $book->id;
+                    $subject->save();
+
+                    if($index == 2)
+                    {
+                        break;
+                    }
+                }
+
                 return json_encode([
                     'response' => $search_result->response, 
                     'message' => $book->title . ' has been added to your wishlist.',
@@ -354,6 +387,28 @@ class BookController extends Controller
         if(is_null($book))
         {
             return json_encode(['response' => 'FAILED', 'message' => 'Invalid book id.']);
+        }
+
+        $authors = Author::where('book_id', $book->id)->get();           
+        foreach($authors as $author)
+        {
+            $a = Author::find($author->id);
+            $a->delete();
+
+        }
+
+        $publishers = Publisher::where('book_id', $book->id)->get();
+        foreach($publishers as $publisher)
+        {
+            $p = Publisher::find($publisher->id);
+            $p->delete();
+        }
+
+        $subjects = Subject::where('book_id', $book->id)->get();
+        foreach($subjects as $subject)
+        {
+            $s = Subject::find($subject->id);
+            $s->delete();
         }
 
         $title = $book->title;

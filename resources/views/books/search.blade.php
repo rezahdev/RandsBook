@@ -158,6 +158,7 @@ function addToWishlist(wishlistBtnImg, editionKey, csrfToken)
             let responseObj = JSON.parse(http.responseText);
             if(responseObj.response == 'OK')
             {
+                alert(responseObj.message);
                 const img = wishlistBtnImg.cloneNode(true);
                 img.removeAttribute('onclick');
                 img.src = '/resources/heart_filled.png';
