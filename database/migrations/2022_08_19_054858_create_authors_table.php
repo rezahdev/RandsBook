@@ -14,7 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::create('authors', function (Blueprint $table) {
-            //
             $table->id();
             $table->integer('book_id');
             $table->string('author_name');
@@ -32,7 +31,6 @@ return new class extends Migration
     public function down()
     {
         Schema::table('authors', function (Blueprint $table) {
-            //
             Schema::dropIfExists('authors');
         });
     }

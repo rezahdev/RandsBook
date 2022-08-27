@@ -14,7 +14,6 @@ return new class extends Migration
     public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            //
             $table->string('subtitle')->nullable();
             $table->string('authors')->nullable();
             $table->string('publishers')->nullable();
@@ -34,7 +33,6 @@ return new class extends Migration
     public function down()
     {
         Schema::table('books', function (Blueprint $table) {
-            //
             //Schema::dropIfExists('books');
         });
     }
