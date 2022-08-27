@@ -47,7 +47,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('books.create')">
+                        <x-dropdown-link :href="route('profile')">
                                 {{ __('Profile') }}
                         </x-dropdown-link>
                         
@@ -98,7 +98,11 @@
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-small text-base text-black">Profile</div>
+                <a href="{{route('profile')}}">
+                    <div class="font-small text-base text-black">
+                        Profile
+                    </div>
+                </a>
             </div>
 
             <div class="mt-3 space-y-1">

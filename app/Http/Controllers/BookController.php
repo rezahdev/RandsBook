@@ -15,9 +15,10 @@ class BookController extends Controller
 {
     function index()
     {
-        $query = "SELECT * FROM books where user_id = '" . Auth::user()->id . "' AND isWishlistItem = '0'";
         $filter = '';
         $sort = '';
+        $query = "SELECT * FROM books where user_id = '" . Auth::user()->id . "' AND isWishlistItem = '0'";
+    
         if(isset($_GET['filter']))
         {
             $filter = strip_tags($_GET['filter']);
@@ -101,6 +102,7 @@ class BookController extends Controller
         {
             $num_book_found = count($book_list) . ' books';
         }
+        
         return view('books.index', [
             'book_list' => $book_list, 
             'num_book_found' => $num_book_found,

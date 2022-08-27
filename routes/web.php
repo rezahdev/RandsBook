@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,7 @@ Route::get('/wishlist', [BookController::class, 'wishlist'])->middleware('auth')
 Route::post('/wishlist/add', [BookController::class, 'add_to_wishlist'])->middleware('auth')->name('books.add_to_wishlist');
 Route::delete('/wishlist/remove', [BookController::class, 'remove_from_wishlist'])->middleware('auth')->name('books.remove_from_wishlist');
 Route::put('/wishlistToLibrary', [BookController::class, 'wishlist_to_library'])->middleware('auth')->name('books.wishlist_to_library');
+Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth')->name('profile');
+
+Route::put('/profile/update-name', [BookController::class, 'update_name'])->middleware('auth')->name('profile.update_name');
 require __DIR__.'/auth.php';
