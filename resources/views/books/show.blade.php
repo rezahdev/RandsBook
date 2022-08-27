@@ -159,7 +159,7 @@
             <div class="flex flex-row justify-center mt-5">
                 <form action="{{ route('books.delete', ['id' => $book->id]) }}" method="post">
                     @csrf 
-                    @method('PATCH')
+                    @method('DELETE')
                         <button type="submit" class="bg-red-700 border border-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded mr-2">
                             Yes, Delete
                         </button>

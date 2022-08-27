@@ -24,7 +24,7 @@ Route::get('/book/{id}/edit', [BookController::class, 'edit'])->middleware('auth
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
 
 Route::put('/update', [BookController::class, 'update'])->middleware('auth')->name('books.update');
-Route::patch('/delete/{id}', [BookController::class, 'delete'])->middleware('auth')->name('books.delete');
+Route::delete('/delete/{id}', [BookController::class, 'delete'])->middleware('auth')->name('books.delete');
 
 Route::put('/updateReadPages', [BookController::class, 'update_read_pages'])->middleware('auth')->name('books.update_read_pages');
 
