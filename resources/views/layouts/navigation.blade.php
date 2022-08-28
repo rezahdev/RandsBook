@@ -47,7 +47,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')">
+                        <x-dropdown-link :href="route('profile.index')" active="border-b border-blue-800">
                                 {{ __('Profile') }}
                         </x-dropdown-link>
                         
@@ -55,7 +55,7 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')"
+                            <x-dropdown-link id="logout_btn" :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
@@ -98,7 +98,7 @@
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <a href="{{route('profile')}}">
+                <a href="{{route('profile.index')}} " active="border-b border-blue-800">
                     <div class="font-small text-base text-black">
                         Profile
                     </div>
