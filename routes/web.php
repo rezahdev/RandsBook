@@ -40,4 +40,7 @@ Route::put('/profile/updateNickname', [ProfileController::class, 'update_nicknam
 Route::put('/profile/updateEmail', [ProfileController::class, 'update_email'])->middleware('auth')->name('profile.update_email');
 Route::get('/profile/changePassword', [ProfileController::class, 'change_password'])->middleware('auth')->name('profile.change_password');
 Route::put('/profile/updatePassword', [ProfileController::class, 'update_password'])->middleware('auth')->name('profile.update_password');
+Route::get('/credits', function() {
+    return view('credits');
+});
 require __DIR__.'/auth.php';
