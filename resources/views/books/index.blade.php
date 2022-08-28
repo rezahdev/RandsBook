@@ -56,21 +56,22 @@
                         </div>
                     </div>
                 @endforeach
-            </div>
-        @elseif($filtered_by == "completed")
-            {{--Shown when no book is found in the DB for the given filter--}}
-            <div class="w-11/12 md:w-2/5 bg-white p-5 text-center my-10">
-                <p class="mb-5">You do not have any completed book in your library yet.</p>
-            </div>
-        @else
-            <div class="w-11/12 md:w-2/5 bg-white p-5 text-center my-10">
-                <p class="mb-5">You do not have any book in your library yet.</p>
-                <a href="{{ route('books.search') }}"
-                   class="text-blue-800 font-semibold text-lg border border-blue-800 rounded py-2 px-3 hover:bg-blue-800 hover:text-white">
-                    Click here to add new book 
-                </a>
-            </div>
-        @endif
+        </div>
+            @elseif($filtered_by == "completed")
+                {{--Shown when no book is found in the DB for a given filter--}}
+                <div class="w-full bg-white py-5 text-center my-10">
+                    <p class="mb-5">You do not have any completed book in your library yet.</p>
+                </div>
+            @else
+                {{--Shown when no book is found in the DB--}}
+                <div class="w-full bg-white pt-4 pb-10 text-center my-10">
+                    <p class="mb-5">You do not have any book in your library yet.</p>
+                    <a href="{{ route('books.search') }}"
+                       class="text-blue-800 border border-blue-800 rounded pt-2 pb-3 px-3 hover:bg-blue-800 hover:text-white">
+                        Click here to add new book 
+                    </a>
+                </div>
+            @endif
     </div>
 
     <div id="filter_options_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
