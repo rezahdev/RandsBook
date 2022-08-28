@@ -173,7 +173,7 @@
     @endif
 
     <div id="update_read_pages_success_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
-        <p class="text-center">Pages read has been successfully updated.</p>
+        <p class="text-center">{{--dynamically filled by js--}}</p>
         <div class="flex flex-row justify-center mt-5">
             <button onclick="closePopupBox('update_read_pages_success_box')" 
                     class="bg-white border border-blue-800 text-blue-800 hover:bg-blue-800 hover:text-white font-bold py-1 px-3 rounded mr-2"> 
@@ -192,4 +192,5 @@
     @endif
     
 </x-app-layout>
+<script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
 <script src="/js/showViewHandler.js"></script>

@@ -448,13 +448,23 @@ class BookController extends Controller
 
         if(is_null($book))
         {
-            return "FAILED";
+            return json_encode(['response' => 'FAILED', 'message' => 'Invalid book id.']);
         }
 
         $book->read_pages = strip_tags($request->read_pages);
         $book->save();
+
+        $message = '';
+        if($book->total_pages == $book->read_pages)
+        {
+            $message = 'Congratulations! You have finished this book.';
+        }
+        else
+        {
+            $message = 'Almost there! You are ' . $book->total_pages - $book->read_pages . ' pages away from finshing this book.';
+        }
         
-        return json_encode(['response' => 'OK', 'message' => 'Pages read has been added to your library.']);
+        return json_encode(['response' => 'OK', 'message' => $message]);
     }
 
     function search()

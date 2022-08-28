@@ -13,6 +13,9 @@ function closePopupBox(popupBoxId)
     {
         main_content.classList.remove("blurry");
     }
+
+    //If confetti animation running
+    
 }
 
 function updateReadPagesInputValue() 
@@ -41,8 +44,9 @@ function updateReadPagesRangerValue()
     update_read_pages_btn.classList.remove('hidden');
 }
 
-function showUpdateReadPageSuccessMsg() 
+function showUpdateReadPageSuccessMsg(message) 
 {
+    update_read_pages_success_box.children[0].textContent = message;
     update_read_pages_success_box.style.visibility = "visible";
     blurrBackground();
 }
@@ -75,7 +79,11 @@ function updateReadPages(bookId, csrfToken)
             let responseObj = JSON.parse(http.responseText);
             if(responseObj.response == 'OK')
             {
-                showUpdateReadPageSuccessMsg();
+                update_read_pages_btn.classList.add('hidden');
+                showUpdateReadPageSuccessMsg(responseObj.message);
+                party.confetti(main_content, {
+                    count: party.variation.range(200, 200),
+                });
             }
             else
             {
