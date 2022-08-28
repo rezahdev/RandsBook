@@ -7,3 +7,4 @@ public/hot
 storage/*.key
 .env.*
 .env
+public/resources/*

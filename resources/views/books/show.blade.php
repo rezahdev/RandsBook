@@ -108,8 +108,7 @@
                             <input id="read_pages_ranger" type="range" value="{{ $book->read_pages }}" 
                                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 my-5"
                                        min="0" max="{{$book->total_pages}}"
-                                       onchange="updateReadPagesInputValue()">
-                            
+                                       onchange="updateReadPagesInputValue()">                     
                         @endif
                     </div>
 

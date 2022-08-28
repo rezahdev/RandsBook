@@ -5,6 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <meta property="og:title" content="RandsBook - Personal Library App" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.randsbook.com" />
+        <meta property="og:image" content="https://resources/og_img.jpg" />
+
+        <meta name="twitter:title" content="RandsBook - Personal Library App">
+        <meta name="twitter:description" content="Search, add, manage books in one signle app.">
+        <meta name="twitter:image" content="https://resources/og_img.jpg">
+        <meta name="twitter:card" content="summary_large_image">
+
         <title>{{ config('app.name', 'RandsBook') }}</title>
 
         <!-- Fonts -->
