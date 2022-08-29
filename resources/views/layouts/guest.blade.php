@@ -5,15 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <meta property="og:title" content="RandsBook - Personal Library App" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.randsbook.com" />
-        <meta property="og:image" content="https://resources/og_img.jpg" />
-
-        <meta name="twitter:title" content="RandsBook - Personal Library App">
-        <meta name="twitter:description" content="Search, add, manage books in one signle app.">
-        <meta name="twitter:image" content="https://resources/og_img.jpg">
-        <meta name="twitter:card" content="summary_large_image">
+        <meta name="title" content="RandsBook - Personal Library App">
+        <meta name="description" content="Log in to RandsBook.com personal library app to search, add, and manage your through one single app.">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://randsbook.com/login">
+        <meta property="og:title" content="RandsBook - Personal Library App">
+        <meta property="og:description" content="Log in to RandsBook.com personal library app to search, add, and manage your through one single app.">
+        <meta property="og:image" content="https://randsbook.com/resources/og_img.jpg">
+        
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://randsbook.com/login">
+        <meta property="twitter:title" content="RandsBook - Personal Library App">
+        <meta property="twitter:description" content="Log in to RandsBook.com personal library app to search, add, and manage your through one single app.">
+        <meta property="twitter:image" content="https://randsbook.com/resources/og_img.jpg">
 
         <title>{{ config('app.name', 'RandsBook') }}</title>
 
@@ -26,8 +33,10 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
-        <div class="font-sans text-gray-900 antialiased">
+        <div class="font-sans text-gray-900 antialiased bg-gray-200" id="main">
             {{ $slot }}
+            @include('layouts.footer')
         </div>
+        
     </body>
 </html>

@@ -1,4 +1,4 @@
-<div class="w-full bg-white p-5 text-sm text-gray-700 absolute bottom-0 flex flex-col items-center">
+<div id="footer" class="w-full bg-white p-5 text-sm text-gray-700 flex flex-col items-center">
     <div class="flex flex-row flex-center">
         <p onclick="showAbout()" class="mx-2 hover:text-blue-700 cursor-pointer">About</p>
         <p onclick="showAbout()" class="mx-2 hover:text-blue-700 cursor-pointer">License</p>
@@ -20,6 +20,17 @@
 </div>
 
 <script>
+window.onload = function () 
+{
+    let docHeight = document.getElementById('main').clientHeight;
+    
+    if (innerHeight > docHeight) 
+    {
+        footer.classList.add("fixed");
+        footer.classList.add("bottom-0");
+    } 
+}
+
 function showAbout()
 {
     if(about.classList.contains('hidden'))

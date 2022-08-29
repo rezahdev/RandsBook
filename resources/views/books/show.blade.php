@@ -123,7 +123,7 @@
                             </form>
                         @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '0') 
                             <a href="{{ route('books.edit', ['id' => $book->id]) }}"
-                               class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2">
+                               class="bg-blue-700 hover:bg-blue-800 text-white px-3 rounded mr-2" style="padding-top: 6px; padding-bottom: 6px">
                                 Edit Book
                             </a>
                             <button onclick="openDeletePopupBox()" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2 mt-2">
