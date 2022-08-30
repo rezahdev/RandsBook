@@ -80,9 +80,9 @@
                 @endphp
                 <div class="w-[calc(50%-0.5rem)] md:w-36 md:h-44 bg-white flex flex-col items-center justify-around mt-2 p-3 rounded-lg {{$b1}}">
                     <img src="/resources/trophy1.png" class="w-24 h-auto unlocked" />
-                    <p>Learner</p>
+                    <p>Beginner</p>
                     @if($b1 == 'locked')
-                        <p class="text-xs text-center">Complete first book to unclock</p>
+                        <p class="text-xs text-center">Complete 1 book to unclock</p>
                     @endif
                 </div>
                 <div class="w-[calc(50%-0.5rem)] md:w-36 md:h-44 bg-white flex flex-col items-center justify-around mt-2 p-3 rounded-lg {{$b2}}">
@@ -108,21 +108,21 @@
                 </div>
                 <div class="w-[calc(50%-0.5rem)] md:w-36 md:h-44 bg-white flex flex-col items-center justify-around mt-2 p-3 rounded-lg {{$b5}}">
                     <img src="/resources/trophy5.png" class="w-20 h-auto" />
-                    <p>Expert</p>
+                    <p>Professional</p>
                     @if($b5 == 'locked')
                         <p class="text-xs text-center">Read 50 books to unclock</p>
                     @endif
                 </div>
                 <div class="w-[calc(50%-0.5rem)] md:w-36 md:h-44 bg-white flex flex-col items-center justify-around mt-2 p-3 rounded-lg {{$b6}}">
                     <img src="/resources/trophy6.png" class="w-20 h-auto" />
-                    <p>Great</p>
+                    <p>Expert</p>
                     @if($b6 == 'locked')
                         <p class="text-xs text-center">Read 100 books to unclock</p>
                     @endif
                 </div>
                 <div class="w-[calc(50%-0.5rem)] md:w-36 md:h-44 bg-white flex flex-col items-center justify-around mt-2 p-3 rounded-lg {{$b7}}">
                     <img src="/resources/trophy7.png" class="w-20 h-auto" />
-                    <p>Excellent</p>
+                    <p>Champion</p>
                     @if($b7 == 'locked')
                         <p class="text-xs text-center">Read 200 books to unclock</p>
                     @endif
