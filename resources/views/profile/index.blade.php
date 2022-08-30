@@ -24,7 +24,13 @@
                 </div>
 
                 <div class="w-full md:w-[calc(50%-4px)] bg-white p-2 mt-3 md:ml-1 rounded flex flex-row flex-wrap justify-between">
-                    <p id="user_email">Email: {{$user->email}}</p>
+                    <p id="user_email">Email: {{$user->email}} 
+                        @if(is_null($user->email_verified_at))
+                            <span class="text-red-700">(Unverified)</span>
+                        @else 
+                            <span class="text-green-700">(Verified)</span>
+                        @endif
+                    </p>
                     <img src="/resources/pen.png" width="24" height="24" onclick="invokeUpdateEmailBox()" 
                          class="cursor-pointer hover:scale-105">
                 </div>
@@ -199,7 +205,8 @@
             <input type="text" name="nickname" placeholder="Nick name" 
                    class="w-full border border-gray-700 p-2 rounded mt-2 mb-3">
             <input type="checkbox" name="use_nickname" value="1"
-                   class="border border-gray-700 p-2 rounded mt-2 mb-3">
+                   class="border border-gray-700 p-2 rounded mt-2 mb-3"
+                   @if($user->use_nickname == 1) checked @endif>
             <label for="use_nickname">Use nickname in public posts</label>
             <div class="w-full flex flex-row justify-between mt-2">
                 <button type="submit" class="bg-blue-700 rounded py-1 px-2 text-white hover:bg-blue-800">

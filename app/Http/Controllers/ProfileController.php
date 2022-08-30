@@ -56,14 +56,14 @@ class ProfileController extends Controller
         $request->validate(['email' => 'required|email|unique:users']);
         $email = strip_tags($request->email);     
             
-        User::where('id', Auth::user()->id)->update(['email' => $email]);
+        User::where('id', Auth::user()->id)->update(['email' => $email, 'email_verified_at' => null]);
 
         return redirect()->route('profile.index');
     }
 
     function update_nickname(Request $request)
     {
-        $request->validate(['nickname' => 'required|unique:users']);
+        $request->validate(['nickname' => 'required|unique:users,nickname,' . Auth::user()->id]);
         $nickname = strip_tags($request->nickname);   
         $use_nickname = $request->use_nickname == '1' ? '1' : '0';  
         
