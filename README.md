@@ -7,5 +7,3 @@
 ## About
 Randsbook is a personal library app built with Laravel. Thi app allows its users to search for books, add, wishlist, and manage books as well as helps users build and keep track of reading habits. This app also comes with responsive UI features. 
 
-## Demo
-You explore the demo version of the App [here](https://randsbook.com)
