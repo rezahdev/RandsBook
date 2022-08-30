@@ -70,12 +70,12 @@ class BookController extends Controller
                 else if($sort == 'progress' && $order == 'asc')
                 {   
                     $query ="SELECT * FROM books b1 INNER JOIN books b2 on b1.id = b2.id WHERE b1.user_id='" . Auth::user()->id . "' ";        
-                    $query .= "AND b1.isWishlistItem = '0' ORDER BY (b1.total_pages - b2.read_pages)";
+                    $query .= "AND b1.isWishlistItem = '0' ORDER BY ((b1.read_pages / b2.total_pages)*100)";
                 }
                 else if($sort == 'progress' && $order == 'desc')
                 {   
                     $query ="SELECT * FROM books b1 INNER JOIN books b2 on b1.id = b2.id WHERE b1.user_id='" . Auth::user()->id . "' ";        
-                    $query .= "AND b1.isWishlistItem = '0' ORDER BY (b1.total_pages - b2.read_pages) DESC";
+                    $query .= "AND b1.isWishlistItem = '0' ORDER BY ((b1.read_pages / b2.total_pages)*100) DESC";
                 }
             }
         }
@@ -176,7 +176,7 @@ class BookController extends Controller
         }
         else
         {
-            return view('books.create', ['response' => $search_result->response]);
+            return redirect()->route('books.create');
         }
     }
 
@@ -239,9 +239,17 @@ class BookController extends Controller
 
         if(Book::select('id')->where([['id', strip_tags($request->id)], ['user_id', Auth::user()->id]])->exists())
         {   
-            $this->saveBook($request, $request->id); 
+            $updated = $this->saveBook($request, $request->id); 
+
+            if($updated->response == 'OK')
+            {
+                return redirect()->route('books.show_from_model', ['id' => $updated->book_id]);
+            }
         }
-        return redirect()->route('books.index');
+        return view('books.edit', [
+            'book' => $this->requestToBookObject($request), 
+            'errors' => [(object)['message' => 'This book does not exist in your library.']]
+        ]);
     }
 
     function delete($id)
@@ -311,72 +319,63 @@ class BookController extends Controller
 
     function add_to_wishlist(Request $request)
     {
-        try
-        {
-            $search_result = $this->search_by_edition_key(strip_tags($request->edition_key));
-            
-            if($search_result->response == 'OK')
-            {            
-                $data = $search_result->book; 
+        $search_result = $this->search_by_edition_key(strip_tags($request->edition_key));
+        
+        if($search_result->response == 'OK')
+        {            
+            $data = $search_result->book; 
 
-                $book = new Book();
-                $book->book_id = $request->edition_key;
-                $book->user_id = Auth::user()->id; 
-                $book->title = $data->title;
-                $book->subtitle = $data->subtitle;
-                $book->total_pages = $data->total_pages;
-                $book->description = $data->description;
-                $book->cover_url = $data->cover_url;
-                $book->isWishlistItem = '1';
-                $book->save();
+            $book = new Book();
+            $book->book_id = $request->edition_key;
+            $book->user_id = Auth::user()->id; 
+            $book->title = $data->title;
+            $book->subtitle = $data->subtitle;
+            $book->total_pages = $data->total_pages;
+            $book->description = $data->description;
+            $book->cover_url = $data->cover_url;
+            $book->isWishlistItem = '1';
+            $book->save();
 
-                //save author info
-                foreach($data->authors as $a)
-                {
-                    $author = new Author();
-                    $author->name = $a->name;
-                    $author->book_id = $book->id;
-                    $author->save();
-                }
-
-                //save publisher info
-                foreach($data->publishers as $p)
-                {
-                    $publisher = new Publisher();
-                    $publisher->name = $p;
-                    $publisher->book_id = $book->id;
-                    $publisher->save();
-                }
-
-                //save subjects info
-                foreach($data->subjects as $index => $s)
-                {
-                    $subject = new Subject();
-                    $subject->name = $s;
-                    $subject->book_id = $book->id;
-                    $subject->save();
-
-                    if($index == 2)
-                    {
-                        break;
-                    }
-                }
-
-                return json_encode([
-                    'response' => $search_result->response, 
-                    'message' => $book->title . ' has been added to your wishlist.',
-                    'book_id' => $book->id
-                ]);
-            }
-            else
+            //save author info
+            foreach($data->authors as $a)
             {
-                return json_encode(['response' => $search_result->response, 'message' => $search_result->message]);
+                $author = new Author();
+                $author->name = $a->name;
+                $author->book_id = $book->id;
+                $author->save();
             }
+
+            //save publisher info
+            foreach($data->publishers as $p)
+            {
+                $publisher = new Publisher();
+                $publisher->name = $p;
+                $publisher->book_id = $book->id;
+                $publisher->save();
+            }
+
+            //save subjects info
+            foreach($data->subjects as $index => $s)
+            {
+                $subject = new Subject();
+                $subject->name = $s;
+                $subject->book_id = $book->id;
+                $subject->save();
+
+                if($index == 2)
+                {
+                    break;
+                }
+            }
+
+            return json_encode([
+                'response' => $search_result->response, 
+                'message' => $book->title . ' has been added to your wishlist.',
+                'book_id' => $book->id
+            ]);
         }
-        catch(\Exception $e)
-        {
-            return (object)['response' => 'FAILED', 'message' => $e->getMessage() /*'Unknonw error occurred. Please try again.'*/];
-        }  
+        
+        return json_encode(['response' => $search_result->response, 'message' => $search_result->message]);
     }
 
     function remove_from_wishlist(Request $request)
@@ -425,20 +424,19 @@ class BookController extends Controller
     }
 
     function wishlist_to_library(Request $request)
-    {
-        try
-        {     
-            $book_id = strip_tags($request->book_id);
-            $book = Book::where([['id', $book_id], ['user_id', Auth::user()->id]])->first();        
-            $book->isWishlistItem = 0;
-            $book->save();
-
-            return json_encode(['response' => 'OK', 'message' => $book->title . ' has been added to your library.']);
-        }
-        catch(\Exception $e)
+    {   
+        $book_id = strip_tags($request->book_id);
+        $book = Book::where([['id', $book_id], ['user_id', Auth::user()->id]])->first();  
+        
+        if(is_null($book))
         {
-            return json_encode(['response' => 'FAILED', 'message' => $e->getMessage()]);
+            return json_encode(['response' => 'FAILED', 'message' => 'This book was not found in your wishlist.']);
         }
+
+        $book->isWishlistItem = 0;
+        $book->save();
+
+        return json_encode(['response' => 'OK', 'message' => $book->title . ' has been added to your library.']);
     }
 
     function update_read_pages(Request $request)
@@ -479,7 +477,7 @@ class BookController extends Controller
 
         if($response->failed())
         {
-            $msg = 'Open Library API is currently not working. Please ty again or add book information manually.';
+            $msg = 'Open Library API is currently inactive. Please ty again or add book information manually.';
             return view('books.search', ['api_connect_error' => (object)['message' => $msg]]);
         }
         $response = json_decode($response, false);
@@ -563,7 +561,7 @@ class BookController extends Controller
         $book->edition_key = $edition_key;
         $book->title = $response->title;
         $book->subtitle = property_exists($response, 'subtitle') ? $response->subtitle : '';
-        $book->total_pages = property_exists($response, 'number_of_pages') ? $response->number_of_pages : '0';
+        $book->total_pages = property_exists($response, 'number_of_pages') ? $response->number_of_pages : '1';
         $book->description = property_exists($response, 'description') ? $response->description : '';
         $book->publish_date = property_exists($response, 'publish_date') ? $response->publish_date : '';
         $book->publishers = property_exists($response, 'publishers') ? $response->publishers : [];
@@ -612,6 +610,11 @@ class BookController extends Controller
     {
         $book = ($id === null) ? new Book() : Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first();
 
+        if(is_null($book))
+        {
+            return (object)['response' => 'FAILED', 'message' => 'No Book found'];
+        }
+
         //save book info
         $book->user_id = Auth::user()->id;
         $book->book_id = strip_tags($request->edition_key);
@@ -639,7 +642,7 @@ class BookController extends Controller
         }
 
         //save author info
-        for ($i = 1; $i <= 10; $i++) 
+        for ($i = 1; $i <= 15; $i++) 
         {
             $a = 'author' . $i;
             if ($request->exists($a) && strlen($request->$a) > 0) 
@@ -663,7 +666,7 @@ class BookController extends Controller
         }
 
         //save publisher info
-        for ($i = 1; $i <= 4; $i++) 
+        for ($i = 1; $i <= 15; $i++) 
         {
             $p = 'publisher' . $i;
             if ($request->exists($p) && strlen($request->$p) > 0) 
@@ -687,7 +690,7 @@ class BookController extends Controller
         }
 
         //save subjects info
-        for ($i = 1; $i <= 3; $i++) 
+        for ($i = 1; $i <= 15; $i++) 
         {
             $s = 'subject' . $i;
             if ($request->exists($s) && strlen($request->$s) > 0 && $s != 'subject0') 
@@ -698,7 +701,7 @@ class BookController extends Controller
                 $subject->save();
             }
         }
-
+        return (object)['response' => 'OK', 'book_id' => $book->id];
     }
 
     function validateRequest($request)
@@ -714,11 +717,16 @@ class BookController extends Controller
         
         if(strlen($request->total_pages) > 0)
         {
-            if(!is_numeric($request->total_pages) || $request->total_pages < 0 || $request->total_pages > 10000)
+            if(!is_numeric($request->total_pages) || $request->total_pages < 1 || $request->total_pages > 10000)
             {
                 $isValidRequest = false;
-                array_push($errors, (object)['message' => 'Number of pages must be an integer between 0 and 10000.']);
+                array_push($errors, (object)['message' => 'Number of pages must be an integer between 1 and 10000.']);
             }
+        }
+        else
+        {
+            $isValidRequest = false;
+            array_push($errors, (object)['message' => 'Number of pages must be an integer between 1 and 10000.']);
         }
         
         if(strlen($request->read_pages) > 0)
@@ -762,7 +770,7 @@ class BookController extends Controller
         $book->publish_date = $request->publish_date;
 
         $authors = array();
-        for($i=1; $i<=10; $i++)
+        for($i=1; $i<=15; $i++)
         {
             $a = 'author' . $i;
             if($request->exists($a))
@@ -773,7 +781,7 @@ class BookController extends Controller
         $book->authors = $authors;
 
         $publishers = array();
-        for($i=1; $i<=4; $i++)
+        for($i=1; $i<=15; $i++)
         {
             $p = 'publisher' . $i;
 
@@ -785,7 +793,7 @@ class BookController extends Controller
         $book->publishers = $publishers;
 
         $subjects = array();
-        for($i=1; $i<=3; $i++)
+        for($i=1; $i<=15; $i++)
         {
             $s = 'subject' . $i;
 

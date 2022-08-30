@@ -25,7 +25,6 @@ Route::get('/book/{id}/edit', [BookController::class, 'edit'])->middleware('auth
 Route::get('/wishlist', [BookController::class, 'wishlist'])->middleware('auth')->name('books.wishlist');
 Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth')->name('profile.index');
 Route::get('/profile/changePassword', [ProfileController::class, 'change_password'])->middleware('auth')->name('profile.change_password');
-Route::get('/credits', function() { return view('credits'); });
 
 
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');

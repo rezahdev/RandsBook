@@ -4,6 +4,11 @@
  */
 function createAuthorInputField(authorNum)
 { 
+    if(authorNum > 15)
+    {
+        alert('Sorry, you have tried to create author field too many times. You can refresh the page and restart to add new authors.');
+        return;
+    }
     const authorField = document.getElementById("author1");
     const authorFieldClone = authorField.cloneNode(true);
     authorFieldClone.id = 'author' + authorNum;
@@ -52,6 +57,12 @@ function createAuthorInputField(authorNum)
  */
 function createPublisherInputField(publisherNum)
 {
+    if(publisherNum > 15)
+    {
+        alert('Sorry, you have tried to create publisher field too many times. You can refresh the page and restart to add new publishers.');
+        return;
+    }
+
     const publisherField = document.getElementById("publisher1");
     const publisherFieldClone = publisherField.cloneNode(true);
     publisherFieldClone.id = 'publisher' + publisherNum;
@@ -101,42 +112,48 @@ function createPublisherInputField(publisherNum)
  */
  function addSubjectTag(subjectNum)
  {
-     if(subject_input_field.value.length > 0)
-     {
-         if(subject_list.childElementCount == 4)
-         {
-             alert('Sorry, you can\'t add more than three subject tags per each book. In order to add this tag, please delete an existing tag first.');
-             return;
-         }
- 
-         const subjectField = document.getElementById('subject0');
-         const subjectFieldClone = subjectField.cloneNode(true);
-         subjectFieldClone.id = 'subject' + subjectNum;
-         subjectFieldClone.style.display = "block";
- 
-         //subject badge
-         subjectFieldClone.children[0].name='subject' + subjectNum;
-         subjectFieldClone.children[0].value = subject_input_field.value;
-         subjectFieldClone.children[1].children[0].textContent = subject_input_field.value;
- 
-         //delete button
-         subjectFieldClone.children[1].children[1].removeAttribute("onclick");
-         subjectFieldClone.children[1].children[1].addEventListener('click', function() { deleteSubjectTag(`subject${subjectNum}`); });
- 
-         subject_list.appendChild(subjectFieldClone);
-         subject_input_field.value = "";
- 
-         //update the add_subject_tag_label
-         const addSubjectTagLabelClone = add_subject_tag_label.clone(true);
-         add_subject_tag_label.parentNode.replaceChild(addSubjectTagLabelClone, add_subject_tag_label);
-         addSubjectTagLabelClone.id = "add_subject_tag_label";
- 
-         if(addSubjectTagLabelClone.hasAttributes('onclick'))
-         {
-             addSubjectTagLabelClone.removeAttribute('onclick');
-         }
-         addSubjectTagLabelClone.addEventListener('click', function() { addSubjectTag(`${++subjectNum}`) });
-     }
+    if(subjectNum > 15)
+    {
+        alert('Sorry, you have tried to create subject field too many times. You can refresh the page and restart to add new subjects.');
+        return;
+    }
+
+    if(subject_input_field.value.length > 0)
+    {
+        if(subject_list.childElementCount == 4)
+        {
+            alert('Sorry, you can\'t add more than three subject tags per each book. In order to add this tag, please delete an existing tag first.');
+            return;
+        }
+
+        const subjectField = document.getElementById('subject0');
+        const subjectFieldClone = subjectField.cloneNode(true);
+        subjectFieldClone.id = 'subject' + subjectNum;
+        subjectFieldClone.style.display = "block";
+
+        //subject badge
+        subjectFieldClone.children[0].name='subject' + subjectNum;
+        subjectFieldClone.children[0].value = subject_input_field.value;
+        subjectFieldClone.children[1].children[0].textContent = subject_input_field.value;
+
+        //delete button
+        subjectFieldClone.children[1].children[1].removeAttribute("onclick");
+        subjectFieldClone.children[1].children[1].addEventListener('click', function() { deleteSubjectTag(`subject${subjectNum}`); });
+
+        subject_list.appendChild(subjectFieldClone);
+        subject_input_field.value = "";
+
+        //update the add_subject_tag_label
+        const addSubjectTagLabelClone = add_subject_tag_label.clone(true);
+        add_subject_tag_label.parentNode.replaceChild(addSubjectTagLabelClone, add_subject_tag_label);
+        addSubjectTagLabelClone.id = "add_subject_tag_label";
+
+        if(addSubjectTagLabelClone.hasAttributes('onclick'))
+        {
+            addSubjectTagLabelClone.removeAttribute('onclick');
+        }
+        addSubjectTagLabelClone.addEventListener('click', function() { addSubjectTag(`${++subjectNum}`) });
+    }
  }
 
 /**

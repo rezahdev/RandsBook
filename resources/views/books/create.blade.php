@@ -153,10 +153,11 @@
                             @if(count($book->publishers) > 0)
                                 @foreach($book->publishers as $publisher)
                                     @php 
-                                        //Publishers from model has a name property, 
+                                        //Publisher model and the book object sent in case of validation error have a name property, 
                                         //whereas publisher from API response does not have name property,
                                         //So check to avoid errors
-                                        if($publisher instanceof App\Models\Publisher)
+                                        if($publisher instanceof App\Models\Publisher 
+                                           || (is_object($publisher) && property_exists($publisher, 'name')))
                                         {
                                             $publisher = $publisher->name;
                                         }
@@ -301,10 +302,11 @@
                         @foreach($book->subjects as $index => $subject)
                             @if($index < 3) 
                                 @php 
-                                    //Subjects from model has a name property, 
+                                    //Subject model and the book object sent in case of validation error have a name property, 
                                     //whereas subjects from API response does not have name property,
                                     //So check to avoid errors.
-                                    if($subject instanceof App\Models\Subject)
+                                    if($subject instanceof App\Models\Subject
+                                       || (is_object($subject) && property_exists($subject, 'name')))
                                     {
                                         $subject = $subject->name;
                                     }

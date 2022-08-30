@@ -6,7 +6,7 @@
                 @method('PUT')
                 
                 {{--If server returns form validation error--}}
-                @if($errors)
+                @isset($errors)
                     <ul class="block w-full my-2 text-red-500" id="error_msg">
                         @foreach($errors as $error)
                         <li> {{ $error->message }} </li>
@@ -15,7 +15,7 @@
                 @endisset
                 
                 <input type="hidden" name="id" value="{{ $book->id }}">
-                <input type="hidden" name="edition_key" value="{{ $book->book_id }}">
+                <input type="hidden" name="edition_key" value="{{ $book->edition_key }}">
                 <input type="hidden" name="cover_url" value="{{ $book->cover_url }}" >
 
                 <label>Title</label>
@@ -46,7 +46,7 @@
                             @if(count($book->authors) > 0)
                                 @foreach($book->authors as $author)
                                     <div id="{{ 'author' . ++$authorCount }}">
-                                        <input class="authors rounded" 
+                                        <input class="authors rounded w-4/5" 
                                                name="{{ 'author' . $authorCount }}" 
                                                type="text"
                                                value="{{ $author->name }}" 
@@ -84,7 +84,7 @@
                             @else
                                 <div id="{{ 'author' . ++$authorCount }}">
                                     <input onkeypress="inputAuthorFieldChanged(this)" 
-                                        class="authors rounded"
+                                        class="authors rounded w-4/5"
                                         name="{{ 'author' . $authorCount }}" 
                                         type="text" value=""
                                         onkeydown="return event.key != 'Enter';">
@@ -156,7 +156,7 @@
                             @if(count($book->publishers) > 0)
                                 @foreach($book->publishers as $publisher)
                                     <div id="{{'publisher' . ++$publisherCount }}">
-                                        <input class="publishers rounded" 
+                                        <input class="publishers rounded w-4/5" 
                                                name="{{ 'publisher' . $publisherCount }}" 
                                                type="text"
                                                value="{{ $publisher->name }}" 
@@ -186,7 +186,7 @@
                             @else
                                 <div id="{{'publisher' . ++$publisherCount }}">
                                     <input onkeypress="inputPublisherFieldChanged(this)" 
-                                           class="publishers rounded"
+                                           class="publishers rounded w-4/5"
                                            name="{{ 'publisher' . $publisherCount }}" 
                                            type="text" value=""
                                            onkeydown="return event.key != 'Enter';">

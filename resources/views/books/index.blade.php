@@ -128,12 +128,12 @@
                     Date added - old to recent
                 </li>
             </a>
-            <a href="{{$url}}sort=progress&order=desc">
+            <a href="{{$url}}sort=progress&order=asc">
                 <li class="text-indigo-700 cursor-pointer hover:font-semibold">
                     Progress - low to high
                 </li>
             </a>
-            <a href="{{$url}}sort=progress&order=asc">
+            <a href="{{$url}}sort=progress&order=desc">
                 <li class="text-indigo-700 cursor-pointer hover:font-semibold">
                     Progress - high to low
                 </li>
