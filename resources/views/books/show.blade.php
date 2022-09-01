@@ -118,7 +118,7 @@
                             <form action="{{ route('books.create_with_data', ['edition_key' => $book->edition_key]) }}">
                                 @csrf
                                 <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2">
-                                    Add Book to My Library
+                                    Add to My Library
                                 </button>
                             </form>
                         @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '0') 
@@ -132,7 +132,7 @@
                         @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '1') 
                             <button onclick="addToLibrary('{{$book->id}}', '{{csrf_token()}}')"
                                     class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2" >
-                                    Add to Library
+                                    Add to My Library
                             </button>
                             <button onclick="removeFromWishlist('{{$book->id}}', '{{csrf_token()}}')" 
                                     class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2 mt-2">

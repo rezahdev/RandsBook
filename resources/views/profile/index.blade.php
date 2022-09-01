@@ -25,11 +25,11 @@
 
                 <div class="w-full md:w-[calc(50%-4px)] bg-white p-2 mt-3 md:ml-1 rounded flex flex-row flex-wrap justify-between">
                     <p id="user_email">Email: {{$user->email}} 
-                        @if(is_null($user->email_verified_at))
+                        {{--@if(is_null($user->email_verified_at))
                             <span class="text-red-700">(Unverified)</span>
                         @else 
                             <span class="text-green-700">(Verified)</span>
-                        @endif
+                        @endif--}}
                     </p>
                     <img src="/resources/pen.png" width="24" height="24" onclick="invokeUpdateEmailBox()" 
                          class="cursor-pointer hover:scale-105">
