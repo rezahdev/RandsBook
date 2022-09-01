@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,7 @@ Route::get('/book/{id}/edit', [BookController::class, 'edit'])->middleware('auth
 Route::get('/wishlist', [BookController::class, 'wishlist'])->middleware('auth')->name('books.wishlist');
 Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth')->name('profile.index');
 Route::get('/profile/changePassword', [ProfileController::class, 'change_password'])->middleware('auth')->name('profile.change_password');
+Route::get('/posts/', [PostController::class, 'index'])->middleware('auth')->name('posts.index');
 
 
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
