@@ -128,7 +128,9 @@ class BookController extends Controller
         $subjects = Subject::where('book_id', $id)->get();
         $book->subjects = $subjects;
 
-        return view('books.show', ['book' => $book, 'type' => 'MODEL_DATA']);
+        $reviews = $this->retrievePublicReviews($book);
+
+        return view('books.show', ['book' => $book, 'type' => 'MODEL_DATA', 'reviews' => $reviews]);
     }
 
     function show_from_search_result($edition_key)
@@ -137,7 +139,10 @@ class BookController extends Controller
 
         if($search_result->response == "OK")
         {
-            return view('books.show', ['book' => $search_result->book, 'type' => 'SEARCH_DATA']);
+            $search_result->book->book_id = $edition_key;
+            $reviews = $this->retrievePublicReviews($search_result->book);
+
+            return view('books.show', ['book' => $search_result->book, 'type' => 'SEARCH_DATA', 'reviews' => $reviews]);
         }
         else
         {
@@ -702,6 +707,25 @@ class BookController extends Controller
             }
         }
         return (object)['response' => 'OK', 'book_id' => $book->id];
+    }
+
+    function retrievePublicReviews($book)
+    {
+        $query = "SELECT books.public_comment as comment, books.updated_at as review_date,
+                  users.name as user_name, users.nickname as user_nickname, users.use_nickname
+                  from books INNER JOIN users on books.user_id = users.id WHERE LENGTH(books.public_comment) > 0 ";
+
+        if(!empty($book->book_id) && strlen($book->book_id) > 0)
+        {
+            $query .= " AND (book_id = '" . $book->book_id . "' OR title = '" . $book->title . "') ORDER BY books.updated_at";
+        }
+        else
+        {
+            $query .= " AND title = '" . $book->title . "' ORDER BY books.updated_at";
+        }
+
+        $reviews = DB::select($query);
+        return $reviews;
     }
 
     function validateRequest($request)

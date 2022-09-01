@@ -1,15 +1,15 @@
 <x-app-layout>
-    <div class="w-full flex flex-wrap justify-center mt-10" id="main_content">
+    <div class="w-full flex flex-wrap justify-center mt-5" id="main_content">
         @if($type == 'MODEL_DATA' || $type == 'SEARCH_DATA')
             <div class="w-11/12 flex flex-row flex-wrap justify-around">
                 {{--Book image--}}
-                <div class="w-full md:w-1/5 flex justify-center bg-white md:bg-transparent pt-3 md:pt-0">
+                <div class="w-full md:w-1/5 flex justify-center bg-white md:bg-transparent pt-3 md:pt-0 self-start">
                     <img src="{{ $book->cover_url }}" class="w-1/2 lg:w-full h-auto"/>
                 </div>
 
                 {{--Book info--}}
-                <div class="w-full md:w-3/4 p-3 bg-white md:rounded mb-10 pt-5 flex flex-col felx-wrap justify-between">
-                    <div>
+                <div class="w-full md:w-3/4 md:rounded flex flex-col flex-wrap justify-between">
+                    <div class="bg-white w-full p-3">
                         <p class="font-bold text-xl">{{ $book->title }}</p>
 
                         @if(count($book->authors) > 0)
@@ -63,7 +63,7 @@
                         @endif
 
                         @if(strlen($book->public_comment) > 0)
-                            <p>Your public review: {{ $book->public_comment }} </p>
+                            <p>Comment: {{ $book->public_comment }} </p>
                         @endif
 
                         @if(count($book->subjects) > 0)
@@ -83,7 +83,7 @@
                                     @if($index >= 3) 
                                         @break
                                     @endif
-                                    <span class="inline-block bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-200 dark:text-green-900 mt-5">
+                                    <span class="inline-block bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 pt-0.5 pb-1 rounded dark:bg-green-200 dark:text-green-900 mt-5">
                                         {{$subject}}
                                     </span>
                                 @endforeach
@@ -113,7 +113,7 @@
                     </div>
 
                     {{--Action buttons--}}
-                    <div class="mt-10">
+                    <div class="bg-white p-3">
                         @if($type == 'SEARCH_DATA')
                             <form action="{{ route('books.create_with_data', ['edition_key' => $book->edition_key]) }}">
                                 @csrf
@@ -139,7 +139,33 @@
                                 Remove from wishlist
                             </button >
                         @endif
-                    </div>     
+                    </div> 
+                    
+                    <div class="w-full mb-24 mt-2">
+                        <div class="w-full bg-white py-3 text-center mb-2 mt-4 font-semibold">
+                            <p>Reviews</p>
+                        </div>
+                        <div class="w-full mb-3">
+                            @if(!is_null($reviews))
+                                @foreach($reviews as $review)
+                                    <div class="mb-2 bg-white p-3">
+                                        <div class="flex flex-row justify-between items-center">
+                                            @if($review->use_nickname == 1)
+                                                <p class="font-semibold">{{$review->user_nickname}}</p>
+                                            @else 
+                                                <p class="font-semibold">{{$review->user_name}}</p>
+                                            @endif
+
+                                            <p>{{explode(' ', $review->review_date)[0]}}</p>
+                                        </div>
+                                        <div>
+                                            <p>{{$review->comment}}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         @else
