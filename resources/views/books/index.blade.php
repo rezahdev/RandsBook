@@ -62,6 +62,11 @@
                 <div class="w-full bg-white py-5 text-center my-10">
                     <p class="mb-5">You do not have any completed book in your library yet.</p>
                 </div>
+            elseif($filtered_by == "inprogress")
+                {{--Shown when no book is found in the DB for a given filter--}}
+                <div class="w-full bg-white py-5 text-center my-10">
+                    <p class="mb-5">You do not have any in-progress book in your library yet.</p>
+                </div>
             @else
                 {{--Shown when no book is found in the DB--}}
                 <div class="w-full bg-white pt-4 pb-10 text-center my-10">
