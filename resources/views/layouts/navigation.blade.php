@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')">
+                    <x-nav-link :href="route('community.bookReview.index')" :active="request()->routeIs('community.bookReview.index')">
                         {{ __('Community') }}
                     </x-nav-link>
                 </div>
@@ -101,7 +101,7 @@
             </x-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')">
+            <x-responsive-nav-link :href="route('community.bookReview.index')" :active="request()->routeIs('community.bookReview.index')">
                 {{ __('Community') }}
             </x-responsive-nav-link>
         </div>

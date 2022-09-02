@@ -8,25 +8,32 @@
                              onclick="invokeSortOptionsBox()">
                 </div>
             </div>
-            @if(count($posts) > 0)
-                @foreach($posts as $post)
+            @if(count($reviews) > 0)
+                @foreach($reviews as $review)
                     <div class="w-full my-2 lg:my-5 bg-white border rounded flex justify-start flex-wrap">
                         {{--Book image--}}
-                        <div class="w-48">
-                            <img src="{{ $post->book->cover_url }}" class="w-full h-auto" />
+                        <div class="w-24 md:w-36">
+                            <img src="{{ $review->book->cover_url }}" class="w-full h-auto" />
                         </div>
 
-                        <div class="p-2 pt-1 md:p-3 md:pt-3 w-3/4 flex flex-wrap flex-col justify-between">
+                        <div class="p-2 pt-1 md:p-3 md:pt-2 w-[calc(100%-6rem)] md:w-[calc(100%-9rem)] flex flex-wrap flex-col justify-between">
                             {{--User and review--}}
                             <div>
-                                <div>
-                                    <p>{{$post->user}}</p>
-                                    <p>{{$post->review_date}}
+                                <div class="w-full flex flex-row flex-wrap justify-between">
+                                    @if($review->user->use_nickname == '1')
+                                        <p>{{$review->user->nickname}}</p>
+                                    @else 
+                                        <p>{{$review->user->name}}</p>
+                                    @endif
+
+                                    <p>{{explode(' ', $review->created_at)[0]}}</p>
                                 </div>
-                                <h3 class="font-semibold md:font-bold text-sm md:text-base">{{ $post->book->title }}</h3>
+
+                                <h3 class="font-semibold md:font-bold text-sm md:text-base mt-2">{{ $review->book->title }}</h3>
+              
                                 {{--Authors--}}
-                                <p class="text-sm md:text-base">
-                                    @foreach($post->book->authors as $key => $author)
+                                <p class="text-sm md:text-base">Author: 
+                                    @foreach($review->book->authors as $key => $author)
                                         @if($key > 0)
                                             {{ '/ ' . $author->name }}
                                         @else
@@ -34,17 +41,19 @@
                                         @endif
                                     @endforeach
                                 </p>
-                                <p>{{$post->review}}</p>
+                                <p class="mt-2">{{$review->review}}</p>
                             </div>
 
                             {{--Link to see show book details--}}
-                            <div>
-                                <a href="{{ route('books.show_from_model', ['id' => $post->book->id]) }}"
+                            <div class="w-full flex flex-row flex-wrap justify-between">
+                                <a href="{{ route('books.show_from_model', ['id' => $review->book->id]) }}"
                                    class="text-indigo-600 text-sm md:text-base md:font-semibold hover:text-blue-600">
                                     Read Full Review
                                 </a>
-                                <img src="/resources/heart_filled.png" width="24" />
-                                <img src="/resources/heart_filled.png" width="24" />
+                                <div class="flex flex-row flex-wrap justify-end">
+                                    <img src="/resources/heart_blank.png" width="24" />
+                                    <img src="/resources/heart_filled.png" width="24" class="ml-5" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -52,10 +61,11 @@
         </div>
             @else
                 <div class="w-full bg-white pt-4 pb-10 text-center my-10">
-                    <p class="mb-5">No reviews found. You can review a book by clicking the link below.</p>
-                    <a href="{{ route('books.search') }}"
+                    <p class="mb-5">No reviews found! You can contribute to the community by
+                        reviewing a book from your library.</p>
+                    <a href="{{ route('community.bookReview.create') }}"
                        class="text-blue-800 border border-blue-800 rounded pt-2 pb-3 px-3 hover:bg-blue-800 hover:text-white">
-                        Click here to add new book 
+                        Click here to review a book
                     </a>
                 </div>
             @endif
