@@ -195,7 +195,15 @@ class BookController extends Controller
             return view('books.create', ['book' => $this->requestToBookObject($request), 'errors' => $validator->errors]);
         }
 
-        if(!Book::select('id')->where('user_id', Auth::user()->id)->where('book_id', $request->edition_key)->exists())
+        //If the book is created manually, it will have no edition key and so the book should be stored
+        //Else if the book has a edition key and if no book with that key already exists in DB, the book should be stored
+        //Else, the book should not be stored since the book already exists in DB
+        if(is_null($request->edition_key) || strlen($request->edition_key) == 0)
+        {
+            $this->saveBook($request);
+            return redirect()->route('books.index');
+        }
+        else if(!Book::select('id')->where('user_id', Auth::user()->id)->where('book_id', $request->edition_key)->exists()) 
         {
             $this->saveBook($request);
             return redirect()->route('books.index');
