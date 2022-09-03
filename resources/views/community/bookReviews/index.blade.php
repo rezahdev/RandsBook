@@ -80,9 +80,11 @@
                                     @endif
 
                                     @if($review->isReviewdByThisUser)
-                                        <button onclick="unsaveReview(this, '{{$review->id}}')">
-                                            <img src="/resources/edit.png" width="24" class="ml-5"/>
-                                        </button>
+                                        <a href="{{route('community.bookReview.edit', ['id' => $review->id])}}">
+                                            <button>
+                                                <img src="/resources/edit.png" width="24" class="ml-5"/>
+                                            </button>
+                                        </a>
                                         <button onclick="openDeletePopupBox('{{$review->id}}')">
                                             <img src="/resources/delete.png" width="24" class="ml-5"/>
                                         </button>

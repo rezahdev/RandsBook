@@ -28,6 +28,7 @@ Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth')-
 Route::get('/profile/changePassword', [ProfileController::class, 'change_password'])->middleware('auth')->name('profile.change_password');
 Route::get('/community/bookReviews', [BookReviewController::class, 'index'])->middleware('auth')->name('community.bookReview.index');
 Route::get('/community/bookReviews/add', [BookReviewController::class, 'create'])->middleware('auth')->name('community.bookReview.create');
+Route::get('/community/bookReviews/{id}/edit', [BookReviewController::class, 'edit'])->middleware('auth')->name('community.bookReview.edit');
 
 
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');
@@ -44,6 +45,7 @@ Route::put('/profile/updateNickname', [ProfileController::class, 'update_nicknam
 Route::put('/profile/updateEmail', [ProfileController::class, 'update_email'])->middleware('auth')->name('profile.update_email');
 Route::put('/profile/updatePassword', [ProfileController::class, 'update_password'])->middleware('auth')->name('profile.update_password');
 Route::put('/wishlistToLibrary', [BookController::class, 'wishlist_to_library'])->middleware('auth')->name('books.wishlist_to_library');
+Route::put('/community/bookReviews/update', [BookReviewController::class, 'update'])->middleware('auth')->name('community.bookReview.update');
 
 
 Route::delete('/delete/{id}', [BookController::class, 'delete'])->middleware('auth')->name('books.delete');

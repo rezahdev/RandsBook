@@ -67,6 +67,33 @@ class BookReviewController extends Controller
         return redirect()->route('community.bookReview.index');
     }
 
+    function edit($id)
+    {
+        $review = BookReview::where('id', $id)->where('user_id', Auth::user()->id)->first();
+
+        if(is_null($review))
+        {
+            return view('community.bookReviews.edit', ['response' => 'No Review Found!']);
+        }
+
+        $book = Book::find($review->book_id);
+        return view('community.bookReviews.edit', ['review' =>$review, 'book' => $book]);
+    }
+
+    function update(Request $request)
+    {
+        $request->validate([
+            'book_id' => 'required|integer',
+            'review' => 'required'
+        ]);
+
+        $review = BookReview::find($request->review_id);
+        $review->review = strip_tags($request->review);
+        $review->save();
+
+        return redirect()->route('community.bookReview.index');
+    }
+
     function delete(Request $request)
     {
         if(empty($request->review_id) || !is_numeric($request->review_id))
