@@ -51,13 +51,27 @@
                                     Read Full Review
                                 </a>
                                 <div class="flex flex-row flex-wrap justify-end">
-                                    <button class="flex items-center text-sm" onclick="likeReview(this, '{{$review->id}}')">
-                                        <img src="/resources/like_blank.png" width="24" class="inline mr-1" />
-                                        <span>555</span>
-                                    </button>
-                                    <button onclick="saveReview(this, '{{$review->id}}')">
-                                        <img src="/resources/save_blank.png" width="24" class="ml-5" class="justify-start" />
-                                    </button>
+                                    @if($review->isLikedByThisUser)
+                                        <button class="flex items-center text-sm" onclick="unlikeReview(this, '{{$review->id}}')">
+                                            <img src="/resources/like_filled.png" width="24" class="inline mr-1" />
+                                            <span>{{$review->likeCount}}</span>
+                                        </button>
+                                    @else
+                                        <button class="flex items-center text-sm" onclick="likeReview(this, '{{$review->id}}')">
+                                            <img src="/resources/like_blank.png" width="24" class="inline mr-1" />
+                                            <span>{{$review->likeCount}}</span>
+                                        </button>
+                                    @endif
+
+                                    @if($review->isSavedByThisUser)
+                                        <button onclick="unsaveReview(this, '{{$review->id}}')">
+                                            <img src="/resources/save_filled.png" width="24" class="ml-5" class="justify-start" />
+                                        </button>
+                                    @else 
+                                        <button onclick="saveReview(this, '{{$review->id}}')">
+                                            <img src="/resources/save_blank.png" width="24" class="ml-5" class="justify-start" />
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -165,6 +179,7 @@ function likeReview(likeBtn, reviewId)
                 const btn = likeBtn.cloneNode(true);
                 btn.removeAttribute('onclick');
                 btn.children[0].src = '/resources/like_filled.png';
+                btn.children[1].textContent = parseInt(btn.children[1].textContent) + 1;
                 btn.addEventListener('click', function() { unlikeReview(btn, reviewId) });
                 likeBtn.parentNode.replaceChild(btn, likeBtn);
             }
@@ -200,6 +215,7 @@ function unlikeReview(likeBtn, reviewId)
                 const btn = likeBtn.cloneNode(true);
                 btn.removeAttribute('onclick');
                 btn.children[0].src = '/resources/like_blank.png';
+                btn.children[1].textContent = parseInt(btn.children[1].textContent) - 1;
                 btn.addEventListener('click', function() { likeReview(btn, reviewId) });
                 likeBtn.parentNode.replaceChild(btn, likeBtn);
             }

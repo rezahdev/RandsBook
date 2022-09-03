@@ -20,12 +20,24 @@ class BookReviewController extends Controller
         foreach($reviews as $review)
         {
             $book = Book::find($review->book_id);
-            $user = User::find($review->user_id);
             $authors = Author::where('book_id', $book->id)->get();
-
             $book->authors = $authors;
             $review->book = $book;
+
+            $user = User::find($review->user_id);
             $review->user = $user;
+
+            $reviewLikes = BookReviewLike::where('review_id', $review->id)->get();
+            $review->likeCount = count($reviewLikes);
+            $review->isLikedByThisUser = BookReviewLike::select('id')
+                                                          ->where('review_id', $review->id)
+                                                          ->where('user_id', Auth::user()->id)
+                                                          ->exists();
+            
+            $review->isSavedByThisUser = SavedBookReview::select('id')
+                                                          ->where('review_id', $review->id)
+                                                          ->where('user_id', Auth::user()->id)
+                                                          ->exists();
         }
 
         return view('community.bookReviews.index', ['reviews' => $reviews]);
