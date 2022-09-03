@@ -34,6 +34,7 @@ Route::post('/store', [BookController::class, 'store'])->middleware('auth')->nam
 Route::post('/wishlist/add', [BookController::class, 'add_to_wishlist'])->middleware('auth')->name('books.add_to_wishlist');
 Route::post('/community/bookReviews/store', [BookReviewController::class, 'store'])->middleware('auth')->name('community.bookReview.store');
 Route::post('/community/bookReviews/like', [BookReviewController::class, 'like'])->middleware('auth')->name('community.bookReview.like');
+Route::post('/community/bookReviews/save', [BookReviewController::class, 'save'])->middleware('auth')->name('community.bookReview.save');
 
 
 Route::put('/update', [BookController::class, 'update'])->middleware('auth')->name('books.update');
@@ -48,5 +49,6 @@ Route::put('/wishlistToLibrary', [BookController::class, 'wishlist_to_library'])
 Route::delete('/delete/{id}', [BookController::class, 'delete'])->middleware('auth')->name('books.delete');
 Route::delete('/wishlist/remove', [BookController::class, 'remove_from_wishlist'])->middleware('auth')->name('books.remove_from_wishlist');
 Route::delete('/community/bookReviews/unlike', [BookReviewController::class, 'unlike'])->middleware('auth')->name('community.bookReview.unlike');
+Route::delete('/community/bookReviews/unsave', [BookReviewController::class, 'unsave'])->middleware('auth')->name('community.bookReview.unsave');
 
 require __DIR__.'/auth.php';
