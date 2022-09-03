@@ -33,6 +33,8 @@
     <a class="a" href="https://www.flaticon.com/free-icons/save" title="save icons">Save icons created by Yogi Aprelliyanto - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/like" title="like icons">Like icons created by Laisa Islam Ani - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/like" title="like icons">Like icons created by Pixel perfect - Flaticon</a>
+    <a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Kiranshastry - Flaticon</a>
+    <a class="a" href="https://www.flaticon.com/free-icons/modify" title="modify icons">Modify icons created by Freepik - Flaticon</a>
     <button onclick="closeCredits()" class="bg-blue-700 py-2 w-24 text-white rounded hover:bg-blue-800 mt-5">Close</button>
 </div>
 

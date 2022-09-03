@@ -26,6 +26,7 @@ class BookReviewController extends Controller
 
             $user = User::find($review->user_id);
             $review->user = $user;
+            $review->isReviewdByThisUser = ( $review->user_id == Auth::user()->id );
 
             $reviewLikes = BookReviewLike::where('review_id', $review->id)->get();
             $review->likeCount = count($reviewLikes);
@@ -64,6 +65,19 @@ class BookReviewController extends Controller
         $review->save();
 
         return redirect()->route('community.bookReview.index');
+    }
+
+    function delete(Request $request)
+    {
+        if(empty($request->review_id) || !is_numeric($request->review_id))
+        {
+            return json_encode(['response' => 'FAILED', 'message' => 'Please refresh the page and try again.']);
+        }
+
+        $review = BookReview::find($request->review_id);
+        $review->delete();
+
+        return json_encode(['response' => 'OK', 'message' => 'Review was successfully deleted.']);
     }
 
     function like(Request $request)

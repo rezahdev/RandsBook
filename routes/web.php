@@ -50,5 +50,6 @@ Route::delete('/delete/{id}', [BookController::class, 'delete'])->middleware('au
 Route::delete('/wishlist/remove', [BookController::class, 'remove_from_wishlist'])->middleware('auth')->name('books.remove_from_wishlist');
 Route::delete('/community/bookReviews/unlike', [BookReviewController::class, 'unlike'])->middleware('auth')->name('community.bookReview.unlike');
 Route::delete('/community/bookReviews/unsave', [BookReviewController::class, 'unsave'])->middleware('auth')->name('community.bookReview.unsave');
+Route::delete('/community/bookReviews/delete', [BookReviewController::class, 'delete'])->middleware('auth')->name('community.bookReview.delete');
 
 require __DIR__.'/auth.php';

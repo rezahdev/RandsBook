@@ -2,6 +2,12 @@
     <div class="flex justify-center w-full flex-wrap">
         <div class="w-11/12 md:w-4/5 mb-10" id="container">
             <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
+                <div>
+                    <a href="{{route('community.bookReview.create')}}" 
+                       class="text-blue-700 font-semibold hover:text-blue-800">
+                       Write A Review
+                    </a>
+                </div>
                 <div class="flex flex-row justify-end">
                     <img id="sort_img" class="ml-3 md:ml-5 pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
                              src="/resources/sort.png" width="32" height="32"
@@ -10,7 +16,7 @@
             </div>
             @if(count($reviews) > 0)
                 @foreach($reviews as $review)
-                    <div class="w-full my-2 lg:my-5 bg-white border rounded flex justify-start flex-wrap">
+                    <div class="w-full my-2 lg:my-5 bg-white border rounded flex justify-start flex-wrap" id="review{{$review->id}}">
                         {{--Book image--}}
                         <div class="w-24 md:w-36">
                             <img src="{{ $review->book->cover_url }}" class="w-full h-auto" />
@@ -65,11 +71,20 @@
 
                                     @if($review->isSavedByThisUser)
                                         <button onclick="unsaveReview(this, '{{$review->id}}')">
-                                            <img src="/resources/save_filled.png" width="24" class="ml-5" class="justify-start" />
+                                            <img src="/resources/save_filled.png" width="24" class="ml-5" />
                                         </button>
                                     @else 
                                         <button onclick="saveReview(this, '{{$review->id}}')">
-                                            <img src="/resources/save_blank.png" width="24" class="ml-5" class="justify-start" />
+                                            <img src="/resources/save_blank.png" width="24" class="ml-5" />
+                                        </button>
+                                    @endif
+
+                                    @if($review->isReviewdByThisUser)
+                                        <button onclick="unsaveReview(this, '{{$review->id}}')">
+                                            <img src="/resources/edit.png" width="24" class="ml-5"/>
+                                        </button>
+                                        <button onclick="openDeletePopupBox('{{$review->id}}')">
+                                            <img src="/resources/delete.png" width="24" class="ml-5"/>
                                         </button>
                                     @endif
                                 </div>
@@ -119,6 +134,23 @@
         </ul>
     </div>
 
+    <div id="delete_popup_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >
+        <p class="text-center">Are you sure you want to delete this review?</p>
+        <p class="hidden" id="review_id_to_delete"></p>
+        <div class="flex flex-row justify-center mt-5">
+                    <button class="bg-red-700 border border-red-700 hover:bg-red-800 
+                                   text-white font-bold py-2 px-4 rounded mr-2"
+                            onclick="deleteReview()">
+                        Yes, Delete
+                    </button>
+                <button onclick="closeDeletePopupBox()" 
+                       class="bg-white border border-blue-800 text-blue-800 hover:bg-blue-800 
+                              hover:text-white font-bold py-1 px-3 rounded mr-2"> 
+                    Cancel
+                </button>
+        </div>
+    </div>
+
     <button id="scroll_to_top" onclick="scrollToTop()"
             class="hidden fixed z-90 bottom-8 right-8 border-0 w-12 h-12 md:w-16 md:h-16 
             rounded-full drop-shadow-md bg-indigo-500 text-white text-3xl font-bold">
@@ -155,6 +187,28 @@ function invokeSortOptionsBox()
         sort_options_box.style.right = right + 'px';
         sort_options_box.style.visibility = "visible";
     }
+}
+
+function openDeletePopupBox(reviewId) 
+{
+    delete_popup_box.style.visibility = "visible";
+    review_id_to_delete.textContent = reviewId;
+    
+    if (!container.classList.contains("blurry")) 
+    {
+        container.classList.add("blurry");
+    }
+}
+
+function closeDeletePopupBox() 
+{
+    delete_popup_box.style.visibility = "hidden";
+
+    if (container.classList.contains("blurry")) 
+    {
+        container.classList.remove("blurry");
+    }
+    
 }
 
 function likeReview(likeBtn, reviewId)
@@ -287,6 +341,41 @@ function unsaveReview(saveBtn, reviewId)
                 btn.children[0].src = '/resources/save_blank.png';
                 btn.addEventListener('click', function() { saveReview(btn, reviewId) });
                 saveBtn.parentNode.replaceChild(btn, saveBtn);
+            }
+            else
+            {
+                alert(responseObj.message);
+            }
+        }
+    }
+    http.send(formData);
+}
+
+function deleteReview()
+{
+    let reviewId = parseInt(review_id_to_delete.textContent);
+    let http = new XMLHttpRequest();
+    let url = "{{route('community.bookReview.delete')}}";
+    let csrfToken = '{{csrf_token()}}';
+    let formData = new FormData();
+
+    formData.append('review_id', reviewId);
+    formData.append('_token', csrfToken);
+    formData.append('_method', 'DELETE');
+
+    http.open('POST', url, true);
+
+    http.onreadystatechange = function() 
+    {
+        if(http.readyState == 4 && http.status == 200) 
+        {
+            let responseObj = JSON.parse(http.responseText);
+            if(responseObj.response == 'OK')
+            {
+                const review = document.getElementById('review' + reviewId);
+                review.parentNode.removeChild(review);
+                review_id_to_delete.textContent = null;
+                closeDeletePopupBox();
             }
             else
             {
