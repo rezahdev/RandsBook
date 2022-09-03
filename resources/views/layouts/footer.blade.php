@@ -30,6 +30,9 @@
     <a class="a" href="https://www.flaticon.com/free-icons/medal" title="medal icons">Medal icons created by Freepik - Flaticon</a>
     <a class="a" href="https://github.com/yiliansource/party-js">Confetti effects is provided by Party.js Library on Github</a>
     <a class="a" href="https://www.freepik.com/free-vector/white-bookshelf-mockup-books-shelf-library_8308785.htm#query=library&position=37&from_view=search">Image by upklyak on Freepik</a>
+    <a class="a" href="https://www.flaticon.com/free-icons/save" title="save icons">Save icons created by Yogi Aprelliyanto - Flaticon</a>
+    <a class="a" href="https://www.flaticon.com/free-icons/like" title="like icons">Like icons created by Laisa Islam Ani - Flaticon</a>
+    <a class="a" href="https://www.flaticon.com/free-icons/like" title="like icons">Like icons created by Pixel perfect - Flaticon</a>
     <button onclick="closeCredits()" class="bg-blue-700 py-2 w-24 text-white rounded hover:bg-blue-800 mt-5">Close</button>
 </div>
 

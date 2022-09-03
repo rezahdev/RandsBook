@@ -51,8 +51,11 @@
                                     Read Full Review
                                 </a>
                                 <div class="flex flex-row flex-wrap justify-end">
-                                    <img src="/resources/heart_blank.png" width="24" />
-                                    <img src="/resources/heart_filled.png" width="24" class="ml-5" />
+                                    <button class="flex items-center text-sm" onclick="likeReview(this, '{{$review->id}}')">
+                                        <img src="/resources/like_blank.png" width="24" class="inline mr-1" />
+                                        <span>555</span>
+                                    </button>
+                                    <img src="/resources/save_blank.png" width="24" class="ml-5" class="justify-start" />
                                 </div>
                             </div>
                         </div>
@@ -136,5 +139,74 @@ function invokeSortOptionsBox()
         sort_options_box.style.right = right + 'px';
         sort_options_box.style.visibility = "visible";
     }
+}
+
+function likeReview(likeBtn, reviewId)
+{
+    let http = new XMLHttpRequest();
+    let url = "{{route('community.bookReview.like')}}";
+    let csrfToken = '{{csrf_token()}}';
+    let formData = new FormData();
+
+    formData.append('review_id', reviewId);
+    formData.append('_token', csrfToken);
+
+    http.open('POST', url, true);
+
+    http.onreadystatechange = function() 
+    {
+        if(http.readyState == 4 && http.status == 200) 
+        {
+            let responseObj = JSON.parse(http.responseText);
+            if(responseObj.response == 'OK')
+            {
+                const btn = likeBtn.cloneNode(true);
+                btn.removeAttribute('onclick');
+                btn.children[0].src = '/resources/like_filled.png';
+                btn.addEventListener('click', function() { unlikeReview(btn, reviewId) });
+                likeBtn.parentNode.replaceChild(btn, likeBtn);
+            }
+            else
+            {
+                alert(responseObj.message);
+            }
+        }
+    }
+    http.send(formData);
+}
+
+function unlikeReview(likeBtn, reviewId)
+{
+    let http = new XMLHttpRequest();
+    let url = "{{route('community.bookReview.unlike')}}";
+    let csrfToken = '{{csrf_token()}}';
+    let formData = new FormData();
+
+    formData.append('review_id', reviewId);
+    formData.append('_token', csrfToken);
+    formData.append('_method', 'DELETE');
+
+    http.open('POST', url, true);
+
+    http.onreadystatechange = function() 
+    {
+        if(http.readyState == 4 && http.status == 200) 
+        {
+            let responseObj = JSON.parse(http.responseText);
+            if(responseObj.response == 'OK')
+            {
+                const btn = likeBtn.cloneNode(true);
+                btn.removeAttribute('onclick');
+                btn.children[0].src = '/resources/like_blank.png';
+                btn.addEventListener('click', function() { unlikeReview(btn, reviewId) });
+                likeBtn.parentNode.replaceChild(btn, likeBtn);
+            }
+            else
+            {
+                alert(responseObj.message);
+            }
+        }
+    }
+    http.send(formData);
 }
 </script>
