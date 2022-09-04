@@ -14,7 +14,7 @@
 
                         @if(count($book->authors) > 0)
                             {{--Author info--}}
-                            <p>Written by:  
+                            <p>Author:  
                                 @foreach($book->authors as $index => $author)
                                     @if($index > 0)
                                         {{ '/ ' . $author->name }}
@@ -27,7 +27,7 @@
 
                         @if(count($book->publishers) > 0)
                             {{--Publisher info--}}
-                            <p>Published by: 
+                            <p>Publisher: 
                                 @foreach($book->publishers as $index => $publisher)
                                     @php 
                                         //Publishers from model has a name property, 
@@ -218,4 +218,4 @@
     
 </x-app-layout>
 <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
-<script src="/js/showViewHandler.js"></script>
+<script src="/js/showBookViewHandler.js"></script>

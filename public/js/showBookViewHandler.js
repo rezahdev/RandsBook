@@ -13,9 +13,6 @@ function closePopupBox(popupBoxId)
     {
         main_content.classList.remove("blurry");
     }
-
-    //If confetti animation running
-    
 }
 
 function updateReadPagesInputValue() 

@@ -167,7 +167,7 @@ function addToWishlist(wishlistBtnImg, editionKey)
             }
             else
             {
-                alert(JSON.stringify(responseObj, null, 4));
+                alert(responseObj.message);
             }
         }
     }

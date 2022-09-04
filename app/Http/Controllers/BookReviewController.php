@@ -17,6 +17,7 @@ class BookReviewController extends Controller
     function index()
     {
         $reviews = null;
+        $isFilteredResult = false;
         
         if(isset($_GET['sort']))
         {
@@ -56,6 +57,7 @@ class BookReviewController extends Controller
             if($filter == 'my_reviews')
             {
                 $reviews = BookReview::where('user_id', Auth::user()->id)->get();
+                $isFilteredResult = true;
             }
             else if($filter == 'saved_reviews')
             {
@@ -66,6 +68,7 @@ class BookReviewController extends Controller
                             ->groupBy('book_reviews.id')
                             ->orderBy('saved_book_reviews.updated_at', 'desc')
                             ->get();
+                $isFilteredResult = true;
             }
             else
             {
@@ -110,7 +113,7 @@ class BookReviewController extends Controller
                                                           ->exists();
         }
 
-        return view('community.bookReviews.index', ['reviews' => $reviews]);
+        return view('community.bookReviews.index', ['reviews' => $reviews, 'isFilteredResult' => $isFilteredResult]);
     }
 
     function create()

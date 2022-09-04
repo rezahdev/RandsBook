@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="flex justify-center w-full flex-wrap">
         <div class="flex justify-around flex-wrap w-11/12">
-            @isset($books)
+            @if(isset($books) && count($books) > 0)
                 <form class="w-full md:w-3/4 my-5 bg-white rounded-xl p-3" method="post" action="{{route('community.bookReview.store') }}">
                     @csrf
 
@@ -27,7 +27,12 @@
                         Post
                     </button>
                 </form>
-            @endisset
+            @else
+                <script>
+                    alert('You do not have any book in library. First add a book to write review.');
+                    window.location.replace('/search');
+                </script>
+            @endif
         </div>
     </div>
 </x-app-layout>

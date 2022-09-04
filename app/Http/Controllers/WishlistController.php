@@ -43,7 +43,16 @@ class WishlistController extends Controller
 
     function store(Request $request)
     {   
-        
+        $book = Book::where('user_id', Auth::user()->id)
+                    ->where('book_id', $request->edition_key)
+                    ->first();
+
+        if(!is_null($book))
+        {
+            //Book alredy exists either in library or wishlist
+            return json_encode(['response' => 'FAILED', 'message' => 'This book is already in your library.']);
+        }
+
         $search_controller = new SearchController();
         $search_result = $search_controller->search_by_edition_key($request->edition_key);
         

@@ -1,18 +1,18 @@
 <x-app-layout>
     <div class="flex justify-center w-full flex-wrap">
         <div class="flex justify-between flex-wrap w-11/12 md:w-4/5 mb-10" id="container">
-            <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
-                <p class="md:text-lg">{{$num_book_found . ' in library.'}}</p>
-                <div class="flex flex-row justify-end">
-                    <img id="filter_img" class="pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
-                             src="/resources/filter.png" width="32" height="32"
-                             onclick="invokeFilterOptionsBox()">
-                    <img id="sort_img" class="ml-3 md:ml-5 pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
-                             src="/resources/sort.png" width="32" height="32"
-                             onclick="invokeSortOptionsBox()">
+            @if(isset($book_list) && count($book_list) > 0)
+                <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
+                    <p class="md:text-lg">{{$num_book_found . ' in library.'}}</p>
+                    <div class="flex flex-row justify-end">
+                        <img id="filter_img" class="pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
+                                src="/resources/filter.png" width="32" height="32"
+                                onclick="invokeFilterOptionsBox()">
+                        <img id="sort_img" class="ml-3 md:ml-5 pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
+                                src="/resources/sort.png" width="32" height="32"
+                                onclick="invokeSortOptionsBox()">
+                    </div>
                 </div>
-            </div>
-            @if(count($book_list) > 0)
                 @foreach($book_list as $book)
                     @php 
                         $progress = round(($book->read_pages / $book->total_pages) * 100);
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 @endforeach
-        </div>
+        
             @elseif($filtered_by == "completed")
                 {{--Shown when no book is found in the DB for a given filter--}}
                 <div class="w-full bg-white py-5 text-center my-10">
@@ -77,6 +77,7 @@
                     </a>
                 </div>
             @endif
+        </div>
     </div>
 
     <div id="filter_options_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >

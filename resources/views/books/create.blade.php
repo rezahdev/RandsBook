@@ -347,10 +347,10 @@
                     </div>
                 </div>
 
-                <label>Comment (Only you can see this comment)</label>
+                <label>Note (Only you can see this note)</label>
                 <textarea class="w-full rounded mb-5 p-2" name="comment">{{ $book->comment }}</textarea>
 
-                <label>Review (Other users can see this review)</label>
+                <label>Comment (Other users can see this comment)</label>
                 <textarea class="w-full rounded mb-5 p-2" name="public_comment">{{ $book->public_comment }}</textarea>
 
                 <button type="submit" class="block bg-blue-800 hover:bg-blue-500 rounded text-white py-3 px-5 my-3">
@@ -360,4 +360,4 @@
         </div>
     </div>
 </x-app-layout>
-<script src="/js/createFormHandler.js"></script>
+<script src="/js/formHandler.js"></script>

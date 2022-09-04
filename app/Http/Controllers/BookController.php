@@ -112,7 +112,7 @@ class BookController extends Controller
 
     function show_from_model($id)
     {
-        $book = Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first(); 
+        $book = Book::where([['id', $id], ['user_id', Auth::user()->id]])->first(); 
 
         if(is_null($book))
         {
@@ -197,17 +197,27 @@ class BookController extends Controller
             return view('books.create', ['book' => $this->requestToBookObject($request), 'errors' => $validator->errors]);
         }
 
-        //If the book is created manually, it will have no edition key and so the book should be stored
-        //Else if the book has a edition key and if no book with that key already exists in DB, the book should be stored
-        //Else, the book should not be stored since the book already exists in DB
+        //If edition key is empty, store the book without checking if it exists
         if(is_null($request->edition_key) || strlen($request->edition_key) == 0)
         {
             $this->saveBook($request);
             return redirect()->route('books.index');
-        }
-        else if(!Book::select('id')->where('user_id', Auth::user()->id)->where('book_id', $request->edition_key)->exists()) 
+        } 
+        
+        //Checks to make sure same book is not stored twice
+        $book = Book::where('user_id', Auth::user()->id)
+                    ->where('book_id', $request->edition_key)
+                    ->first();
+
+        if(is_null($book)) 
         {
             $this->saveBook($request);
+            return redirect()->route('books.index');
+        }
+        else if($book->isWishlistItem == 1)
+        {
+            $book->isWishlistItem = 0;
+            $book->save();
             return redirect()->route('books.index');
         }
         else
@@ -335,7 +345,7 @@ class BookController extends Controller
      * If $id == null, the function is called to store info of a new book
      * else if $id value is passed, the function is called to update an existing book 
      */
-    function saveBook($request, $id = null)
+    private function saveBook($request, $id = null)
     {
         $book = ($id === null) ? new Book() : Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first();
 
@@ -433,7 +443,7 @@ class BookController extends Controller
         return (object)['response' => 'OK', 'book_id' => $book->id];
     }
 
-    function retrievePublicReviews($book)
+    private function retrievePublicReviews($book)
     {
         $query = "SELECT books.public_comment as comment, books.updated_at as review_date,
                   users.name as user_name, users.nickname as user_nickname, users.use_nickname
@@ -452,7 +462,7 @@ class BookController extends Controller
         return $reviews;
     }
 
-    function validateRequest($request)
+    private function validateRequest($request)
     {
         $errors = array();
         $isValidRequest = true;
@@ -502,7 +512,7 @@ class BookController extends Controller
         }
     }
 
-    function requestToBookObject($request)
+    private function requestToBookObject($request)
     {
         $book = new \stdClass();
 
