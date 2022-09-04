@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\BookReview;
 use App\Models\Book;
@@ -15,10 +16,49 @@ class BookReviewController extends Controller
 {
     function index()
     {
-        $reviews = BookReview::all();
+        $reviews = null;
+        
+        if(isset($_GET['sort']))
+        {
+            $sort = DB::connection()->getPDO()->quote($_GET['sort']);
+
+            if($sort == 'date')
+            {
+                $reviews = BookReview::orderBy('updated_at', 'DESC')->get();
+            }
+            else if($sort == 'like')
+            {
+                $query = "SELECT * FROM book_reviews INNER JOIN book_review_likes on book_reviews.id = book_review_likes.review_id ";
+                $query .= "ORDER BY COUNT(book_review_likes.id) DESC";
+                $reviews = BookReview::select($query)->get();
+            }
+            else if($sort == 'saved')
+            {
+                $query = "SELECT * FROM book_reviews INNER JOIN saved_book_reviews on book_reviews.id = saved_book_reviews.review_id ";
+                $query .= "ORDER BY COUNT(saved_book_reviews.id) DESC";
+                $reviews = BookReview::select($query)->get();
+            }
+            else
+            {
+                $reviews = BookReview::orderBy('updated_at')->get();
+            }
+        }
+        else
+        {
+            $reviews = BookReview::orderBy('updated_at')->get();
+        }
         
         foreach($reviews as $review)
         {
+            $review->reviewPreview = $review->review;
+            $review->isLongReview = false;
+
+            if(strlen($review->review) > 150)
+            {
+                $review->isLongReview = true;
+                $review->reviewPreview = substr($review->review, 0, 150) . '...';
+            }
+
             $book = Book::find($review->book_id);
             $authors = Author::where('book_id', $book->id)->get();
             $book->authors = $authors;

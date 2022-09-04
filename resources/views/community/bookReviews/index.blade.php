@@ -47,46 +47,56 @@
                                         @endif
                                     @endforeach
                                 </p>
-                                <p class="mt-2">{{$review->review}}</p>
+                                <p id="reviewText{{$review->id}}" class="mt-2">{{$review->reviewPreview}}</p>
                             </div>
 
                             {{--Link to see show book details--}}
                             <div class="w-full flex flex-row flex-wrap justify-between">
-                                <a href="{{ route('books.show_from_model', ['id' => $review->book->id]) }}"
-                                   class="text-indigo-600 text-sm md:text-base md:font-semibold hover:text-blue-600">
+                                <p  onclick="showFullReview(this, 'hideFullReviewBtn{{$review->id}}', 'reviewText{{$review->id}}', '{{json_encode($review->review)}}')"
+                                    class="text-indigo-600 text-sm md:text-base md:font-semibold 
+                                          hover:font-semibold md:hover:font-bold cursor-pointer"
+                                    id="showFullReviewBtn{{$review->id}}">
                                     Read Full Review
-                                </a>
-                                <div class="flex flex-row flex-wrap justify-end">
+                                </p>
+                                <p  onclick="hideFullReview(this, 'showFullReviewBtn{{$review->id}}', 'reviewText{{$review->id}}', '{{json_encode($review->reviewPreview)}}')"
+                                    class="text-indigo-600 text-sm md:text-base md:font-semibold 
+                                          hover:font-semibold md:hover:font-bold cursor-pointer"
+                                    id="hideFullReviewBtn{{$review->id}}"
+                                    style="display:none">
+                                    Hide Full Review
+                                </p>
+                                <div class="flex flex-row flex-wrap justify-end items-center">
                                     @if($review->isLikedByThisUser)
-                                        <button class="flex items-center text-sm" onclick="unlikeReview(this, '{{$review->id}}')">
+                                        <button class="flex items-center text-sm hover:scale-105" onclick="unlikeReview(this, '{{$review->id}}')">
                                             <img src="/resources/like_filled.png" width="24" class="inline mr-1" />
                                             <span>{{$review->likeCount}}</span>
                                         </button>
                                     @else
-                                        <button class="flex items-center text-sm" onclick="likeReview(this, '{{$review->id}}')">
+                                        <button class="flex items-center text-sm hover:scale-105" onclick="likeReview(this, '{{$review->id}}')">
                                             <img src="/resources/like_blank.png" width="24" class="inline mr-1" />
                                             <span>{{$review->likeCount}}</span>
                                         </button>
                                     @endif
 
-                                    @if($review->isSavedByThisUser)
-                                        <button onclick="unsaveReview(this, '{{$review->id}}')">
-                                            <img src="/resources/save_filled.png" width="24" class="ml-5" />
+                                    @if($review->isSavedByThisUser && !$review->isReviewdByThisUser)
+                                        <button onclick="unsaveReview(this, '{{$review->id}}')"  class="ml-5 hover:scale-105">
+                                            <img src="/resources/save_filled.png" width="24" />
                                         </button>
-                                    @else 
-                                        <button onclick="saveReview(this, '{{$review->id}}')">
-                                            <img src="/resources/save_blank.png" width="24" class="ml-5" />
+                                    @elseif(!$review->isReviewdByThisUser)
+                                        <button onclick="saveReview(this, '{{$review->id}}')"  class="ml-5 hover:scale-105">
+                                            <img src="/resources/save_blank.png" width="24" />
                                         </button>
                                     @endif
 
                                     @if($review->isReviewdByThisUser)
-                                        <a href="{{route('community.bookReview.edit', ['id' => $review->id])}}">
-                                            <button>
-                                                <img src="/resources/edit.png" width="24" class="ml-5"/>
-                                            </button>
-                                        </a>
-                                        <button onclick="openDeletePopupBox('{{$review->id}}')">
-                                            <img src="/resources/delete.png" width="24" class="ml-5"/>
+                                        <button class="ml-5 hover:scale-105">
+                                            <a href="{{route('community.bookReview.edit', ['id' => $review->id])}}">
+                                                <img src="/resources/edit.png" width="24"/>
+                                            </a>
+                                        </button>
+            
+                                        <button onclick="openDeletePopupBox('{{$review->id}}')"  class="ml-5 hover:scale-105">
+                                            <img src="/resources/delete.png" width="24"/>
                                         </button>
                                     @endif
                                 </div>
@@ -109,24 +119,19 @@
 
     <div id="sort_options_box" class="fixed w-11/12 md:w-1/2 bg-white p-5 rounded" >       
         <ul class="text-center text-gray-600">Sort by
-            <a href="/?sort=date_added&order=desc">
+            <a href="/community/bookReviews/">
                 <li class="mt-3 text-indigo-700 cursor-pointer hover:font-semibold">
-                    Date added - recent to old
+                    Most Recent
                 </li>
             </a>
-            <a href="/?sort=date_added&order=asc">
+            <a href="/community/bookReviews/?sort=like">
                 <li class="text-indigo-700 cursor-pointer hover:font-semibold">
-                    Date added - old to recent
+                    Most Liked
                 </li>
             </a>
-            <a href="/?sort=progress&order=asc">
+            <a href="/community/bookReviews/?sort=saved">
                 <li class="text-indigo-700 cursor-pointer hover:font-semibold">
-                    Progress - low to high
-                </li>
-            </a>
-            <a href="/?sort=progress&order=desc">
-                <li class="text-indigo-700 cursor-pointer hover:font-semibold">
-                    Progress - high to low
+                    Most Saved
                 </li>
             </a>
             <li class="text-indigo-700 cursor-pointer text-center mt-3 hover:font-semibold" 
@@ -386,5 +391,21 @@ function deleteReview()
         }
     }
     http.send(formData);
+}
+
+function showFullReview(showBtn, hideBtnId, reviewTextId, review)
+{
+    const reviewText = document.getElementById(reviewTextId);
+    reviewText.textContent = review;
+    showBtn.style.display = "none";
+    document.getElementById(hideBtnId).style.display = "block";
+}
+
+function hideFullReview(hideBtn, showBtnId, reviewTextId, review)
+{
+    const reviewText = document.getElementById(reviewTextId);
+    reviewText.textContent = review;
+    hideBtn.style.display = "none";
+    document.getElementById(showBtnId).style.display = "block";
 }
 </script>
