@@ -10,7 +10,7 @@
                 {{--Book info--}}
                 <div class="w-full md:w-3/4 md:rounded flex flex-col flex-wrap justify-between">
                     <div class="bg-white w-full p-3">
-                        <p class="font-bold text-xl">{{ $book->title }}</p>
+                        <p class="font-bold">{{ $book->title }}</p>
 
                         @if(count($book->authors) > 0)
                             {{--Author info--}}

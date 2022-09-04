@@ -10,18 +10,18 @@ use App\Models\Book;
 use App\Models\Author;
 use App\Models\Publisher;
 use App\Models\Subject;
+use App\Http\Controllers\SearchController;
 
 class BookController extends Controller
 {
     function index()
     {
-        $filter = '';
-        $sort = '';
+        $filter = null;
         $query = "SELECT * FROM books where user_id = '" . Auth::user()->id . "' AND isWishlistItem = '0'";
     
         if(isset($_GET['filter']))
         {
-            $filter = strip_tags($_GET['filter']);
+            $filter = $_GET['filter'];
             $query ="SELECT * FROM books b1 INNER JOIN books b2 on b1.id = b2.id WHERE b1.user_id='" . Auth::user()->id . "' ";
             if($filter == 'completed')
             {            
@@ -35,8 +35,8 @@ class BookController extends Controller
 
         if(isset($_GET['sort']) && isset($_GET['order']))
         {
-            $sort = strip_tags($_GET['sort']);
-            $order = strip_tags($_GET['order']);
+            $sort = $_GET['sort'];
+            $order = $_GET['order'];
 
             if(($filter == 'completed' || $filter == 'progress'))
             {
@@ -135,7 +135,8 @@ class BookController extends Controller
 
     function show_from_search_result($edition_key)
     {
-        $search_result = $this->search_by_edition_key(strip_tags($edition_key));
+        $search_controller = new SearchController();
+        $search_result = $search_controller->search_by_edition_key($edition_key);
 
         if($search_result->response == "OK")
         {
@@ -146,7 +147,7 @@ class BookController extends Controller
         }
         else
         {
-            return view('books.show', ['response' => $search_result->response, 'type' => 'NOT_FOUND']);
+            return view('books.show', ['response' => $search_result->message, 'type' => 'NOT_FOUND']);
         }
     }
 
@@ -173,7 +174,8 @@ class BookController extends Controller
 
     function create_with_data($edition_key)
     {
-        $search_result = $this->search_by_edition_key(strip_tags($edition_key));
+        $search_controller = new SearchController();
+        $search_result = $search_controller->search_by_edition_key($edition_key);
 
         if($search_result->response == "OK")
         {
@@ -332,7 +334,8 @@ class BookController extends Controller
 
     function add_to_wishlist(Request $request)
     {
-        $search_result = $this->search_by_edition_key(strip_tags($request->edition_key));
+        $search_controller = new SearchController();
+        $search_result = $search_controller->search_by_edition_key($request->edition_key);
         
         if($search_result->response == 'OK')
         {            
@@ -476,144 +479,9 @@ class BookController extends Controller
         }
         
         return json_encode(['response' => 'OK', 'message' => $message]);
-    }
-
-    function search()
-    {
-        if(!isset($_GET['q']) || strlen($_GET['q']) < 1)
-        {
-            return view('books.search');
-        }
-
-        $q = strip_tags($_GET['q']);
-        $response = Http::get('http://openlibrary.org/search.json?q=' . $q);
-
-        if($response->failed())
-        {
-            $msg = 'Open Library API is currently inactive. Please ty again or add book information manually.';
-            return view('books.search', ['api_connect_error' => (object)['message' => $msg]]);
-        }
-        $response = json_decode($response, false);
-
-        $book_count = 0;
-        $book_list = array();
-
-        foreach($response->docs as $book)
-        {
-            if($book != null && property_exists($book, 'cover_edition_key') 
-                && property_exists($book, 'title')
-                && property_exists($book, 'author_name')
-                && property_exists($book, 'publisher')
-                && property_exists($book, 'number_of_pages_median'))
-            {
-                $book->edition_key = $book->cover_edition_key;
-
-                $edition_data = Http::get('https://openlibrary.org/books/' . $book->edition_key . '.json');  
-                $edition_data = json_decode($edition_data, false);
-
-                //Edition key is later used to show a specific book from search result,
-                //but some edition data does not contain the author field
-                //So, filter search result to show only the results that have consistent edition info. 
-                if(property_exists($edition_data, 'authors'))
-                {
-                    $book->total_pages = $book->number_of_pages_median;
-
-                    if(property_exists($book, 'cover_i'))
-                    {
-                        $book->cover_url = 'https://covers.openlibrary.org/b/id/'. $book->cover_i .'-M.jpg';
-                    }
-                    else
-                    {
-                        $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
-                    }   
-
-                    //To check if a book in the search result is in user's wishlist
-                    $wishlistedBook = Book::where('user_id', Auth::user()->id)
-                                            ->where('book_id', $book->edition_key)
-                                            ->where('isWishlistItem', '1')
-                                            ->first();
-                    
-                    if(!is_null($wishlistedBook))
-                    {
-                        $book->wishlistBookId = $wishlistedBook->id;
-                        $book->isWishlisted = true;
-                    }
-                    else
-                    {
-                        $book->isWishlisted = false;
-                    }
-
-                    array_push($book_list, $book);
-                    $book_count++;
-                }     
-            }
-        }
-
-        return view('books.search', ['book_list' => $book_list, 'book_count' => $book_count]);
     } 
 
-    function search_by_edition_key($edition_key)
-    {
-        $response = Http::get('https://openlibrary.org/books/' . $edition_key . '.json');  
-
-        if($response->failed())
-        {
-            return (object)['response' => 'FAILED', 'message' => 'Open Library API is currently inactive.'];
-        }
-        else
-        {
-            $response = json_decode($response, false);
-            if(property_exists($response, 'error') && $response->error == 'notfound')
-            {
-                return (object)['response' => 'FAILED', 'message' => 'No book found.'];
-            }
-        } 
-
-        $book = new \stdClass();
-           
-        $book->edition_key = $edition_key;
-        $book->title = $response->title;
-        $book->subtitle = property_exists($response, 'subtitle') ? $response->subtitle : '';
-        $book->total_pages = property_exists($response, 'number_of_pages') ? $response->number_of_pages : '1';
-        $book->description = property_exists($response, 'description') ? $response->description : '';
-        $book->publish_date = property_exists($response, 'publish_date') ? $response->publish_date : '';
-        $book->publishers = property_exists($response, 'publishers') ? $response->publishers : [];
-        $book->subjects = property_exists($response, 'subjects') ? $response->subjects : [];
-
-        if(property_exists($response, 'covers'))
-        {
-            $book->cover_url = 'https://covers.openlibrary.org/b/id/'. $response->covers[0] .'-L.jpg';
-        }
-        else
-        {
-           $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
-        }  
-
-        $author_info = Http::get('https://openlibrary.org' . $response->authors[0]->key . '.json'); 
-        $book->authors = [json_decode($author_info, false)]; 
-
-        if(property_exists($response, 'description'))
-        {
-            if(is_object($response->description))
-            {
-                $book->description = $response->description->value;
-            }
-            else
-            {
-                $book->description = $response->description;
-            }
-        }
-        else
-        {
-            $book->description = '';
-        }
-        
-        $book->read_pages = "";
-        $book->comment = "";
-        $book->public_comment = "";
-
-        return (object)['response' => 'OK', 'book' => $book];
-    }
+    
 
     /**
      * If $id == null, the function is called to store info of a new book

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookReviewController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,7 +19,7 @@ use App\Http\Controllers\BookReviewController;
 
 Route::get('/', [BookController::class, 'index'])->middleware('auth')->name('books.index');
 Route::get('/book/{id}', [BookController::class, 'show_from_model'])->middleware('auth')->name('books.show_from_model');
-Route::get('/search', [BookController::class, 'search'])->middleware('auth')->name('books.search');
+Route::get('/search', [SearchController::class, 'search'])->middleware('auth')->name('books.search');
 Route::get('/search/{edition_key}', [BookController::class, 'show_from_search_result'])->middleware('auth')->name('books.show_from_search_result');
 Route::get('/add', [BookController::class, 'create'])->middleware('auth')->name('books.create');
 Route::get('/add/{edition_key}', [BookController::class, 'create_with_data'])->middleware('auth')->name('books.create_with_data');
