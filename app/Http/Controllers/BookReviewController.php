@@ -20,7 +20,7 @@ class BookReviewController extends Controller
         
         if(isset($_GET['sort']))
         {
-            $sort = DB::connection()->getPDO()->quote($_GET['sort']);
+            $sort = $_GET['sort'];
 
             if($sort == 'date')
             {
@@ -28,24 +28,30 @@ class BookReviewController extends Controller
             }
             else if($sort == 'like')
             {
-                $query = "SELECT * FROM book_reviews INNER JOIN book_review_likes on book_reviews.id = book_review_likes.review_id ";
-                $query .= "ORDER BY COUNT(book_review_likes.id) DESC";
-                $reviews = BookReview::select($query)->get();
+                $reviews = DB::table('book_reviews')
+                            ->leftJoin('book_review_likes', 'book_reviews.id', '=', 'book_review_likes.review_id')
+                            ->select('book_reviews.*', DB::raw('COUNT(book_review_likes.id) as likeCount'))
+                            ->groupBy('book_reviews.id')
+                            ->orderBy('likeCount', 'desc')
+                            ->get();
             }
             else if($sort == 'saved')
             {
-                $query = "SELECT * FROM book_reviews INNER JOIN saved_book_reviews on book_reviews.id = saved_book_reviews.review_id ";
-                $query .= "ORDER BY COUNT(saved_book_reviews.id) DESC";
-                $reviews = BookReview::select($query)->get();
+                $reviews = DB::table('book_reviews')
+                            ->leftJoin('saved_book_reviews', 'book_reviews.id', '=', 'saved_book_reviews.review_id')
+                            ->select('book_reviews.*', DB::raw('COUNT(saved_book_reviews.id) as saveCount'))
+                            ->groupBy('book_reviews.id')
+                            ->orderBy('saveCount', 'desc')
+                            ->get();
             }
             else
             {
-                $reviews = BookReview::orderBy('updated_at')->get();
+                $reviews = BookReview::orderBy('updated_at', 'DESC')->get();
             }
         }
         else
         {
-            $reviews = BookReview::orderBy('updated_at')->get();
+            $reviews = BookReview::orderBy('updated_at', 'DESC')->get();
         }
         
         foreach($reviews as $review)
