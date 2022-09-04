@@ -89,16 +89,9 @@ class SearchController extends Controller
 
         if($response->failed())
         {
-            $response = json_decode($response, false);
-            if(property_exists($response, 'error') && $response->error == 'notfound')
-            {
-                return (object)['response' => 'FAILED', 'message' => 'No book found.'];
-            }
-            else
-            {
-                return (object)['response' => 'FAILED', 'message' => 'Open Library API is currently inactive.'];
-            }
+            return (object)['response' => 'FAILED', 'message' => 'No book was found due to either invalid book id or irresponsive Open Library'];
         }
+        $response = json_decode($response, false);
 
         $book = new \stdClass();
            
@@ -120,8 +113,17 @@ class SearchController extends Controller
            $book->cover_url = '/resources/RandsBookDefaultBookImg.png';
         }  
 
-        $author_info = Http::get('https://openlibrary.org' . $response->authors[0]->key . '.json'); 
-        $book->authors = [json_decode($author_info, false)]; 
+        $authors = [];
+        foreach($response->authors as $index => $author)
+        {
+            $author_info = Http::get('https://openlibrary.org' . $author->key . '.json'); 
+            $author_info = json_decode($author_info, false);
+            array_push($authors, $author_info);
+
+            if($index == 5) break;
+        }
+        
+        $book->authors = $authors; 
 
         if(property_exists($response, 'description'))
         {

@@ -150,7 +150,7 @@ function addToWishlist(wishlistBtnImg, editionKey)
     formData.append('edition_key', editionKey);
     formData.append('_token', csrfToken);
 
-    http.open('POST', url, true);
+    http.open('POST', url, false);
 
     http.onreadystatechange = function() 
     {
@@ -162,12 +162,12 @@ function addToWishlist(wishlistBtnImg, editionKey)
                 const img = wishlistBtnImg.cloneNode(true);
                 img.removeAttribute('onclick');
                 img.src = '/resources/heart_filled.png';
-                img.addEventListener('click', function() { removeFromWishlist(img, responseObj.book_id, csrfToken) });
+                img.addEventListener('click', function() { removeFromWishlist(img, responseObj.edition_key) });
                 wishlistBtnImg.parentNode.replaceChild(img, wishlistBtnImg);
             }
             else
             {
-                alert(responseObj.message);
+                alert(JSON.stringify(responseObj, null, 4));
             }
         }
     }
@@ -185,7 +185,7 @@ function removeFromWishlist(wishlistBtnImg, bookId)
     formData.append('_token', csrfToken);
     formData.append('_method', 'DELETE');
 
-    http.open('POST', url, true);
+    http.open('POST', url, false);
 
     http.onreadystatechange = function() 
     {
@@ -197,7 +197,7 @@ function removeFromWishlist(wishlistBtnImg, bookId)
                 const img = wishlistBtnImg.cloneNode(true);
                 img.removeAttribute('onclick');
                 img.src = '/resources/heart_blank.png';
-                img.addEventListener('click', function() { addToWishlist(img, responseObj.edition_key, csrfToken) });
+                img.addEventListener('click', function() { addToWishlist(img, responseObj.edition_key) });
                 wishlistBtnImg.parentNode.replaceChild(img, wishlistBtnImg);
             }
             else

@@ -153,20 +153,20 @@ class BookController extends Controller
 
     function create()
     {
-        $book = array(  'title' => "",
-                        'edition_key' => "",
-                        'subtitle' => "",
-                        'authors' => array(),
-                        'publishers' => array(),
-                        'subjects' => array(),
-                        'publish_date' => "",
-                        'total_pages' => "",
-                        'read_pages' => "",
-                        'description' => "",
-                        'cove_id' => "",
-                        'comment' => "",
-                        'public_comment' => "",
-                        'cover_url' => ""
+        $book = array(  'title' => '',
+                        'edition_key' => '',
+                        'subtitle' => '',
+                        'authors' => [],
+                        'publishers' => [],
+                        'subjects' => [],
+                        'publish_date' => '',
+                        'total_pages' => '',
+                        'read_pages' => '',
+                        'description' => '',
+                        'cove_id' => '',
+                        'comment' => '',
+                        'public_comment' => '',
+                        'cover_url' => ''
                     );
         
         return view('books.create', ['book' => (object)$book]);
@@ -301,158 +301,6 @@ class BookController extends Controller
         $book->delete();
 
         return redirect()->route('books.index');
-    }
-
-    function wishlist()
-    {
-        $book_list = Book::where('user_id', Auth::user()->id)
-                        ->where('isWishlistItem', '1')
-                        ->get();
-
-        foreach($book_list as $book)
-        {
-            $author = Author::where('book_id', $book->id)->get();
-            $publisher = Publisher::where('book_id', $book->id)->get();
-            $subject = Subject::where('book_id', $book->id)->get();
-
-            $book->authors = $author;
-            $book->publishers = $publisher;
-            $book->subjects = $subject;
-        }
-
-        $num_book_found = 'No book';
-        if(count($book_list) == 1)
-        {
-            $num_book_found = '1 book';
-        }
-        else if(count($book_list) > 1)
-        {
-            $num_book_found = count($book_list) . ' books';
-        }
-        return view('books.wishlist', ['book_list' => $book_list, 'num_book_found' => $num_book_found]);
-    }
-
-    function add_to_wishlist(Request $request)
-    {
-        $search_controller = new SearchController();
-        $search_result = $search_controller->search_by_edition_key($request->edition_key);
-        
-        if($search_result->response == 'OK')
-        {            
-            $data = $search_result->book; 
-
-            $book = new Book();
-            $book->book_id = $request->edition_key;
-            $book->user_id = Auth::user()->id; 
-            $book->title = $data->title;
-            $book->subtitle = $data->subtitle;
-            $book->total_pages = $data->total_pages;
-            $book->description = $data->description;
-            $book->cover_url = $data->cover_url;
-            $book->isWishlistItem = '1';
-            $book->save();
-
-            //save author info
-            foreach($data->authors as $a)
-            {
-                $author = new Author();
-                $author->name = $a->name;
-                $author->book_id = $book->id;
-                $author->save();
-            }
-
-            //save publisher info
-            foreach($data->publishers as $p)
-            {
-                $publisher = new Publisher();
-                $publisher->name = $p;
-                $publisher->book_id = $book->id;
-                $publisher->save();
-            }
-
-            //save subjects info
-            foreach($data->subjects as $index => $s)
-            {
-                $subject = new Subject();
-                $subject->name = $s;
-                $subject->book_id = $book->id;
-                $subject->save();
-
-                if($index == 2)
-                {
-                    break;
-                }
-            }
-
-            return json_encode([
-                'response' => $search_result->response, 
-                'message' => $book->title . ' has been added to your wishlist.',
-                'book_id' => $book->id
-            ]);
-        }
-        
-        return json_encode(['response' => $search_result->response, 'message' => $search_result->message]);
-    }
-
-    function remove_from_wishlist(Request $request)
-    {
-        $book = Book::where('user_id', Auth::user()->id)
-                    ->where('id', $request->book_id)
-                    ->where('isWishlistItem', '1')
-                    ->first();
-        
-        if(is_null($book))
-        {
-            return json_encode(['response' => 'FAILED', 'message' => 'Invalid book id.']);
-        }
-
-        $authors = Author::where('book_id', $book->id)->get();           
-        foreach($authors as $author)
-        {
-            $a = Author::find($author->id);
-            $a->delete();
-
-        }
-
-        $publishers = Publisher::where('book_id', $book->id)->get();
-        foreach($publishers as $publisher)
-        {
-            $p = Publisher::find($publisher->id);
-            $p->delete();
-        }
-
-        $subjects = Subject::where('book_id', $book->id)->get();
-        foreach($subjects as $subject)
-        {
-            $s = Subject::find($subject->id);
-            $s->delete();
-        }
-
-        $title = $book->title;
-        $edition_key = $book->book_id;
-        $book->delete();
-        
-        return json_encode([
-            'response' => 'OK', 
-            'message' => $title . ' has been removed from your wishlist.',
-            'edition_key' => $edition_key
-         ]);
-    }
-
-    function wishlist_to_library(Request $request)
-    {   
-        $book_id = strip_tags($request->book_id);
-        $book = Book::where([['id', $book_id], ['user_id', Auth::user()->id]])->first();  
-        
-        if(is_null($book))
-        {
-            return json_encode(['response' => 'FAILED', 'message' => 'This book was not found in your wishlist.']);
-        }
-
-        $book->isWishlistItem = 0;
-        $book->save();
-
-        return json_encode(['response' => 'OK', 'message' => $book->title . ' has been added to your library.']);
     }
 
     function update_read_pages(Request $request)
