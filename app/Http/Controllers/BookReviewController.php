@@ -49,6 +49,29 @@ class BookReviewController extends Controller
                 $reviews = BookReview::orderBy('updated_at', 'DESC')->get();
             }
         }
+        else if(isset($_GET['filter']))
+        {
+            $filter = $_GET['filter'];
+
+            if($filter == 'my_reviews')
+            {
+                $reviews = BookReview::where('user_id', Auth::user()->id)->get();
+            }
+            else if($filter == 'saved_reviews')
+            {
+                $reviews = DB::table('book_reviews')
+                            ->join('saved_book_reviews', 'book_reviews.id', '=', 'saved_book_reviews.review_id')
+                            ->select('book_reviews.*', DB::raw('COUNT(saved_book_reviews.id) as saveCount'))
+                            ->where('saved_book_reviews.user_id', Auth::user()->id)
+                            ->groupBy('book_reviews.id')
+                            ->orderBy('saved_book_reviews.updated_at', 'desc')
+                            ->get();
+            }
+            else
+            {
+                $reviews = BookReview::orderBy('updated_at', 'DESC')->get();
+            }
+        }
         else
         {
             $reviews = BookReview::orderBy('updated_at', 'DESC')->get();

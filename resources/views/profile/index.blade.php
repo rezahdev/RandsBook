@@ -46,8 +46,17 @@
                 </div>
 
                 <div class="w-full md:w-[calc(50%-4px)] bg-white p-2 mt-3 md:ml-1 rounded flex flex-row flex-wrap justify-between">
-                    <a href="{{route('profile.change_password')}}" class="text-indigo-700 hover:font-semibold">Change password</a>
+                    <a href="{{route('profile.change_password')}}" class="text-indigo-700 hover:font-semibold">Change Password</a>
                 </div>
+
+                <div class="w-full md:w-[calc(50%-4px)] bg-white p-2 mt-3 md:mr-1 rounded flex flex-row flex-wrap justify-between">
+                    <a href="/community/bookReviews/?filter=my_reviews" class="text-indigo-700 hover:font-semibold">My Book Reviews</a>
+                </div>
+
+                <div class="w-full md:w-[calc(50%-4px)] bg-white p-2 mt-3 md:ml-1 rounded flex flex-row flex-wrap justify-between">
+                    <a href="/community/bookReviews/?filter=saved_reviews" class="text-indigo-700 hover:font-semibold">Saved Book Reviews</a>
+                </div>
+
             </div>
             <div class="w-full bg-white p-2 mt-3 rounded">
                 <p class="w-full">Library Statistics</p>

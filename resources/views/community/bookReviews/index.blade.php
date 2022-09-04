@@ -106,7 +106,7 @@
                 @endforeach
         </div>
             @else
-                <div class="w-full bg-white pt-4 pb-10 text-center my-10">
+                <div class="w-full bg-white pt-4 pb-10 text-center mb-5 mt-2">
                     <p class="mb-5">No reviews found! You can contribute to the community by
                         reviewing a book from your library.</p>
                     <a href="{{ route('community.bookReview.create') }}"
