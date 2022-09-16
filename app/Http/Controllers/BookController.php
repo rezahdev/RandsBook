@@ -118,6 +118,7 @@ class BookController extends Controller
         {
             return view('books.show', ['response'=> 'No Book Found!', 'type' => 'NOT_FOUND']);
         }
+        $book->edition_key = $book->book_id;
 
         $authors = Author::where('book_id', $id)->get();
         $book->authors = $authors;
@@ -140,15 +141,10 @@ class BookController extends Controller
 
         if($search_result->response == "OK")
         {
-            $search_result->book->book_id = $edition_key;
             $reviews = $this->retrievePublicReviews($search_result->book);
-
             return view('books.show', ['book' => $search_result->book, 'type' => 'SEARCH_DATA', 'reviews' => $reviews]);
         }
-        else
-        {
-            return view('books.show', ['response' => $search_result->message, 'type' => 'NOT_FOUND']);
-        }
+        return view('books.show', ['response' => $search_result->message, 'type' => 'NOT_FOUND']);
     }
 
     function create()
@@ -445,17 +441,18 @@ class BookController extends Controller
 
     private function retrievePublicReviews($book)
     {
-        $query = "SELECT books.public_comment as comment, books.updated_at as review_date,
-                  users.name as user_name, users.nickname as user_nickname, users.use_nickname
-                  from books INNER JOIN users on books.user_id = users.id WHERE LENGTH(books.public_comment) > 0 ";
+        $query = "SELECT books.public_comment AS comment, books.updated_at AS review_date,
+                  users.name AS user_name, users.nickname AS user_nickname, users.use_nickname
+                  FROM books INNER JOIN users on books.user_id = users.id WHERE LENGTH(books.public_comment) > 0 ";
 
-        if(!empty($book->book_id) && strlen($book->book_id) > 0)
+        $title = addslashes($book->title);
+        if(!empty($book->edition_key))
         {
-            $query .= " AND (book_id = '" . $book->book_id . "' OR title = '" . $book->title . "') ORDER BY books.updated_at";
+            $query .= " AND (book_id = '" . $book->edition_key . "' OR title = '" . $title . "') ORDER BY books.updated_at";
         }
         else
         {
-            $query .= " AND title = '" . $book->title . "' ORDER BY books.updated_at";
+            $query .= " AND title = '" . $title . "' ORDER BY books.updated_at";
         }
 
         $reviews = DB::select($query);

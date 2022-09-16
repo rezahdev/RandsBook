@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
             $table->integer('book_id');
-            $table->string('author_name');
+            $table->string('name');
             $table->string('author_url')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

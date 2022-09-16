@@ -23,7 +23,7 @@
 
                     <textarea class="w-full h-96 rounded mb-5 p-2 mt-2" name="review" placeholder="Write your review here"></textarea>
 
-                    <button type="submit" class="block bg-blue-800 hover:bg-blue-500 rounded text-white py-3 px-5 my-3">
+                    <button type="submit" class="block bg-blue-800 hover:bg-green-700 rounded text-white py-3 px-5 my-3">
                         Post
                     </button>
                 </form>

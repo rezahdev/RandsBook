@@ -48,7 +48,7 @@
                         </a>
                     </div>
                 @else
-                    <p class="pt-5 text-center">{{$book_count . ' books found.'}}</p>         
+                    <p class="pt-5 text-center w-full text-red-500">No book found.</p>         
                     <div class="bg-white p-5 text-center mb-10 mt-5 w-11/12">
                         <p class="mb-5"> You can also add the book information manually if you cannot find the book. </p>
                         <a href="{{ route('books.create') }}"

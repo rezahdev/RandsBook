@@ -101,7 +101,7 @@
                                        onkeydown="return event.key != 'Enter';"
                                        onchange="updateReadPagesRangerValue()">
                             <button id="update_read_pages_btn"
-                                    class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2 hidden"
+                                    class="bg-blue-700 hover:bg-green-700 text-white py-1 px-3 rounded mr-2 hidden"
                                     onclick="updateReadPages('{{$book->id}}', '{{csrf_token()}}')">
                                 Update
                             </button>
@@ -117,13 +117,13 @@
                         @if($type == 'SEARCH_DATA')
                             <form action="{{ route('books.create_with_data', ['edition_key' => $book->edition_key]) }}">
                                 @csrf
-                                <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2">
+                                <button type="submit" class="bg-blue-700 hover:bg-green-700 text-white py-1 px-3 rounded mr-2">
                                     Add to My Library
                                 </button>
                             </form>
                         @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '0') 
                             <a href="{{ route('books.edit', ['id' => $book->id]) }}"
-                               class="bg-blue-700 hover:bg-blue-800 text-white px-3 rounded mr-2" style="padding-top: 6px; padding-bottom: 6px">
+                               class="bg-blue-700 hover:bg-green-700 text-white px-3 rounded mr-2" style="padding-top: 6px; padding-bottom: 6px">
                                 Edit Book
                             </a>
                             <button onclick="openDeletePopupBox()" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded mr-2 mt-2">
@@ -131,7 +131,7 @@
                             </button >
                         @elseif($type == 'MODEL_DATA' && $book->isWishlistItem == '1') 
                             <button onclick="addToLibrary('{{$book->id}}', '{{csrf_token()}}')"
-                                    class="bg-blue-700 hover:bg-blue-800 text-white py-1 px-3 rounded mr-2" >
+                                    class="bg-blue-700 hover:bg-green-700 text-white py-1 px-3 rounded mr-2" >
                                     Add to My Library
                             </button>
                             <button onclick="removeFromWishlist('{{$book->id}}', '{{csrf_token()}}')" 
@@ -143,10 +143,17 @@
                     
                     <div class="w-full mb-24 mt-2">
                         <div class="w-full bg-white py-3 text-center mb-2 mt-4 font-semibold">
-                            <p>Reviews</p>
+                            <p>
+                                Reviews
+                                @if(!empty($reviews))
+                                {{ (count($reviews)) }}
+                                @else
+                                (0)
+                                @endif
+                            </p>
                         </div>
                         <div class="w-full mb-3">
-                            @if(!is_null($reviews))
+                            @if(!empty($reviews))
                                 @foreach($reviews as $review)
                                     <div class="mb-2 bg-white p-3">
                                         <div class="flex flex-row justify-between items-center">

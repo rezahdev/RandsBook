@@ -251,7 +251,7 @@
                 </div>
 
                 <label>Description</label>
-                <textarea class="w-full rounded mb-5 p-2" name="description">{{ $book->description }}</textarea>
+                <textarea class="w-full rounded mb-5 p-2 h-36" name="description">{{ $book->description }}</textarea>
 
                 <label>Subject Tags</label><br>
                 <div class="flex flex-row justify-start flex-wrap mb-5">
@@ -348,12 +348,12 @@
                 </div>
 
                 <label>Note (Only you can see this note)</label>
-                <textarea class="w-full rounded mb-5 p-2" name="comment">{{ $book->comment }}</textarea>
+                <textarea class="w-full rounded mb-5 p-2 h-36" name="comment">{{ $book->comment }}</textarea>
 
                 <label>Comment (Other users can see this comment)</label>
-                <textarea class="w-full rounded mb-5 p-2" name="public_comment">{{ $book->public_comment }}</textarea>
+                <textarea class="w-full rounded mb-5 p-2 h-36" name="public_comment">{{ $book->public_comment }}</textarea>
 
-                <button type="submit" class="block bg-blue-800 hover:bg-blue-500 rounded text-white py-3 px-5 my-3">
+                <button type="submit" class="block bg-blue-800 hover:bg-green-700 rounded text-white py-3 px-5 my-3">
                     Save book
                 </button>
             </form>

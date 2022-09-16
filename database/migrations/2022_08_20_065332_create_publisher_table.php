@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('publishers', function (Blueprint $table) {
             $table->id();
             $table->integer('book_id');
-            $table->string('publisher_name');
+            $table->string('name');
             $table->string('city')->nullable();
             $table->string('country')->nullable();
             $table->timestamp('created_at')->useCurrent();

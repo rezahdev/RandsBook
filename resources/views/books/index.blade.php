@@ -4,12 +4,12 @@
             @if(isset($book_list) && count($book_list) > 0)
                 <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
                     <p class="md:text-lg">{{$num_book_found . ' in library.'}}</p>
-                    <div class="flex flex-row justify-end">
-                        <img id="filter_img" class="pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
-                                src="/resources/filter.png" width="32" height="32"
+                    <div class="flex flex-row justify-end border border-gray-300 px-4 py-1 rounded-xl ">
+                        <img id="filter_img" class="pb-0.5 lg:scale-110 cursor-pointer w-7 border-r border-gray-300 pr-2" 
+                                src="/resources/filter.png"
                                 onclick="invokeFilterOptionsBox()">
-                        <img id="sort_img" class="ml-3 md:ml-5 pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
-                                src="/resources/sort.png" width="32" height="32"
+                        <img id="sort_img" class="md:ml-5 pb-0.5 hover:scale-110 cursor-pointer w-5 ml-2" 
+                                src="/resources/sort.png"
                                 onclick="invokeSortOptionsBox()">
                     </div>
                 </div>

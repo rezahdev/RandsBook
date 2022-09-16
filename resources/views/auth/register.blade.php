@@ -54,15 +54,19 @@
         </form>
     </x-auth-card>
     <div id="registration_confirmation_box">
-        <p>This app is a demo version of RandsBook. The app was developed by Reza Saker and it is currently provided under MIT LIcense.
-           Registration is solely for the purpose of exploring various features of RandsBook. This app uses cookies. 
+        <h2 class="font-semibold">IMPORTANT</h2>
+        <p>This is a demo version of RandsBook which was developed as a hobby project by Reza Saker in 2022. 
+           RandsBook is currently provided under the MIT LIcense, and registration is only recommended for the purpose 
+           of exploring various features of RandsBook. This site uses cookies. 
         </p>
         <div class="flex flex flex-row flex-wrap justify-center items-center mt-2 ">
-            <button class="bg-green-700 text-white px-2 py-0.5 rounded mr-2 border border-green-700 hover:bg-blue-700"
+            <button class="bg-blue-700 text-white px-2 py-0.5 rounded mr-2 hover:bg-green-700
+                           border border-blue-700 hover:border-green-700"
                     onclick="register()">
                     I understand, Register
             </button>
-            <button class="bg-white border border-green-700 text-green-500 px-2 py-0.5 rounded hover:bg-blue-700 hover:text-white"
+            <button class="bg-white border border-gray-700 text-gray-700 px-2 py-0.5 
+                           rounded hover:bg-blue-700 hover:text-white hover:border-blue-700"
                     onclick="closeRegistrationConfirmationBox()">
                     Cancel
             </button>

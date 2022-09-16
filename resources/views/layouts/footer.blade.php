@@ -20,9 +20,9 @@
 </div>
 <div id="credits" class="hidden w-[calc(100%-2rem)] ml-4 absolute bg-white rounded p-5 mb-48 flex flex-col items-center" style="top:100px;">
     <h2 class="font-bold mb-2">Acknowledgements</h2>
-    <a class="a" href="https:openlibrary.org">Book search functionality is powered by Open Library API</a>
+    <a class="a" href="https://openlibrary.org">Book search functionality is powered by Open Library API</a>
     <a class="a" href="https://www.flaticon.com/free-icons/heart" title="heart icons">Heart icons created by Kiranshastry - Flaticon</a>
-    <a class="a" href="https://www.flaticon.com/free-icons/parameters" title="parameters icons">Parameters icons created by syafii5758 - Flaticon</a>
+    <a class="a" href="https://www.flaticon.com/free-icons/filter" title="filter icons">Filter icons created by herikus - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/up-and-down-arrow" title="up and down arrow icons">Up and down arrow icons created by syafii5758 - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/edit" title="edit icons">Edit icons created by Pixel perfect - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/prize" title="prize icons">Prize icons created by Freepik - Flaticon</a>
@@ -31,9 +31,8 @@
     <a class="a" href="https://github.com/yiliansource/party-js">Confetti effects is provided by Party.js Library on Github</a>
     <a class="a" href="https://www.freepik.com/free-vector/white-bookshelf-mockup-books-shelf-library_8308785.htm#query=library&position=37&from_view=search">Image by upklyak on Freepik</a>
     <a class="a" href="https://www.flaticon.com/free-icons/save" title="save icons">Save icons created by Yogi Aprelliyanto - Flaticon</a>
-    <a class="a" href="https://www.flaticon.com/free-icons/like" title="like icons">Like icons created by Laisa Islam Ani - Flaticon</a>
-    <a class="a" href="https://www.flaticon.com/free-icons/like" title="like icons">Like icons created by Pixel perfect - Flaticon</a>
-    <a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Kiranshastry - Flaticon</a>
+    <a class="a" href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by 88 Cloud - Flaticon</a>
+    <a class="a" href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Kiranshastry - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/modify" title="modify icons">Modify icons created by Freepik - Flaticon</a>
     <button onclick="closeCredits()" class="bg-blue-700 py-2 w-24 text-white rounded hover:bg-blue-800 mt-5">Close</button>
 </div>

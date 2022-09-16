@@ -3,23 +3,23 @@
         <div class="w-11/12 md:w-4/5 mb-10" id="container">
             @if(isset($reviews) && count($reviews) > 0)
                 <div class="w-full mt-3 p-1 rounded-xl flex flex-row justify-between">
-                    <div>
-                        <a href="{{route('community.bookReview.create')}}" 
-                        class="text-blue-700 font-semibold hover:text-blue-800">
-                        Write A Review
-                        </a>
-                    </div>
                     @if(!$isFilteredResult)
-                        <div class="flex flex-row justify-end">
-                            <img id="sort_img" class="ml-3 md:ml-5 pb-0.5 lg:scale-110 hover:scale-105 cursor-pointer" 
-                                    src="/resources/sort.png" width="32" height="32"
+                        <div class="flex flex-row justify-end border border-gray-300 rounded px-2 py-0.5 hover:scale-110">
+                            <img id="sort_img" class="pb-0.5 hover:scale-110 cursor-pointer w-5" 
+                                    src="/resources/sort.png"
                                     onclick="invokeSortOptionsBox()">
                         </div>
                     @endif
+                    <div>
+                        <a href="{{route('community.bookReview.create')}}" 
+                        class="text-blue-700 font-semibold hover:text-blue-800">
+                        Write A New Review
+                        </a>
+                    </div>
                 </div>
 
                 @foreach($reviews as $review)
-                    <div class="w-full my-2 lg:my-5 bg-white border rounded flex justify-start flex-wrap" id="review{{$review->id}}">
+                    <div class="w-full mb-2 mt-1 md:mb-5 md:mt-2 bg-white border rounded flex justify-start flex-wrap" id="review{{$review->id}}">
                         {{--Book image--}}
                         <div class="w-24 md:w-36">
                             <img src="{{ $review->book->cover_url }}" class="w-full h-auto" />
@@ -54,56 +54,60 @@
                             </div>
 
                             {{--Link to see show book details--}}
-                            <div class="w-full flex flex-row flex-wrap justify-between">
+                            <div class="w-full flex flex-row flex-wrap justify-between mt-2">
                                 <p  onclick="showFullReview(this, 'hideFullReviewBtn{{$review->id}}', 'reviewText{{$review->id}}', '{{json_encode($review->review)}}')"
-                                    class="text-indigo-600 text-sm md:text-base md:font-semibold 
-                                          hover:font-semibold md:hover:font-bold cursor-pointer"
+                                    class="text-indigo-600 font-semibold hover:font-bold cursor-pointer"
                                     id="showFullReviewBtn{{$review->id}}">
-                                    Read Full Review
+                                    Show More
                                 </p>
                                 <p  onclick="hideFullReview(this, 'showFullReviewBtn{{$review->id}}', 'reviewText{{$review->id}}', '{{json_encode($review->reviewPreview)}}')"
-                                    class="text-indigo-600 text-sm md:text-base md:font-semibold 
-                                          hover:font-semibold md:hover:font-bold cursor-pointer"
+                                    class="text-indigo-600 font-semibold hover:font-bold cursor-pointer"
                                     id="hideFullReviewBtn{{$review->id}}"
                                     style="display:none">
-                                    Hide Full Review
+                                    Show Less
                                 </p>
                                 <div class="flex flex-row flex-wrap justify-end items-center">
                                     @if($review->isLikedByThisUser)
-                                        <button class="flex items-center text-sm hover:scale-105" 
+                                        <button class="flex items-center text-sm hover:scale-105 border 
+                                                      border-gray-300 rounded-xl px-2"
+                                                style="padding-top: 1px; padding-bottom: 1px" 
                                                 onclick="unlikeReview(this, '{{$review->id}}', '{{csrf_token()}}')">
-                                            <img src="/resources/like_filled.png" width="26" class="inline mr-1" />
+                                            <img src="/resources/like_filled.png" 
+                                                 class="w-4 md:w-5 inline mr-1 border-r border-gray-300" />
                                             <span>{{$review->likeCount}}</span>
                                         </button>
                                     @else
-                                        <button class="flex items-center text-sm hover:scale-105" 
+                                        <button class="flex items-center text-sm hover:scale-105 border 
+                                                       border-gray-300 rounded-xl px-2"
+                                                style="margin-top: 1px; padding-bottom: 1px" 
                                                 onclick="likeReview(this, '{{$review->id}}', '{{csrf_token()}}')">
-                                            <img src="/resources/like_blank.png" width="24" class="inline mr-1" />
+                                            <img src="/resources/like_blank.png" 
+                                                 class="w-4 md:w-5 inline mr-1 border-r border-gray-300 mr-1" />
                                             <span>{{$review->likeCount}}</span>
                                         </button>
                                     @endif
 
                                     @if($review->isSavedByThisUser && !$review->isReviewdByThisUser)
                                         <button onclick="unsaveReview(this, '{{$review->id}}', '{{csrf_token()}}')"  
-                                                class="ml-5 hover:scale-105">
-                                            <img src="/resources/save_filled.png" width="24" />
+                                                class="ml-2 md:ml-5 hover:scale-105">
+                                            <img src="/resources/save_filled.png" class="w-5 md:w-6" />
                                         </button>
                                     @elseif(!$review->isReviewdByThisUser)
                                         <button onclick="saveReview(this, '{{$review->id}}', '{{csrf_token()}}')"  
-                                                class="ml-5 hover:scale-105">
-                                            <img src="/resources/save_blank.png" width="24" />
+                                                class="ml-2 md:ml-5 hover:scale-105">
+                                            <img src="/resources/save_blank.png" class="w-5 md:w-6" />
                                         </button>
                                     @endif
 
                                     @if($review->isReviewdByThisUser)
-                                        <button class="ml-5 hover:scale-105">
+                                        <button class="ml-2 md:ml-5 hover:scale-105">
                                             <a href="{{route('community.bookReview.edit', ['id' => $review->id])}}">
-                                                <img src="/resources/edit.png" width="24"/>
+                                                <img src="/resources/edit.png" class="w-5 md:w-6"/>
                                             </a>
                                         </button>
             
-                                        <button onclick="openDeletePopupBox('{{$review->id}}')"  class="ml-5 hover:scale-105">
-                                            <img src="/resources/delete.png" width="24"/>
+                                        <button onclick="openDeletePopupBox('{{$review->id}}')"  class="ml-2 md:ml-5 hover:scale-105">
+                                            <img src="/resources/delete.png" class="w-5 md:w-6"/>
                                         </button>
                                     @endif
                                 </div>
