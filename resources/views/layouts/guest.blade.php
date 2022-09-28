@@ -13,14 +13,14 @@
         <meta property="og:url" content="https://randsbook.com/login">
         <meta property="og:title" content="RandsBook - Personal Library App">
         <meta property="og:description" content="Log in to RandsBook.com personal library app to search, add, and manage your through one single app.">
-        <meta property="og:image" content="https://randsbook.com/resources/og_img.jpg">
+        <meta property="og:image" content="https://randsbook.com/resources/og_img.png">
         
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image">
         <meta property="twitter:url" content="https://randsbook.com/login">
         <meta property="twitter:title" content="RandsBook - Personal Library App">
         <meta property="twitter:description" content="Log in to RandsBook.com personal library app to search, add, and manage your through one single app.">
-        <meta property="twitter:image" content="https://randsbook.com/resources/og_img.jpg">
+        <meta property="twitter:image" content="https://randsbook.com/resources/og_img.png">
 
         <title>{{ config('app.name', 'RandsBook') }}</title>
 
@@ -28,12 +28,16 @@
         <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/style.css">
+        
+        <style>
+            
+        </style>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
-        <div class="font-sans text-gray-900 antialiased bg-gray-200" id="main">
+        <div class="font-sans text-gray-900 antialiased" id="main">
             {{ $slot }}
             @include('layouts.footer')
         </div>

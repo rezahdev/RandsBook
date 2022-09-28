@@ -9,6 +9,12 @@ a#site_name{
    font-size: 35px;
 }
 
+#auth_card {
+   background-image: url('/resources/guest_background2.jpg');
+   background-repeat: no-repeat;
+   background-size: cover;
+}
+
 .authors, .publishers{
    width: 83.33%;
    display: inline;

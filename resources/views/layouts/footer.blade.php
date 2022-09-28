@@ -5,7 +5,7 @@
         <p onclick="showCredits()" class="mx-2 hover:text-blue-700 cursor-pointer">Credits</p>
     </div>
     <div>
-        <p>Copyright&copy; Randsbook.com @php date('Y') @endphp</p>
+        <p>Copyright &copy;Randsbook.com @php date('Y') @endphp</p>
     </div>
 </div>
 <div id="about" class="hidden w-[calc(100%-2rem)] ml-4 fixed bg-white rounded p-5 flex flex-col items-center" style="top:100px">
@@ -34,6 +34,7 @@
     <a class="a" href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by 88 Cloud - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Kiranshastry - Flaticon</a>
     <a class="a" href="https://www.flaticon.com/free-icons/modify" title="modify icons">Modify icons created by Freepik - Flaticon</a>
+    <a class="a" href="https://www.pexels.com/photo/light-inside-library-590493/" title="background image">Photo by Janko Ferlic on Pexels </a>
     <button onclick="closeCredits()" class="bg-blue-700 py-2 w-24 text-white rounded hover:bg-blue-800 mt-5">Close</button>
 </div>
 
@@ -87,5 +88,9 @@ a.a {
     display: block;
     padding: 5px;
     float: left;
+}
+
+#footer {
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 </style>
