@@ -335,7 +335,19 @@ class BookController extends Controller
         return json_encode(['response' => 'OK', 'message' => $message]);
     } 
 
+    function read_book($id)
+    {
+        $book = Book::find($id);
+        $book_file_path = $book->book_file_path;
+        return view('books.read', ['book_file_path' => $book_file_path]);
+    }
     
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // UTILITY METHODS BELOW
+    //
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * If $id == null, the function is called to store info of a new book
@@ -363,6 +375,16 @@ class BookController extends Controller
         $book->read_pages = $request->read_pages != "" ? strip_tags($request->read_pages) : '0';
         $book->comment = strip_tags($request->comment);
         $book->public_comment = strip_tags($request->public_comment);
+
+        if(!empty($request->file('book_file')))
+        {
+            $file= $request->file('book_file');
+            $filename= date('YmdHi').$file->getClientOriginalName();
+            $file->move(public_path(env('BOOK_UPLOAD_PATH')), $filename);
+            $book->book_file_path = env('BOOK_UPLOAD_PATH') . $filename;
+            $book->has_pdf = 1;
+        }
+
         $book->save();
 
         //if updating book, first delete the existing authors of the book since we cannot update authors by author id
@@ -489,14 +511,33 @@ class BookController extends Controller
             if(!is_numeric($request->read_pages) || $request->read_pages < 0 || $request->read_pages > 10000)
             {
                 $isValidRequest = false;
-                array_push($errors, (object)['message' => 'Number of pages read must be an integer between 0 and 10000.']);
+                array_push($errors, (object)['message' => 'Number of read pages must be an integer between 0 and 10000.']);
             }
         }
         
         if($request->read_pages > $request->total_pages)
         {
             $isValidRequest = false;
-            array_push($errors, (object)['message' => 'Number of pages cannot exceed total number of pages.']);
+            array_push($errors, (object)['message' => 'Number of read pages cannot exceed total number of pages.']);
+        }
+
+        if(!empty($request->file('book_file')))
+        {
+            $file= $request->file('book_file');
+            $fileExt = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
+            $fileSize = $file->getSize() / 1024; //Byte -> KB
+
+            if($fileExt != 'pdf')
+            {
+                $isValidRequest = false;
+                array_push($errors, (object)['message' => 'The book file must be in PDF format.']);
+            }
+
+            if($fileSize > 20480) //Size greater than 20 mb
+            {
+                $isValidRequest = false;
+                array_push($errors, (object)['message' => 'The book file size cannot be more than 20 MB.']);
+            }
         }
 
         if($isValidRequest)

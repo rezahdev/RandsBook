@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('cover_url')->nullable();
             $table->string('public_comment')->nullable();
             $table->integer('isWishlistItem')->default(0);
+            $table->string('book_file_path')->nullable();
+            $table->integer('has_pdf')->default(0);
         });
     }
 

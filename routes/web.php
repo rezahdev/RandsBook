@@ -31,6 +31,7 @@ Route::get('/profile/changePassword', [ProfileController::class, 'change_passwor
 Route::get('/community/bookReviews', [BookReviewController::class, 'index'])->middleware('auth')->name('community.bookReview.index');
 Route::get('/community/bookReviews/add', [BookReviewController::class, 'create'])->middleware('auth')->name('community.bookReview.create');
 Route::get('/community/bookReviews/{id}/edit', [BookReviewController::class, 'edit'])->middleware('auth')->name('community.bookReview.edit');
+Route::get('/book/{id}/read', [BookController::class, 'read_book'])->middleware('auth')->name('books.read_book');
 
 
 Route::post('/store', [BookController::class, 'store'])->middleware('auth')->name('books.store');

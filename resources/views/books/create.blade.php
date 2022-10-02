@@ -1,7 +1,8 @@
 <x-app-layout>
     <div class="flex justify-center w-full flex-wrap">
         <div class="flex justify-around flex-wrap w-11/12">
-            <form class="w-full md:w-3/4 my-5 bg-white rounded-xl p-3" method="post" action="{{route('books.store') }}">
+            <p class="mt-3 w-full text-center font-semibold">Add Book Information</p>
+            <form class="w-full md:w-3/4 mb-5 mt-3 bg-white rounded-xl p-3" method="post" action="{{route('books.store') }}" enctype="multipart/form-data">
                 @csrf
 
                 {{--If server returns form validation error--}}
@@ -15,6 +16,9 @@
                     
                 <input type="hidden" name="edition_key" value="{{ $book->edition_key }}">
                 <input type="hidden" name="cover_url" value="{{ $book->cover_url }}" >
+
+                <label>Add PDF copy of this book (Only visible to you): 
+                <input type="file" name="book_file" class="w-full rounded mb-5 mt-1">
 
                 <label>Title</label>
                 <input class="w-full rounded mb-5 p-2" 
