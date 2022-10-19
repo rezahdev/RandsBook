@@ -1,5 +1,5 @@
 <html>
-<img src="randsbook/Github/randsbook_logo.png" width=180 height=90 style="border: 2px solid dimgray"/>
+<img src="Github/randsbook_logo.png" width=180 height=90 style="border: 2px solid dimgray"/>
 </html>
 
 ![GitHub issues](https://img.shields.io/github/issues/rezasaker/randsbook)  ![GitHub](https://img.shields.io/github/license/rezasaker/randsbook)
