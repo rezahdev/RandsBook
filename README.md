@@ -31,3 +31,28 @@ Further features to improve the community feature, and allow users to read ebook
 
 ## Acknowledgement
 RandsBook utilizes Open Library API for some of its features as well as uses free resources from Flaticon and Pexels. 
+
+
+
+
+
+
+
+
+
+
+https://user-images.githubusercontent.com/37044784/209611362-6f0b9c99-406b-41f0-bee3-a060d9c01f4f.mp4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
