@@ -10,9 +10,10 @@ RandsBook is a web-based personal library application that allows users to searc
 RandsBook is provided under [MIT License](https://github.com/rezaSaker/Phinanze/blob/master/LICENSE).
 
 ## Initial Release
-[Click here](https://randsbook.com) to check the current version of the RandsBook. 
+[Click here](https://randsbook.com) to check the current live version of the RandsBook. 
 
 ## Preview (Desktop screen)
+NOTE: Previews may appear blurred due to conversion of the video. 
 <img src="github/demo_n.gif" alt="Desktop Demo Picture"/>
 
 ## Preview (Mobile screen)
