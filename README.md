@@ -15,15 +15,11 @@ RandsBook is provided under [MIT License](https://github.com/rezaSaker/Phinanze/
 ## Preview (Desktop screen)
 
 
+https://user-images.githubusercontent.com/37044784/209611833-e9e5044c-8708-4d32-b7ee-382b62c29708.mp4
 
-https://user-images.githubusercontent.com/37044784/209610885-d64fccee-5f0c-4a37-b1f8-d3e74b62419c.mp4
 
 
 ## Preview (Mobile screen)
-
-
-https://user-images.githubusercontent.com/37044784/209610921-a2ebbcae-2f45-4c57-af40-6b3a1eb4a70a.mp4
-
 
 
 ## Features under development
@@ -31,17 +27,6 @@ Further features to improve the community feature, and allow users to read ebook
 
 ## Acknowledgement
 RandsBook utilizes Open Library API for some of its features as well as uses free resources from Flaticon and Pexels. 
-
-
-
-
-
-
-
-
-
-
-https://user-images.githubusercontent.com/37044784/209611362-6f0b9c99-406b-41f0-bee3-a060d9c01f4f.mp4
 
 
 
