@@ -13,10 +13,18 @@ RandsBook is provided under [MIT License](https://github.com/rezaSaker/Phinanze/
 [Click here](https://randsbook.com) to check the current live version of the RandsBook. 
 
 ## Preview (Desktop screen)
-https://user-images.githubusercontent.com/37044784/209610593-3182811b-8b35-45c1-bc24-6665ea3af5e2.mp4
+
+
+
+https://user-images.githubusercontent.com/37044784/209610885-d64fccee-5f0c-4a37-b1f8-d3e74b62419c.mp4
+
 
 ## Preview (Mobile screen)
-https://user-images.githubusercontent.com/37044784/209610781-d8192fb2-2353-4c0d-9477-81ebf1204f3c.mp4
+
+
+https://user-images.githubusercontent.com/37044784/209610921-a2ebbcae-2f45-4c57-af40-6b3a1eb4a70a.mp4
+
+
 
 ## Features under development
 Further features to improve the community feature, and allow users to read ebooks directly through the app for manually uploaded ebooks and free ebooks through Open Library. 
