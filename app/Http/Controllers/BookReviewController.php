@@ -112,14 +112,12 @@ class BookReviewController extends Controller
                                                           ->where('user_id', Auth::user()->id)
                                                           ->exists();
         }
-
         return view('community.bookReviews.index', ['reviews' => $reviews, 'isFilteredResult' => $isFilteredResult]);
     }
 
     function create()
     {
         $books = Book::where('user_id', Auth::user()->id)->get();
-
         return view('community.bookReviews.create', ['books' => $books]);
     }
 

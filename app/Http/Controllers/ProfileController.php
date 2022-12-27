@@ -45,9 +45,8 @@ class ProfileController extends Controller
     {
         $request->validate(['name' => 'required']);
         $name = strip_tags($request->name);     
-        
-        User::where('id', Auth::user()->id)->update(['name' => $name]);
-            
+
+        User::where('id', Auth::user()->id)->update(['name' => $name]);          
         return redirect()->route('profile.index');
     }
 
@@ -57,7 +56,6 @@ class ProfileController extends Controller
         $email = strip_tags($request->email);     
             
         User::where('id', Auth::user()->id)->update(['email' => $email, 'email_verified_at' => null]);
-
         return redirect()->route('profile.index');
     }
 
@@ -67,8 +65,7 @@ class ProfileController extends Controller
         $nickname = strip_tags($request->nickname);   
         $use_nickname = $request->use_nickname == '1' ? '1' : '0';  
         
-        User::where('id', Auth::user()->id)->update(['nickname' => $nickname, 'use_nickname' => $use_nickname]);
-            
+        User::where('id', Auth::user()->id)->update(['nickname' => $nickname, 'use_nickname' => $use_nickname]);         
         return redirect()->route('profile.index');
     }
 

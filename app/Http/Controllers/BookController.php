@@ -163,8 +163,7 @@ class BookController extends Controller
                         'comment' => '',
                         'public_comment' => '',
                         'cover_url' => ''
-                    );
-        
+                    );      
         return view('books.create', ['book' => (object)$book]);
     }
 
@@ -305,7 +304,6 @@ class BookController extends Controller
         }
 
         $book->delete();
-
         return redirect()->route('books.index');
     }
 
@@ -331,7 +329,7 @@ class BookController extends Controller
         {
             $message = 'Almost there! You are ' . $book->total_pages - $book->read_pages . ' pages away from finshing this book.';
         }
-        
+         
         return json_encode(['response' => 'OK', 'message' => $message]);
     } 
 
@@ -384,7 +382,6 @@ class BookController extends Controller
             $book->book_file_path = env('BOOK_UPLOAD_PATH') . $filename;
             $book->has_pdf = 1;
         }
-
         $book->save();
 
         //if updating book, first delete the existing authors of the book since we cannot update authors by author id
@@ -553,7 +550,6 @@ class BookController extends Controller
     private function requestToBookObject($request)
     {
         $book = new \stdClass();
-
         $book->edition_key = $request->edition_key;
         $book->cover_url = $request->cover_url;
         $book->title = $request->title;
