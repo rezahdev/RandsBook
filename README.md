@@ -15,11 +15,17 @@ RandsBook is provided under [MIT License](https://github.com/rezaSaker/Phinanze/
 ## Preview (Desktop screen)
 
 
-https://user-images.githubusercontent.com/37044784/209611833-e9e5044c-8708-4d32-b7ee-382b62c29708.mp4
+
+
+https://user-images.githubusercontent.com/37044784/209612018-eb39b978-dcd9-4fb2-b13c-3703d81a9929.mp4
 
 
 
 ## Preview (Mobile screen)
+
+
+
+https://user-images.githubusercontent.com/37044784/209612034-2937d885-4b95-450a-83af-fac04a268bc8.mp4
 
 
 ## Features under development
