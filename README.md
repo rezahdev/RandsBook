@@ -2,7 +2,7 @@
 <img src="github/randsbook_logo.png" width=180 height=90 style="border: 2px solid dimgray"/>
 </html>
 
-![GitHub issues](https://img.shields.io/github/issues/rezasaker/randsbook)  ![GitHub](https://img.shields.io/github/license/rezasaker/randsbook)
+![GitHub issues](https://img.shields.io/github/issues/rezahdev/randsbook)  ![GitHub](https://img.shields.io/github/license/rezahdev/randsbook)
 ## Welcome to RandsBook
 RandsBook is a web-based personal library application that allows users to search, save, manage books, and keep track of their reading habits. It also provides a community feature that allows users to write book reviews and interact with other users.
 
