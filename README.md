@@ -4,7 +4,7 @@
 
 ![GitHub issues](https://img.shields.io/github/issues/rezahdev/randsbook)  ![GitHub](https://img.shields.io/github/license/rezahdev/randsbook)
 ## Welcome to RandsBook
-RandsBook is a web-based personal library application that allows users to search, save, manage books, and keep track of their reading habits. It also provides a community feature that allows users to write book reviews and interact with other users.
+RandsBook is a web-based personal library application that allows users to search, save, manage books, and keep track of reading habits. It also provides a community feature that allows users to write book reviews and interact with other users.
 
 ## License
 RandsBook is provided under [MIT License](https://github.com/rezaSaker/Phinanze/blob/master/LICENSE).
