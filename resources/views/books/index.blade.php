@@ -159,33 +159,26 @@
 </x-app-layout>
 
 <script>
-window.onscroll = function () 
-{
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) 
-    {
+window.onscroll = function ()  {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200)  {
         scroll_to_top.classList.remove("hidden");
     } 
-    else 
-    {
+    else {
         scroll_to_top.classList.add("hidden");
     }
 }
-function scrollToTop() 
-{
+
+function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function invokeFilterOptionsBox()
-{
-    if(filter_options_box.style.visibility == "visible")
-    {
+function invokeFilterOptionsBox() {
+    if(filter_options_box.style.visibility == "visible") {
         filter_options_box.style.visibility = "hidden";
     }
-    else
-    {
+    else {
         //close the sort options box if it is open before opening filter box
-        if(sort_options_box.style.visibility == "visible")
-        {
+        if(sort_options_box.style.visibility == "visible") {
             sort_options_box.style.visibility = "hidden";
         }
         const right = Math.round((innerWidth - container.offsetWidth)/2);
@@ -194,17 +187,13 @@ function invokeFilterOptionsBox()
     }
 }
 
-function invokeSortOptionsBox()
-{
-    if(sort_options_box.style.visibility == "visible")
-    {
+function invokeSortOptionsBox() {
+    if(sort_options_box.style.visibility == "visible") {
         sort_options_box.style.visibility = "hidden";
     }
-    else
-    {
+    else {
         //close the filter options box if it is open before opening sort box
-        if(filter_options_box.style.visibility == "visible")
-        {
+        if(filter_options_box.style.visibility == "visible") {
             filter_options_box.style.visibility = "hidden";
         }
         const right = Math.round((innerWidth - container.offsetWidth)/2);

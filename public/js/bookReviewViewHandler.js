@@ -1,73 +1,60 @@
-window.onscroll = function () 
-{
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) 
-    {
+window.onscroll = function () {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
         scroll_to_top.classList.remove("hidden");
     } 
-    else 
-    {
+    else {
         scroll_to_top.classList.add("hidden");
     }
 }
-function scrollToTop() 
-{
+
+function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function invokeSortOptionsBox()
-{
-    if(sort_options_box.style.visibility == "visible")
-    {
+function invokeSortOptionsBox() {
+    if(sort_options_box.style.visibility == "visible") {
         sort_options_box.style.visibility = "hidden";
     }
-    else
-    {  
+    else {  
         const right = Math.round((innerWidth - container.offsetWidth)/2);
         sort_options_box.style.right = right + 'px';
         sort_options_box.style.visibility = "visible";
     }
 }
 
-function openDeletePopupBox(reviewId) 
-{
+function openDeletePopupBox(reviewId) {
     delete_popup_box.style.visibility = "visible";
     review_id_to_delete.textContent = reviewId;
     
-    if (!container.classList.contains("blurry")) 
-    {
+    if (!container.classList.contains("blurry")) {
         container.classList.add("blurry");
     }
 }
 
-function closeDeletePopupBox() 
-{
+function closeDeletePopupBox() {
     delete_popup_box.style.visibility = "hidden";
 
-    if (container.classList.contains("blurry")) 
-    {
+    if (container.classList.contains("blurry")) {
         container.classList.remove("blurry");
     }
     
 }
 
-function showFullReview(showBtn, hideBtnId, reviewTextId, review)
-{
+function showFullReview(showBtn, hideBtnId, reviewTextId, review) {
     const reviewText = document.getElementById(reviewTextId);
     reviewText.textContent = review.replace(/['"]+/g, '');
     showBtn.style.display = "none";
     document.getElementById(hideBtnId).style.display = "block";
 }
 
-function hideFullReview(hideBtn, showBtnId, reviewTextId, review)
-{
+function hideFullReview(hideBtn, showBtnId, reviewTextId, review) {
     const reviewText = document.getElementById(reviewTextId);
     reviewText.textContent = review.replace(/['"]+/g, '');
     hideBtn.style.display = "none";
     document.getElementById(showBtnId).style.display = "block";
 }
 
-function likeReview(likeBtn, reviewId, csrfToken)
-{
+function likeReview(likeBtn, reviewId, csrfToken) {
     let http = new XMLHttpRequest();
     let url = "/community/bookReviews/like";
     let formData = new FormData();
@@ -77,13 +64,11 @@ function likeReview(likeBtn, reviewId, csrfToken)
 
     http.open('POST', url, true);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+            
+            if(responseObj.response == 'OK') {
                 const btn = likeBtn.cloneNode(true);
                 btn.removeAttribute('onclick');
                 btn.children[0].src = '/resources/like_filled.png';
@@ -91,8 +76,7 @@ function likeReview(likeBtn, reviewId, csrfToken)
                 btn.addEventListener('click', function() { unlikeReview(btn, reviewId, csrfToken) });
                 likeBtn.parentNode.replaceChild(btn, likeBtn);
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }
@@ -100,8 +84,7 @@ function likeReview(likeBtn, reviewId, csrfToken)
     http.send(formData);
 }
 
-function unlikeReview(likeBtn, reviewId, csrfToken)
-{
+function unlikeReview(likeBtn, reviewId, csrfToken) {
     let http = new XMLHttpRequest();
     let url = "/community/bookReviews/unlike";
     let formData = new FormData();
@@ -112,13 +95,11 @@ function unlikeReview(likeBtn, reviewId, csrfToken)
 
     http.open('POST', url, true);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+
+            if(responseObj.response == 'OK') {
                 const btn = likeBtn.cloneNode(true);
                 btn.removeAttribute('onclick');
                 btn.children[0].src = '/resources/like_blank.png';
@@ -126,8 +107,7 @@ function unlikeReview(likeBtn, reviewId, csrfToken)
                 btn.addEventListener('click', function() { likeReview(btn, reviewId, csrfToken) });
                 likeBtn.parentNode.replaceChild(btn, likeBtn);
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }
@@ -135,8 +115,7 @@ function unlikeReview(likeBtn, reviewId, csrfToken)
     http.send(formData);
 }
 
-function saveReview(saveBtn, reviewId, csrfToken)
-{
+function saveReview(saveBtn, reviewId, csrfToken) {
     let http = new XMLHttpRequest();
     let url = "/community/bookReviews/save";
     let formData = new FormData();
@@ -146,21 +125,18 @@ function saveReview(saveBtn, reviewId, csrfToken)
 
     http.open('POST', url, true);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+
+            if(responseObj.response == 'OK') {
                 const btn = saveBtn.cloneNode(true);
                 btn.removeAttribute('onclick');
                 btn.children[0].src = '/resources/save_filled.png';
                 btn.addEventListener('click', function() { unsaveReview(btn, reviewId, csrfToken) });
                 saveBtn.parentNode.replaceChild(btn, saveBtn);
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }
@@ -168,8 +144,7 @@ function saveReview(saveBtn, reviewId, csrfToken)
     http.send(formData);
 }
 
-function unsaveReview(saveBtn, reviewId, csrfToken)
-{
+function unsaveReview(saveBtn, reviewId, csrfToken) {
     let http = new XMLHttpRequest();
     let url = "/community/bookReviews/unsave";
     let formData = new FormData();
@@ -180,21 +155,18 @@ function unsaveReview(saveBtn, reviewId, csrfToken)
 
     http.open('POST', url, true);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+
+            if(responseObj.response == 'OK') {
                 const btn = saveBtn.cloneNode(true);
                 btn.removeAttribute('onclick');
                 btn.children[0].src = '/resources/save_blank.png';
                 btn.addEventListener('click', function() { saveReview(btn, reviewId) });
                 saveBtn.parentNode.replaceChild(btn, saveBtn, csrfToken);
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }
@@ -202,8 +174,7 @@ function unsaveReview(saveBtn, reviewId, csrfToken)
     http.send(formData);
 }
 
-function deleteReview(csrfToken)
-{
+function deleteReview(csrfToken) {
     let reviewId = parseInt(review_id_to_delete.textContent);
     let http = new XMLHttpRequest();
     let url = "/community/bookReviews/delete";
@@ -215,20 +186,17 @@ function deleteReview(csrfToken)
 
     http.open('POST', url, true);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+
+            if(responseObj.response == 'OK') {
                 const review = document.getElementById('review' + reviewId);
                 review.parentNode.removeChild(review);
                 review_id_to_delete.textContent = null;
                 closeDeletePopupBox();
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }

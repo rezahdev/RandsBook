@@ -65,24 +65,20 @@
 </x-app-layout>
 
 <script>
-window.onscroll = function () 
-{
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) 
-    {
+window.onscroll = function ()  {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
         scroll_to_top.classList.remove("hidden");
     } 
-    else 
-    {
+    else {
         scroll_to_top.classList.add("hidden");
     }
 }
-function scrollToTop() 
-{
+
+function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function removeFromWishlist(wishlistBookId, bookId)
-{
+function removeFromWishlist(wishlistBookId, bookId) {
     let http = new XMLHttpRequest();
     let url = "{{route('books.remove_from_wishlist')}}";
     let formData = new FormData();
@@ -93,18 +89,15 @@ function removeFromWishlist(wishlistBookId, bookId)
 
     http.open('POST', url, true);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+
+            if(responseObj.response == 'OK') {
                 let book = document.getElementById(wishlistBookId);
                 book.parentNode.removeChild(book);
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }

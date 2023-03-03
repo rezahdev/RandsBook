@@ -36,7 +36,6 @@
         <div class="font-sans text-gray-900 antialiased" id="main">
             {{ $slot }}
             @include('layouts.footer')
-        </div>
-        
+        </div>    
     </body>
 </html>

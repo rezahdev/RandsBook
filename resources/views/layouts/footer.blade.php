@@ -39,48 +39,40 @@
 </div>
 
 <script>
-window.onload = function () 
-{
+window.onload = function () {
     let docHeight = document.getElementById('main').clientHeight + 200;
     
-    if (innerHeight > docHeight) 
-    {
+    if (innerHeight > docHeight) {
         footer.classList.add("fixed");
         footer.classList.add("bottom-0");
     } 
 }
 
-function showAbout()
-{
-    if(about.classList.contains('hidden'))
-    {
+function showAbout() {
+    if(about.classList.contains('hidden')) {
         about.classList.remove('hidden');
     }
 }
 
-function closeAbout()
-{
-    if(!about.classList.contains('hidden'))
-    {
+function closeAbout() {
+    if(!about.classList.contains('hidden')) {
         about.classList.add('hidden');
     }
 }
-function showCredits()
-{
-    if(credits.classList.contains('hidden'))
-    {
+
+function showCredits() {
+    if(credits.classList.contains('hidden')) {
         credits.classList.remove('hidden');
     }
 }
 
-function closeCredits()
-{
-    if(!credits.classList.contains('hidden'))
-    {
+function closeCredits() {
+    if(!credits.classList.contains('hidden')) {
         credits.classList.add('hidden');
     }
 }
 </script>
+
 <style>
 a.a {
     color: blue;

@@ -124,24 +124,20 @@
 </x-app-layout>
 
 <script>
-window.onscroll = function () 
-{
-    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) 
-    {
+window.onscroll = function () {
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
         scroll_to_top.classList.remove("hidden");
     } 
-    else 
-    {
+    else {
         scroll_to_top.classList.add("hidden");
     }
 }
-function scrollToTop() 
-{
+
+function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function addToWishlist(wishlistBtnImg, editionKey)
-{
+function addToWishlist(wishlistBtnImg, editionKey) {
     let http = new XMLHttpRequest();
     let url = "{{route('books.add_to_wishlist')}}";
     let csrfToken = '{{csrf_token()}}';
@@ -152,21 +148,18 @@ function addToWishlist(wishlistBtnImg, editionKey)
 
     http.open('POST', url, false);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+
+            if(responseObj.response == 'OK') {
                 const img = wishlistBtnImg.cloneNode(true);
                 img.removeAttribute('onclick');
                 img.src = '/resources/heart_filled.png';
                 img.addEventListener('click', function() { removeFromWishlist(img, responseObj.edition_key) });
                 wishlistBtnImg.parentNode.replaceChild(img, wishlistBtnImg);
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }
@@ -174,8 +167,7 @@ function addToWishlist(wishlistBtnImg, editionKey)
     http.send(formData);
 }
 
-function removeFromWishlist(wishlistBtnImg, bookId)
-{
+function removeFromWishlist(wishlistBtnImg, bookId) {
     let http = new XMLHttpRequest();
     let url = "{{route('books.remove_from_wishlist')}}";
     let csrfToken = '{{csrf_token()}}';
@@ -187,21 +179,18 @@ function removeFromWishlist(wishlistBtnImg, bookId)
 
     http.open('POST', url, false);
 
-    http.onreadystatechange = function() 
-    {
-        if(http.readyState == 4 && http.status == 200) 
-        {
+    http.onreadystatechange = function() {
+        if(http.readyState == 4 && http.status == 200) {
             let responseObj = JSON.parse(http.responseText);
-            if(responseObj.response == 'OK')
-            {
+
+            if(responseObj.response == 'OK') {
                 const img = wishlistBtnImg.cloneNode(true);
                 img.removeAttribute('onclick');
                 img.src = '/resources/heart_blank.png';
                 img.addEventListener('click', function() { addToWishlist(img, responseObj.edition_key) });
                 wishlistBtnImg.parentNode.replaceChild(img, wishlistBtnImg);
             }
-            else
-            {
+            else {
                 alert(responseObj.message);
             }
         }

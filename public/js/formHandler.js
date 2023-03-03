@@ -2,10 +2,8 @@
  * Function to create an additional input field for author name
  * @param { int } authorNum (Number of current author fields in the form + 1)
  */
-function createAuthorInputField(authorNum)
-{ 
-    if(authorNum > 15)
-    {
+function createAuthorInputField(authorNum) { 
+    if(authorNum > 15) {
         alert('Sorry, you have tried to create author field too many times. You can refresh the page and restart to add new authors.');
         return;
     }
@@ -29,21 +27,18 @@ function createAuthorInputField(authorNum)
     create_author_label.parentNode.replaceChild(createAuthorLabelClone, create_author_label);
     createAuthorLabelClone.id = "create_author_label";
     
-    if(createAuthorLabelClone.hasAttributes('onclick'))
-    {
+    if(createAuthorLabelClone.hasAttributes('onclick')) {
         createAuthorLabelClone.removeAttribute('onclick');
     }
     
 
-    if(author_list.childElementCount <= 10)
-    {
+    if(author_list.childElementCount <= 10) {
         authorFieldClone.children[0].addEventListener('input', function() { inputAuthorFieldChanged(authorFieldClone.children[0]) });
         createAuthorLabelClone.addEventListener('click', function(){ createAuthorInputField(`${(++authorNum)}`); });
         createAuthorLabelClone.setAttribute('hasListener', 'true');
         createAuthorLabelClone.style.display = "none";
     }
-    else
-    {
+    else {
         createAuthorLabelClone.textContent = "Cannot add anymore author.";
         createAuthorLabelClone.style.color = "black";
         createAuthorLabelClone.style.curson = "default";
@@ -55,10 +50,8 @@ function createAuthorInputField(authorNum)
  * Function to create input field for publisher name
  * @param { int } publisherNum (Number of current publisher fields in the form + 1)
  */
-function createPublisherInputField(publisherNum)
-{
-    if(publisherNum > 15)
-    {
+function createPublisherInputField(publisherNum) {
+    if(publisherNum > 15) {
         alert('Sorry, you have tried to create publisher field too many times. You can refresh the page and restart to add new publishers.');
         return;
     }
@@ -82,23 +75,19 @@ function createPublisherInputField(publisherNum)
     create_publisher_label.parentNode.replaceChild(createPublisherLabelClone, create_publisher_label);
     createPublisherLabelClone.id = "create_publisher_label";
 
-    if(createPublisherLabelClone.hasAttributes('onclick'))
-    {
+    if(createPublisherLabelClone.hasAttributes('onclick')) {
         createPublisherLabelClone.removeAttribute('onclick');
     }
 
-    if(publisher_list.childElementCount <= 4)
-    {
-        publisherFieldClone.children[0].addEventListener('input', function() 
-        { 
+    if(publisher_list.childElementCount <= 4) {
+        publisherFieldClone.children[0].addEventListener('input', function() { 
             inputPublisherFieldChanged(publisherFieldClone.children[0]); 
         });
         createPublisherLabelClone.addEventListener('click', function(){ createPublisherInputField(`${(++publisherNum)}`); });
         createPublisherLabelClone.style.display = "none";
         createPublisherLabelClone.setAttribute('hasListener', 'true');
     }
-    else
-    {
+    else {
         createPublisherLabelClone.textContent = "Cannot add anymore publisher.";
         createPublisherLabelClone.style.color = "black";
         createPublisherLabelClone.style.curson = "default";
@@ -110,18 +99,14 @@ function createPublisherInputField(publisherNum)
  * Function to add a new subject tag
  * @param { int } subjectNum (Number of current subject tags in the form + 1) 
  */
- function addSubjectTag(subjectNum)
- {
-    if(subjectNum > 15)
-    {
+ function addSubjectTag(subjectNum) {
+    if(subjectNum > 15) {
         alert('Sorry, you have tried to create subject field too many times. You can refresh the page and restart to add new subjects.');
         return;
     }
 
-    if(subject_input_field.value.length > 0)
-    {
-        if(subject_list.childElementCount == 4)
-        {
+    if(subject_input_field.value.length > 0) {
+        if(subject_list.childElementCount == 4) {
             alert('Sorry, you can\'t add more than three subject tags per each book. In order to add this tag, please delete an existing tag first.');
             return;
         }
@@ -148,8 +133,7 @@ function createPublisherInputField(publisherNum)
         add_subject_tag_label.parentNode.replaceChild(addSubjectTagLabelClone, add_subject_tag_label);
         addSubjectTagLabelClone.id = "add_subject_tag_label";
 
-        if(addSubjectTagLabelClone.hasAttributes('onclick'))
-        {
+        if(addSubjectTagLabelClone.hasAttributes('onclick')) {
             addSubjectTagLabelClone.removeAttribute('onclick');
         }
         addSubjectTagLabelClone.addEventListener('click', function() { addSubjectTag(`${++subjectNum}`) });
@@ -160,10 +144,8 @@ function createPublisherInputField(publisherNum)
  * Function to delete an author input field
  * @param { string } authorId  Id of the author Input field to be deleted
  */
-function deleteAuthorField(authorId)
-{
-    if(author_list.childElementCount < 2)
-    {
+function deleteAuthorField(authorId) {
+    if(author_list.childElementCount < 2) {
         alert('Sorry, can\'t delete all author fields. Please leave the author field empty if you do not know the author information. ');
         return;
     }
@@ -171,8 +153,7 @@ function deleteAuthorField(authorId)
     const authorField = document.getElementById(authorId);
     author_list.removeChild(authorField);
 
-    if(author_list.childElementCount <= 10 && create_author_label.getAttribute('hasListener') !== 'true')
-    {
+    if(author_list.childElementCount <= 10 && create_author_label.getAttribute('hasListener') !== 'true') {
         let authorNumStr = (author_list.children[author_list.childElementCount-1].id).replace('author', '');
         let authorNum = parseInt(authorNumStr) + 1;
 
@@ -183,8 +164,7 @@ function deleteAuthorField(authorId)
         create_author_label.setAttribute('hasListener', 'true');
     }
 
-    if(author_list.childElementCount == 1 && create_author_label.style.display == "none")
-    {
+    if(author_list.childElementCount == 1 && create_author_label.style.display == "none") {
         create_author_label.style.display = "block";
     }
 }
@@ -193,10 +173,8 @@ function deleteAuthorField(authorId)
  * Function to delete a publisher input field
  * @param { string } publisherId Id of the publisher input field to be deleted
  */
-function deletePublisherField(publisherId)
-{
-    if(publisher_list.childElementCount < 2)
-    {
+function deletePublisherField(publisherId) {
+    if(publisher_list.childElementCount < 2) {
         alert('Sorry, can\'t delete all publisher fields. Please leave the publisher field empty if you do not know the publisher information. ');
         return;
     }
@@ -204,8 +182,7 @@ function deletePublisherField(publisherId)
     const publisherField = document.getElementById(publisherId);
     publisher_list.removeChild(publisherField);   
 
-    if(publisher_list.childElementCount <= 10 && create_publisher_label.getAttribute('hasListener') !== 'true')
-    {
+    if(publisher_list.childElementCount <= 10 && create_publisher_label.getAttribute('hasListener') !== 'true') {
         let publisherNumStr = (publisher_list.children[publisher_list.childElementCount-1].id).replace('publisher', '');
         let publisherNum = parseInt(publisherNumStr) + 1;
 
@@ -216,8 +193,7 @@ function deletePublisherField(publisherId)
         create_publisher_label.setAttribute('hasListener', 'true');
     }
 
-    if(publisher_list.childElementCount == 1 && create_publisher_label.style.display == "none")
-    {
+    if(publisher_list.childElementCount == 1 && create_publisher_label.style.display == "none") {
         create_publisher_label.style.display = "block";
     }
 }
@@ -227,8 +203,7 @@ function deletePublisherField(publisherId)
  * @param { string } subjectId id of the subject field to be deleted
  * @returns 
  */
- function deleteSubjectTag(subjectId)
- {
+ function deleteSubjectTag(subjectId) {
      if(subjectId == "subject0") return;
  
      const subjectTag = document.getElementById(subjectId);
@@ -239,14 +214,11 @@ function deletePublisherField(publisherId)
  * Function to display or hide create_author_label based on author field input value change
  * @param { input } input 
  */
-function inputAuthorFieldChanged(input)
-{
-    if(input.value.length > 0)
-    {
+function inputAuthorFieldChanged(input) {
+    if(input.value.length > 0) {
         create_author_label.style.display = "block"; 
     }
-    else
-    {
+    else {
         create_author_label.style.display = "none"; 
     }
 }
@@ -255,14 +227,11 @@ function inputAuthorFieldChanged(input)
  * Function to display or hide create_publisher_label based on publisher field input value change
  * @param { input } input 
  */
-function inputPublisherFieldChanged(input)
-{
-    if(input.value.length > 0)
-    {
+function inputPublisherFieldChanged(input) {
+    if(input.value.length > 0) {
         create_publisher_label.style.display = "block"; 
     }
-    else
-    {
+    else {
         create_publisher_label.style.display = "none"; 
     }
 }

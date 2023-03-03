@@ -129,7 +129,7 @@ class BookController extends Controller
         $subjects = Subject::where('book_id', $id)->get();
         $book->subjects = $subjects;
 
-        $reviews = $this->retrievePublicReviews($book);
+        $reviews = $this->retrieve_public_reviews($book);
 
         return view('books.show', ['book' => $book, 'type' => 'MODEL_DATA', 'reviews' => $reviews]);
     }
@@ -141,7 +141,7 @@ class BookController extends Controller
 
         if($search_result->response == "OK")
         {
-            $reviews = $this->retrievePublicReviews($search_result->book);
+            $reviews = $this->retrieve_public_reviews($search_result->book);
             return view('books.show', ['book' => $search_result->book, 'type' => 'SEARCH_DATA', 'reviews' => $reviews]);
         }
         return view('books.show', ['response' => $search_result->message, 'type' => 'NOT_FOUND']);
@@ -184,18 +184,18 @@ class BookController extends Controller
 
     function store(Request $request)
     {
-        $validator = $this->validateRequest($request);
+        $validator = $this->validate_request($request);
         
         //If validator fails, returns the data back to create form with error messages
         if($validator->status == "FAILED")
         {          
-            return view('books.create', ['book' => $this->requestToBookObject($request), 'errors' => $validator->errors]);
+            return view('books.create', ['book' => $this->request_to_book_object($request), 'errors' => $validator->errors]);
         }
 
         //If edition key is empty, store the book without checking if it exists
         if(is_null($request->edition_key) || strlen($request->edition_key) == 0)
         {
-            $this->saveBook($request);
+            $this->save_book($request);
             return redirect()->route('books.index');
         } 
         
@@ -206,7 +206,7 @@ class BookController extends Controller
 
         if(is_null($book)) 
         {
-            $this->saveBook($request);
+            $this->save_book($request);
             return redirect()->route('books.index');
         }
         else if($book->isWishlistItem == 1)
@@ -218,7 +218,7 @@ class BookController extends Controller
         else
         {
             return view('books.create', [
-                'book' => $this->requestToBookObject($request), 
+                'book' => $this->request_to_book_object($request), 
                 'errors' => [(object)['message' => 'This book already exists in your library.']]
             ]);
         }
@@ -247,19 +247,19 @@ class BookController extends Controller
 
     function update(Request $request)
     {
-        $validator = $this->validateRequest($request);
+        $validator = $this->validate_request($request);
         
         //If validator fails, returns the data back to create form with error messages
         if($validator->status == "FAILED")
         {      
-            $book = $this->requestToBookObject($request);
+            $book = $this->request_to_book_object($request);
             $book->id = $request->id;
             return view('books.edit', ['book' => $book, 'errors' => $validator->errors]);
         }
 
         if(Book::select('id')->where([['id', strip_tags($request->id)], ['user_id', Auth::user()->id]])->exists())
         {   
-            $updated = $this->saveBook($request, $request->id); 
+            $updated = $this->save_book($request, $request->id); 
 
             if($updated->response == 'OK')
             {
@@ -267,7 +267,7 @@ class BookController extends Controller
             }
         }
         return view('books.edit', [
-            'book' => $this->requestToBookObject($request), 
+            'book' => $this->request_to_book_object($request), 
             'errors' => [(object)['message' => 'This book does not exist in your library.']]
         ]);
     }
@@ -333,17 +333,37 @@ class BookController extends Controller
         return json_encode(['response' => 'OK', 'message' => $message]);
     } 
 
+    function get_book_file($file)
+    {
+        $book = Book::where([['book_file_path', strip_tags($file)], ['user_id', Auth::user()->id]])->first();
+        
+        if(!is_null($book))
+        {
+            $path = storage_path('app/books/'.$file);
+
+            if (file_exists($path)) 
+            {
+                return response()->file($path, array('Content-Type' => 'application/pdf'));
+            }
+        }
+        abort(404);
+    }
+
     function read_book($id)
     {
-        $book = Book::find($id);
-        $book_file_path = $book->book_file_path;
-        return view('books.read', ['book_file_path' => $book_file_path]);
+        $book = Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first();
+
+        if(!is_null($book))
+        {
+            return view('books.read', ['book_file_path' => $book->book_file_path]);
+        }
+        return view('books.index');
     }
     
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    // UTILITY METHODS BELOW
+    // UTILITY METHODS 
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -351,7 +371,7 @@ class BookController extends Controller
      * If $id == null, the function is called to store info of a new book
      * else if $id value is passed, the function is called to update an existing book 
      */
-    private function saveBook($request, $id = null)
+    private function save_book($request, $id = null)
     {
         $book = ($id === null) ? new Book() : Book::where([['id', strip_tags($id)], ['user_id', Auth::user()->id]])->first();
 
@@ -376,10 +396,8 @@ class BookController extends Controller
 
         if(!empty($request->file('book_file')))
         {
-            $file= $request->file('book_file');
-            $filename= date('YmdHi').$file->getClientOriginalName();
-            $file->move(public_path(env('BOOK_UPLOAD_PATH')), $filename);
-            $book->book_file_path = env('BOOK_UPLOAD_PATH') . $filename;
+            $path = $request->file('book_file')->store('books');
+            $book->book_file_path = explode('/', $path)[1];
             $book->has_pdf = 1;
         }
         $book->save();
@@ -458,7 +476,7 @@ class BookController extends Controller
         return (object)['response' => 'OK', 'book_id' => $book->id];
     }
 
-    private function retrievePublicReviews($book)
+    private function retrieve_public_reviews($book)
     {
         $query = "SELECT books.public_comment AS comment, books.updated_at AS review_date,
                   users.name AS user_name, users.nickname AS user_nickname, users.use_nickname
@@ -478,7 +496,7 @@ class BookController extends Controller
         return $reviews;
     }
 
-    private function validateRequest($request)
+    private function validate_request($request)
     {
         $errors = array();
         $isValidRequest = true;
@@ -547,7 +565,7 @@ class BookController extends Controller
         }
     }
 
-    private function requestToBookObject($request)
+    private function request_to_book_object($request)
     {
         $book = new \stdClass();
         $book->edition_key = $request->edition_key;

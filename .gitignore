@@ -17,3 +17,5 @@ yarn-error.log
 /randsbook_repo
 /book_uploads
 github/ignore
+storage/app/public/*
+storage/boo
